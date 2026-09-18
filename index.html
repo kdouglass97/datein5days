@@ -426,6 +426,17 @@ section{padding:56px 16px}
 @keyframes stretchY{from{opacity:0;transform:scaleY(.15)}}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+.sevens{display:flex;align-items:center;justify-content:center;gap:13px;width:fit-content;max-width:100%;margin:18px auto 22px;padding:11px 17px;background:var(--paper);transform:rotate(-.8deg);box-shadow:inset 0 6px 0 var(--tag),0 14px 30px -20px rgba(0,0,0,.55)}
+.sevens .tally{width:70px;height:42px;flex:none}
+.sevens .watch{width:42px;height:42px;flex:none}
+.sevens-copy{margin:0;font-family:var(--type);line-height:1.35;text-align:left;white-space:nowrap}
+.sevens-copy b{display:block;font-weight:700;font-size:15px}
+.sevens-copy span{display:block;font-size:13px;opacity:.68}
+.js .draw .watch .hand{transform-origin:28px 32px}
+.js .draw.in .watch .hand{animation:sweep 3.1s .85s cubic-bezier(.45,.05,.2,1) forwards}
+@keyframes sweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.js .draw.in .watch .hand{animation:none}}
+@media (max-width:400px){.sevens{gap:9px;padding:9px 12px}.sevens .tally{width:58px}.sevens .watch{width:36px}.sevens-copy b{font-size:14px}.sevens-copy span{font-size:12px}}
 </style>
 </head>
 <body>
@@ -539,9 +550,9 @@ section{padding:56px 16px}
 <span class="d d4">day<b>4</b></span>
 <span class="d d5">day<b>5</b></span>
 <div class="ev ev1">
-<p class="when">10 min</p>
+<p class="when">7 min</p>
 <h3>the questions</h3>
-<p>Seven questions about how you live and what you want from someone.</p>
+<p>Seven questions, about seven minutes. How you live, and what you want from someone.</p>
 </div>
 <div class="ev ev2">
 <p class="when">on us</p>
@@ -611,11 +622,28 @@ section{padding:56px 16px}
 </g></svg>
 <form class="step" data-step="1" novalidate>
 <h2 id="rsvp-h">kindly reply</h2>
+<div class="sevens draw" data-reveal role="note" aria-label="Seven questions, about seven minutes.">
+<svg class="sk tally" viewBox="0 0 70 44" aria-hidden="true"><g filter="url(#pen)">
+<path class="ink" style="--dl:.10s" d="M6 8C5 18 5 30 6 38"/>
+<path class="ink" style="--dl:.21s" d="M15 7C14 18 14 30 15 38"/>
+<path class="ink" style="--dl:.32s" d="M24 8C23 18 23 30 24 37"/>
+<path class="ink" style="--dl:.43s" d="M33 7C32 18 32 30 33 38"/>
+<path class="ink" style="--dl:.56s" d="M2 35C12 29 28 16 38 9"/>
+<path class="ink" style="--dl:.70s" d="M50 8C49 18 49 30 50 38"/>
+<path class="ink" style="--dl:.81s" d="M59 7C58 18 58 30 59 38"/>
+</g></svg>
+<p class="sevens-copy"><b>seven questions.</b><span>about seven minutes.</span></p>
+<svg class="sk watch" viewBox="0 0 56 56" aria-hidden="true"><g filter="url(#pen)">
+<circle class="ink" style="--dl:.45s" cx="28" cy="32" r="19"/>
+<path class="ink thin" style="--dl:.62s" d="M23 8h10M28 9v4"/>
+<g class="hand"><path class="ink" style="--dl:.8s" d="M28 32V19"/></g>
+</g></svg>
+</div>
 <p class="resume" data-resume hidden>You started the questions earlier. <button type="button" class="linkish" data-resume-go>Pick up where you left off</button></p>
 <p class="sub">RSVP before <span data-launch>Sep 21</span> to be in the first cohort. Free while we test it.</p>
 <label class="field"><span>first name</span><input name="name" autocomplete="given-name" required data-msg="Add your first name."></label>
 <div class="verify" data-ig-wrap>
-<label class="field ig-field"><span>instagram</span><input name="instagram" placeholder="@yourhandle" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required data-msg="Add your Instagram, or verify with a photo instead."><small class="hint" data-ig-hint data-ph-mask>We'll follow you from <span data-ig-account>@datein5days</span> to make sure you're real, and message you there.</small></label>
+<label class="field ig-field"><span>instagram</span><input name="instagram" placeholder="@yourhandle" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required data-msg="Add your Instagram, or verify with a photo instead."><small class="hint" data-ig-hint data-ph-mask>We check your Instagram to make sure you're a real person. We won't post, comment, or message from it.</small></label>
 <button type="button" class="linkish" data-verify-toggle>no instagram? verify with a photo instead</button>
 </div>
 <div class="verify" data-photo-wrap hidden>
@@ -672,7 +700,7 @@ section{padding:56px 16px}
 </form>
 <div class="step" data-step="3" hidden>
 <h2>you're in</h2>
-<p class="sub">Now the good part. Seven questions about how you live and love, <span class="mk under" style="--dl:.5s">no wrong answers<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span>. Take your time. The thoughtful ones get a call.</p>
+<p class="sub">Now the good part. Seven questions, about seven minutes, <span class="mk under" style="--dl:.5s">no wrong answers<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span>. The thoughtful ones get a call.</p>
 <div class="poll" data-poll></div>
 <div class="deposit" data-deposit hidden>
 <p>Hold your spot with a $20 deposit. Fully refunded if we don't set you up within 5 days.</p>
@@ -688,7 +716,7 @@ section{padding:56px 16px}
 <details><summary>what does it cost?</summary><p data-cost-long>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
 <details><summary>who picks my match?</summary><p>We do, by hand, from your answers. No feed, no swiping.</p></details>
 <details><summary>do i have to get on a call?</summary><p>Not always. We call when your answers make us curious, and it takes 15 minutes.</p></details>
-<details><summary>why do you need my instagram?</summary><p>To make sure everyone you meet is a real person. We send a follow request from <span data-ig-account>@datein5days</span> to confirm. No Instagram? A clear photo of your face works too, and only the two of us see it.</p></details>
+<details><summary>why do you need my instagram?</summary><p>To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it.</p></details>
 <details><summary>what does my match see?</summary><p>Your first name and the plan. The rest is for the date.</p></details>
 <details><summary>what if you miss the 5 days?</summary><p>Then it didn't work for you, and we'll say so. That's what the experiment is for.</p></details>
 <details><summary>which cities?</summary><p><span data-city-list>Tbilisi, NYC, London, HK, Shanghai</span>, to start. Somewhere else? RSVP anyway and type in your city. It's how we pick the next one.</p></details>
@@ -739,14 +767,14 @@ cityList: "Tbilisi, NYC, London, HK, Shanghai",
 cohortSize: 50,
 launch: "Sep 21",
 poll: [
-{ type: "text", q: "Think of a time someone made you feel really cared for.", sub: "What did they do?" },
-{ type: "text", q: "What does a good Wednesday in your life look like?" },
-{ type: "rank", q: "What do you most want a relationship to add to your life?", sub: "Choose up to 2, then pick the one that matters most.", max: 2,
+{ key: "relationship_adds", type: "rank", q: "What do you most want a relationship to add to your life?", sub: "Choose up to 2, then pick the one that matters most.", max: 2,
 options: ["Teammate", "Emotional support", "Companionship", "Adventure/activity", "Affection/closeness", "Growth", "Family/home", "Fun/playfulness", "Independence + partnership"] },
-{ type: "text", q: "In your ideal relationship, how much of your life do you want to share with your partner?", sub: "What does that look like day-to-day?" },
-{ type: "text", q: "What do you value most in your closest friendships?", sub: "What makes those relationships work?" },
-{ type: "text", q: "What\u2019s something you wish you\u2019d spoken up about sooner in a close relationship or friendship?" },
-{ type: "text", q: "What\u2019s something you really want to do with your life that you haven\u2019t done yet?", sub: "What\u2019s stopping you?" },
+{ key: "wednesday", type: "text", q: "What does a good Wednesday in your life look like?" },
+{ key: "friendships", type: "text", q: "What do you value most in your closest friendships?", sub: "What makes those relationships work?" },
+{ key: "sharing_life", type: "text", q: "In your ideal relationship, how much of your life do you want to share with your partner?", sub: "What does that look like day-to-day?" },
+{ key: "cared_for", type: "text", q: "Think of a time someone made you feel really cared for.", sub: "What did they do?" },
+{ key: "not_done_yet", type: "text", q: "What\u2019s something you really want to do with your life that you haven\u2019t done yet?", sub: "What\u2019s stopping you?" },
+{ key: "spoke_up_sooner", type: "text", q: "What\u2019s something you wish you\u2019d spoken up about sooner in a close relationship or friendship?" },
 ],
 leadEndpoint: "https://script.google.com/macros/s/AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU/exec",
 paywall: { on: false, url: "" },
@@ -831,7 +859,7 @@ const h = normHandle(igInput.value);
 if (!h) return;
 igInput.value = "@" + h;
 igHint.textContent = HANDLE.test(h)
-? `We'll send @${h} a follow request from ${CONFIG.igAccount}, and message you there.`
+? `We'll check @${h} to make sure you're real.`
 : "That doesn't look like an Instagram handle. Letters, numbers, periods, and underscores only.";
 });
 let detectorP = null;
@@ -1049,7 +1077,7 @@ if (item.type !== "rank") return a;
 return a.also.length ? `${a.top} (most), ${a.also.join(", ")}` : a.top;
 };
 function syncPoll(stage) {
-lead.poll = CONFIG.poll.map((p, k) => ({ q: p.q, a: answerText(p, answers[k]) }));
+lead.poll = CONFIG.poll.map((p, k) => ({ key: p.key, q: p.q, a: answerText(p, answers[k]) }));
 const rank = CONFIG.poll.findIndex(p => p.type === "rank");
 if (rank > -1 && answers[rank]) { lead.adds_most = answers[rank].top; lead.adds_also = answers[rank].also.join(", "); }
 sendLead(stage);
@@ -1077,7 +1105,7 @@ body = `<div class="chips" data-rank>${item.options.map(o =>
 <div class="rank-top" data-top hidden><p>which matters most?</p><div class="chips" data-top-opts></div></div>
 <div class="poll-meta"><span data-rank-note>pick 1 or 2</span></div>`;
 } else {
-body = `<textarea data-text rows="4" placeholder="A few sentences is perfect." aria-label="${esc(item.q)}"></textarea>
+body = `<textarea data-text rows="4" required aria-required="true" placeholder="A few sentences is perfect." aria-label="${esc(item.q)}"></textarea>
 <div class="poll-meta"><span data-note>${i === P.length - 1 ? "last one" : ""}</span><span data-count></span></div>`;
 }
 pollBox.innerHTML = `<div class="poll-card">
@@ -1121,13 +1149,15 @@ draw();
 }));
 draw();
 } else {
-const t = $("[data-text]", pollBox), count = $("[data-count]", pollBox);
+const t = $("[data-text]", pollBox), count = $("[data-count]", pollBox), tnote = $("[data-note]", pollBox);
 const grow = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; };
 const upd = () => {
 value = t.value.trim();
 const words = value ? value.split(/\s+/).length : 0;
 count.textContent = words ? `${words} word${words === 1 ? "" : "s"}` : "";
-next.disabled = value.length < 2;
+const short = value.length < 2;
+next.disabled = short;
+tnote.textContent = short ? "a sentence or two" : (i === P.length - 1 ? "last one" : "");
 grow();
 try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}"); d.typing = { i, v: t.value }; localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch {}
 };
@@ -1153,7 +1183,7 @@ clink.classList.add("cheers");
 setTimeout(() => clink.classList.remove("cheers"), 2400);
 track("questions_done");
 const igLine = lead.verify === "ig"
-? ` Watch for a follow request from ${esc(CONFIG.igAccount)}.`
+? " We\u2019ll check your Instagram by hand."
 : " We\u2019ll check your photo by hand.";
 pollBox.innerHTML = `<div class="poll-card poll-done">
 <div class="poll-bar" aria-hidden="true">${CONFIG.poll.map(() => '<i class="done"></i>').join("")}</div>
