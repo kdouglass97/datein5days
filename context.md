@@ -392,7 +392,7 @@ several live rows sit at `details` or `q6` and are still worth following up. Sta
 id created updated stage src cohort
 name email cities looking
 verify instagram photo photo_check verified_by_us
-age meet price consent age_consent sensitive_consent marketing_consent
+age meet price consent age_consent sensitive_consent marketing_consent consent_version
 adds_most adds_also
 q1_relationship_adds q2_wednesday q3_friendships q4_sharing_life
 q5_cared_for q6_not_done_yet q7_spoke_up_sooner
@@ -406,12 +406,46 @@ q5_cared_for q6_not_done_yet q7_spoke_up_sooner
 - Poll answers are mapped **by the `key` field** each question carries, so reordering
   `CONFIG.poll` no longer corrupts the columns. If you add a question, add its key to
   `POLL_MAP` in the Apps Script and add the column to `COLUMNS`.
-- `consent` is a legacy alias for `age_consent`, kept so the existing column doesn't break.
-  `sensitive_consent` (explicit consent to use dating/matching preferences, including
-  anything revealing sexual orientation, for matching) and `marketing_consent` (optional,
-  future-updates opt-in) are **new fields the client now sends** (2026-09-18). ⚠️ **The
-  Apps Script must add both to `COLUMNS` or it silently drops them on write.** Until that's
-  done, treat the `leads` sheet as missing this data even though the form collects it.
+
+### ⚠️ Consent fields need an Apps Script change before they persist (2026-09-18)
+
+The client (`index.html`) now sends four consent-related fields on the `details` write,
+none of which the Apps Script currently knows about, so **they are silently dropped on
+write until someone adds them.** This is a manual, one-time edit in the Apps Script
+editor (open the bound script from the Sheet: Extensions → Apps Script) — Claude Code has
+read access to the `leads` Sheet via Drive but no write access to it or to the script, so
+this step has to be done by hand.
+
+| field | meaning |
+|---|---|
+| `consent` | legacy alias for `age_consent`, kept so the existing column keeps working |
+| `age_consent` | "I confirm that I am 18 or older" |
+| `sensitive_consent` | explicit, separate consent to use dating/matching preferences — including anything revealing sexual orientation — for matching. **Required.** |
+| `marketing_consent` | optional opt-in to hear about future experiments/launches |
+| `consent_version` | stamped by the client as `"2026-09-18"` on every new row. **Blank means the row predates this consent flow** — see below. Bump `CONSENT_VERSION` in `index.html` if the checkboxes' wording or scope changes again. |
+
+Add all four (`sensitive_consent`, `marketing_consent`, `consent_version` are new; `consent`
+already exists) to the Apps Script's `COLUMNS` array, in the same style as the existing
+entries, and add matching header cells to the `leads` sheet if the script doesn't write
+headers itself.
+
+### 🔴 Every row in `leads` as of 2026-09-18 predates this consent flow
+
+Checked directly against the live sheet: every real sign-up currently in `leads` (roughly
+9 people, several still mid-flow at `details`, plus a handful of `claude-test`/dev rows and
+the one corrupted row noted below) has `consent` = `TRUE`/`yes` from the **old** bundled
+checkbox only. None of them have given the separated, explicit consent this update
+requires for using their preferences (including anything revealing sexual orientation) to
+actually match them — bundling that into an 18+/contact checkbox doesn't satisfy GDPR
+Art. 9, so these rows cannot be treated as consented for that use. **Do not backfill
+`sensitive_consent = true` for existing rows** — that would fabricate consent that was
+never actually given.
+
+The practical fix, since the cohort is small enough to do by hand: before matching anyone
+who signed up before this ships, send them a short message pointing at `privacy.html` and
+asking them to explicitly reconfirm (or have them redo the RSVP, which will now capture it
+properly). Going forward, `consent_version` makes this a one-glance check in the sheet
+instead of something anyone has to remember.
 
 ### 🔒 Promises made to users, in writing, on the page
 
@@ -461,8 +495,11 @@ fraction of visitors finish.
 - [x] Privacy policy. Live at `privacy.html`, linked from the footer and from a line under
   the RSVP consent checkboxes. Contains the Article 13 disclosures (controller, purposes,
   legal bases, recipients, transfers, retention, rights, withdrawal, complaints).
-- [ ] Apps Script needs `age_consent`, `sensitive_consent`, `marketing_consent` added to
-  `COLUMNS` (see §8) — the client sends them now but they're silently dropped until then.
+- [ ] Apps Script needs `sensitive_consent`, `marketing_consent`, `consent_version` added
+  to `COLUMNS` (see §8) — the client sends them now but they're silently dropped until
+  then. Claude Code cannot do this step: no write access to the Sheet or the bound script.
+- [ ] Reconfirm consent from everyone currently in `leads` before matching them — none of
+  the existing rows have the new, separated `sensitive_consent` (see §8).
 - [ ] Move the Apps Script off the NYU Google account
 - [ ] Kai has no founder photo, renders as the initial "K"
 - [ ] Delete only the rows whose `src` is `claude-test`, and the one corrupted row (id repeated across every column). **Everything else in `leads` is a real sign-up.**

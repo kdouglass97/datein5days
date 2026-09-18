@@ -798,6 +798,9 @@ founders: [
 { name: "Ruby", initials: "R", photo: "ruby", bio: [["from", "Vancouver"], ["then", "law"], ["here for", "the people, and the fine print"]] },
 ],
 };
+// Bump this if the consent checkboxes' wording or scope ever changes, so old
+// and new rows in the sheet stay distinguishable. See context.md §8.
+const CONSENT_VERSION = "2026-09-18";
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const src = new URLSearchParams(location.search).get("src") || "direct";
@@ -1083,6 +1086,9 @@ Object.assign(lead, {
 age: fd.get("age"), meet: fd.get("meet"), price: fd.get("price"),
 consent: ageConsent, age_consent: ageConsent,
 sensitive_consent: sensitiveConsent, marketing_consent: marketingConsent,
+// Stamps every row so old sign-ups (no value here) are never mistaken for
+// having given the separated Art.9 consent this flow introduced.
+consent_version: CONSENT_VERSION,
 });
 sendLead("details");
 track("details_sent", { price: fd.get("price"), sensitive_consent: sensitiveConsent, marketing_consent: marketingConsent });
