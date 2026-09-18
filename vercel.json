@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/", "destination": "/c/01", "permanent": false },
+    { "source": "/c", "destination": "/c/01", "permanent": false },
+    { "source": "/rsvp", "destination": "/c/01?go=rsvp", "permanent": false },
+    { "source": "/qr", "destination": "/c/01?src=qr", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/c/01", "destination": "/index.html" }
+  ]
+}
