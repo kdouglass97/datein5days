@@ -16,20 +16,21 @@
 !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
 (function () {
 var team = new URLSearchParams(location.search).get("team");
-var teamOn = team !== null && team !== "off";
+// Opted out by default for every visitor: no cookie consent banner exists yet,
+// so analytics/session recording must not fire without one. ?team=off is a
+// manual, internal-only override for verifying instrumentation still works.
 posthog.init("phc_UJEvm9h2CdOAHXQgTQo7im6BFpJuCvDynVD1X20kUbM", {
 api_host: "https://us.i.posthog.com",
 defaults: "2026-05-30",
 person_profiles: "identified_only",
 enable_recording_console_log: false,
-opt_out_capturing_by_default: teamOn,
+opt_out_capturing_by_default: true,
 session_recording: {
 maskAllInputs: true,
 maskTextSelector: "[data-ph-mask]",
 blockSelector: "[data-ph-block]"
 }
 });
-if (teamOn) posthog.opt_out_capturing();
 if (team === "off") posthog.opt_in_capturing();
 })();
 </script>
@@ -705,9 +706,12 @@ section{padding:56px 16px}
 <label class="chip"><input type="radio" name="price" value="100+"><span>$100+</span></label>
 </div>
 </fieldset>
-<label class="check"><input type="checkbox" name="consent" required data-msg="Confirm you're 18+ to continue."><span>I'm 18 or older, and you can reach out about this experiment.</span></label>
+<label class="check"><input type="checkbox" name="age_consent" required data-msg="Confirm you're 18 or older to continue."><span>I confirm that I am 18 or older.</span></label>
+<label class="check"><input type="checkbox" name="sensitive_consent" required data-msg="This consent is required so we can match you — see the privacy notice."><span>I explicitly consent to Five Days using my dating and matching preferences, including information that may reveal my sexual orientation, to find and arrange potential matches. I can withdraw this consent at any time.</span></label>
+<label class="check"><input type="checkbox" name="marketing_consent"><span>I’d like to hear about future Five Days experiments, launches and updates.</span></label>
 <p class="err" role="alert" data-err></p>
 <button class="btn" type="submit">on to the fun part</button>
+<p class="hint">By joining Five Days, you acknowledge our <a href="/privacy.html">Privacy Notice</a>.</p>
 </form>
 <div class="step" data-step="3" hidden>
 <h2>you're in</h2>
@@ -762,7 +766,7 @@ section{padding:56px 16px}
 </svg>
 <a class="brand" href="#" data-brand>five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
-<p><a href="#">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
+<p><a href="/privacy.html">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
 </footer>
 <div class="dock" inert>
 <p><b class="lc" data-launch>Sep 21</b><br>first cohort launches</p>
@@ -1072,9 +1076,16 @@ f2.addEventListener("submit", e => {
 e.preventDefault();
 if (!check(f2)) return;
 const fd = new FormData(f2);
-Object.assign(lead, { age: fd.get("age"), meet: fd.get("meet"), price: fd.get("price"), consent: true });
+const ageConsent = fd.get("age_consent") === "on";
+const sensitiveConsent = fd.get("sensitive_consent") === "on";
+const marketingConsent = fd.get("marketing_consent") === "on";
+Object.assign(lead, {
+age: fd.get("age"), meet: fd.get("meet"), price: fd.get("price"),
+consent: ageConsent, age_consent: ageConsent,
+sensitive_consent: sensitiveConsent, marketing_consent: marketingConsent,
+});
 sendLead("details");
-track("details_sent", { price: fd.get("price") });
+track("details_sent", { price: fd.get("price"), sensitive_consent: sensitiveConsent, marketing_consent: marketingConsent });
 swap(f2, s3);
 renderPoll(0);
 });

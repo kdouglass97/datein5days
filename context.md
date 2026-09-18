@@ -392,7 +392,7 @@ several live rows sit at `details` or `q6` and are still worth following up. Sta
 id created updated stage src cohort
 name email cities looking
 verify instagram photo photo_check verified_by_us
-age meet price consent
+age meet price consent age_consent sensitive_consent marketing_consent
 adds_most adds_also
 q1_relationship_adds q2_wednesday q3_friendships q4_sharing_life
 q5_cared_for q6_not_done_yet q7_spoke_up_sooner
@@ -406,6 +406,12 @@ q5_cared_for q6_not_done_yet q7_spoke_up_sooner
 - Poll answers are mapped **by the `key` field** each question carries, so reordering
   `CONFIG.poll` no longer corrupts the columns. If you add a question, add its key to
   `POLL_MAP` in the Apps Script and add the column to `COLUMNS`.
+- `consent` is a legacy alias for `age_consent`, kept so the existing column doesn't break.
+  `sensitive_consent` (explicit consent to use dating/matching preferences, including
+  anything revealing sexual orientation, for matching) and `marketing_consent` (optional,
+  future-updates opt-in) are **new fields the client now sends** (2026-09-18). ⚠️ **The
+  Apps Script must add both to `COLUMNS` or it silently drops them on write.** Until that's
+  done, treat the `leads` sheet as missing this data even though the form collects it.
 
 ### 🔒 Promises made to users, in writing, on the page
 
@@ -428,9 +434,17 @@ never appear in this repo or in a chat.
 
 `person_profiles: "identified_only"`. Session replay masks all inputs, masks
 `[data-ph-mask]`, blocks `[data-ph-block]` (the photo dropzone), and does not capture
-console logs. `?team` opts a device out permanently, `?team=off` opts back in. `?src=…`
-tags traffic; `src=qr` is the printed code, `src=claude-test` is test traffic and every
-dashboard insight filters it out.
+console logs. `?src=…` tags traffic; `src=qr` is the printed code, `src=claude-test` is
+test traffic and every dashboard insight filters it out.
+
+> ⚠️ **Capturing is opted out by default for every visitor (2026-09-18).** There is no
+> cookie/analytics consent banner on the site, so PostHog (including session recording)
+> must not fire for real users until one exists. `?team=off` is a manual, internal-only
+> override for verifying instrumentation still works — it is not a consent mechanism and
+> must never be linked from anything a real visitor would click. **Do not flip
+> `opt_out_capturing_by_default` back to conditional/false until a real consent flow is
+> built and the Privacy Notice (`privacy.html`) is updated to name PostHog as a processor.**
+> Until then, the dashboard will show little to no traffic — that's expected, not broken.
 
 Events: `rsvp_sent`, `question_answered` (with `q`), `questions_done`, `poll_resume`,
 `verify_mode`. Dashboard **2107266**, "datein5days: cohort 01 launch."
@@ -444,7 +458,11 @@ fraction of visitors finish.
 ## 10. Open items
 
 - [ ] Instagram path collects no contact channel (see §3). Unresolved, and blocking.
-- [ ] Privacy policy. Footer link is still `href="#"`. Matters more than usual: face photos.
+- [x] Privacy policy. Live at `privacy.html`, linked from the footer and from a line under
+  the RSVP consent checkboxes. Contains the Article 13 disclosures (controller, purposes,
+  legal bases, recipients, transfers, retention, rights, withdrawal, complaints).
+- [ ] Apps Script needs `age_consent`, `sensitive_consent`, `marketing_consent` added to
+  `COLUMNS` (see §8) — the client sends them now but they're silently dropped until then.
 - [ ] Move the Apps Script off the NYU Google account
 - [ ] Kai has no founder photo, renders as the initial "K"
 - [ ] Delete only the rows whose `src` is `claude-test`, and the one corrupted row (id repeated across every column). **Everything else in `leads` is a real sign-up.**
