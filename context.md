@@ -278,7 +278,7 @@ a printed QR code, standing up. Nothing should require two hands or a wide viewp
 ```
 QR / link  →  /  →  307  →  /c/01
                               │
-            step 1: RSVP      name · Instagram (or photo fallback) · cities · what you're looking for
+            step 1: RSVP      name · Instagram (or photo fallback) · cities · what you're looking for (ranked)
             step 2: details   age range · who you'd like to meet · price perception · 18+ consent
             step 3: questions  seven, one per screen, saved after each
                               │
@@ -400,6 +400,10 @@ q5_cared_for q6_not_done_yet q7_spoke_up_sooner
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.
+- `looking` is a **drag-to-rank list**, not a checkbox pick. All four options (a date,
+  something serious, new friends, finding my people) are always present; the person orders
+  them most-to-least wanted. It's stored as one comma-joined string, most wanted first, so
+  reordering never changes the sheet shape, only the order within the cell.
 - `photo` is a **Drive link**, never image data. Sheet cells cap at 50,000 characters and a
   base64 photo runs about 200,000. Photos live in the Drive folder
   `datein5days / verification photos`.
