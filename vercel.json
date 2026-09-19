@@ -7,6 +7,7 @@
     { "source": "/qr", "destination": "/c/01?src=qr", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/c/01", "destination": "/index.html" }
+    { "source": "/c/01", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/privacy.html" }
   ]
 }

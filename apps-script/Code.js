@@ -23,6 +23,13 @@ const COLUMNS = [
   "adds_most", "adds_also",
   "q1_relationship_adds", "q2_wednesday", "q3_friendships", "q4_sharing_life",
   "q5_cared_for", "q6_not_done_yet", "q7_spoke_up_sooner",
+  // Added 2026-09-19 for the split consent checkboxes (18+, sensitive-data, marketing).
+  // Appended at the end on purpose: getSheet_() only rewrites the header row when COLUMNS
+  // changes, not the data beneath it, so inserting these anywhere but the end would
+  // misalign every existing row's data under the wrong headers.
+  // Rows from before this date have only `consent` filled in; that's expected, not a bug -
+  // they never had the chance to grant these, so leave them blank rather than backfilling.
+  "sensitive_consent", "marketing_consent",
 ];
 
 /** question key (sent by the page) -> column name. Add a row here when you add a question. */
@@ -116,6 +123,8 @@ function buildRow_(d) {
   if (d.meet) out.meet = d.meet;
   if (d.price !== undefined && d.price !== "") out.price = String(d.price);
   if (d.consent !== undefined && d.consent !== "") out.consent = d.consent ? "yes" : "";
+  if (d.sensitive_consent !== undefined && d.sensitive_consent !== "") out.sensitive_consent = d.sensitive_consent ? "yes" : "";
+  if (d.marketing_consent !== undefined && d.marketing_consent !== "") out.marketing_consent = d.marketing_consent ? "yes" : "no";
 
   if (d.adds_most) out.adds_most = d.adds_most;
   if (d.adds_also) out.adds_also = d.adds_also;
