@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01 launches **Sep 21, 2026** · Last updated 2026-09-18
+Cohort 01 launches **Sep 21, 2026** · Last updated 2026-09-19
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -474,7 +474,7 @@ fraction of visitors finish.
       the RSVP consent step. Controller, purposes, legal bases, recipients/processors,
       transfers, retention, rights, withdrawal and complaint rights are all in it.
 - [ ] Move the Apps Script off the NYU Google account
-- [ ] Kai has no founder photo, renders as the initial "K"
+- [x] Kai founder photo added (`kai.jpg`, same 360x480 treatment as `ruby.jpg`)
 - [ ] Delete only the rows whose `src` is `claude-test`, and the one corrupted row (id repeated across every column). **Everything else in `leads` is a real sign-up.**
 - [ ] Delete the `Sheet1` tab (empty decoy) and the test photo from Drive
 - [ ] Share Sheet and Drive folder with Ruby; invite Ruby to PostHog
