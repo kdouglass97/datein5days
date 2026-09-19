@@ -190,12 +190,9 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .rank-item.dragging{position:relative;z-index:5;box-shadow:0 12px 24px -10px rgba(0,0,0,.5);border-color:var(--tag)}
 .rank-num{flex:none;width:18px;font:700 15px var(--type);color:var(--tag);text-align:center}
 .rank-label{flex:1;font-size:15px;line-height:1.3;padding:9px 0}
-.rank-arrows{display:flex;flex-direction:column;gap:2px;flex:none}
-.rank-arrow{width:26px;height:19px;border:1px solid var(--ink);background:none;padding:0;font-size:9px;line-height:1;color:var(--ink);cursor:pointer;display:grid;place-items:center}
-.rank-arrow:disabled{opacity:.25;cursor:not-allowed}
-.rank-arrow:focus-visible{outline:3px solid #F2C94C;outline-offset:2px}
-.rank-handle{flex:none;width:40px;height:40px;display:grid;place-items:center;color:var(--ink);opacity:.55;cursor:grab;touch-action:none}
+.rank-handle{flex:none;width:44px;height:44px;display:grid;place-items:center;background:none;border:0;padding:0;color:var(--ink);opacity:.55;cursor:grab;touch-action:none}
 .rank-handle circle{fill:currentColor}
+.rank-handle:focus-visible{outline:3px solid #F2C94C;outline-offset:2px;opacity:1;border-radius:2px}
 .rank-item.dragging .rank-handle{cursor:grabbing;opacity:.95}
 @media (hover:hover){.rank-item:hover .rank-handle{opacity:.85}}
 .rank-status{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
@@ -691,43 +688,27 @@ section{padding:56px 16px}
 <legend>what you're looking for <small>drag to rank, most wanted first</small></legend>
 <ol class="rank-list" data-looking-list>
 <li class="rank-item" data-v="date">
-<span class="rank-handle" aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></span>
+<button type="button" class="rank-handle" aria-label="a date. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
 <span class="rank-num" aria-hidden="true">1</span>
 <span class="rank-label">a date</span>
-<span class="rank-arrows">
-<button type="button" class="rank-arrow" data-dir="up" aria-label="Move “a date” up">&#9650;</button>
-<button type="button" class="rank-arrow" data-dir="down" aria-label="Move “a date” down">&#9660;</button>
-</span>
 <input type="hidden" name="looking" value="date">
 </li>
 <li class="rank-item" data-v="relationship">
-<span class="rank-handle" aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></span>
+<button type="button" class="rank-handle" aria-label="something serious. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
 <span class="rank-num" aria-hidden="true">2</span>
 <span class="rank-label">something serious</span>
-<span class="rank-arrows">
-<button type="button" class="rank-arrow" data-dir="up" aria-label="Move “something serious” up">&#9650;</button>
-<button type="button" class="rank-arrow" data-dir="down" aria-label="Move “something serious” down">&#9660;</button>
-</span>
 <input type="hidden" name="looking" value="relationship">
 </li>
 <li class="rank-item" data-v="friends">
-<span class="rank-handle" aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></span>
+<button type="button" class="rank-handle" aria-label="new friends. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
 <span class="rank-num" aria-hidden="true">3</span>
 <span class="rank-label">new friends</span>
-<span class="rank-arrows">
-<button type="button" class="rank-arrow" data-dir="up" aria-label="Move “new friends” up">&#9650;</button>
-<button type="button" class="rank-arrow" data-dir="down" aria-label="Move “new friends” down">&#9660;</button>
-</span>
 <input type="hidden" name="looking" value="friends">
 </li>
 <li class="rank-item" data-v="community">
-<span class="rank-handle" aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></span>
+<button type="button" class="rank-handle" aria-label="finding my people. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
 <span class="rank-num" aria-hidden="true">4</span>
 <span class="rank-label">finding my people</span>
-<span class="rank-arrows">
-<button type="button" class="rank-arrow" data-dir="up" aria-label="Move “finding my people” up">&#9650;</button>
-<button type="button" class="rank-arrow" data-dir="down" aria-label="Move “finding my people” down">&#9660;</button>
-</span>
 <input type="hidden" name="looking" value="community">
 </li>
 </ol>
@@ -1062,30 +1043,26 @@ function initRankList(list) {
 const status = $("[data-looking-status]", list.closest(".group"));
 const items = () => $$(".rank-item", list);
 function renumber() {
-const all = items();
-all.forEach((li, i) => {
-$(".rank-num", li).textContent = i + 1;
-$('[data-dir="up"]', li).disabled = i === 0;
-$('[data-dir="down"]', li).disabled = i === all.length - 1;
-});
+items().forEach((li, i) => { $(".rank-num", li).textContent = i + 1; });
 }
 function announce(li) {
 const all = items();
 status.textContent = `${$(".rank-label", li).textContent} moved to rank ${all.indexOf(li) + 1} of ${all.length}.`;
 }
-list.addEventListener("click", e => {
-const btn = e.target.closest(".rank-arrow");
-if (!btn) return;
-const li = btn.closest(".rank-item");
-const sib = btn.dataset.dir === "up" ? li.previousElementSibling : li.nextElementSibling;
+function moveBy(li, dir) {
+const sib = dir < 0 ? li.previousElementSibling : li.nextElementSibling;
 if (!sib) return;
-if (btn.dataset.dir === "up") list.insertBefore(li, sib); else list.insertBefore(sib, li);
+if (dir < 0) list.insertBefore(li, sib); else list.insertBefore(sib, li);
 renumber();
 announce(li);
-btn.focus();
-});
+}
 let dragEl = null;
 $$(".rank-handle", list).forEach(handle => {
+handle.addEventListener("keydown", e => {
+if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+e.preventDefault();
+moveBy(handle.closest(".rank-item"), e.key === "ArrowUp" ? -1 : 1);
+});
 handle.addEventListener("pointerdown", e => {
 dragEl = handle.closest(".rank-item");
 dragEl.classList.add("dragging");
