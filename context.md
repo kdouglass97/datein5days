@@ -279,7 +279,8 @@ a printed QR code, standing up. Nothing should require two hands or a wide viewp
 QR / link  →  /  →  307  →  /c/01
                               │
             step 1: RSVP      name · Instagram (or photo fallback) · cities · what you're looking for (ranked)
-            step 2: details   age range · who you'd like to meet · price perception · 18+ consent
+            step 2: details   age range · who you'd like to meet · price perception ·
+                              18+ · sensitive-data consent · optional comms opt-in
             step 3: questions  seven, one per screen, saved after each
                               │
                        confirmation
@@ -308,7 +309,7 @@ once the person is invested and has already answered six times.
 | 1 | `relationship_adds` | rank | What do you most want a relationship to add to your life? |
 | 2 | `wednesday` | text | What does a good Wednesday in your life look like? |
 | 3 | `friendships` | text | What do you value most in your closest friendships? |
-| 4 | `sharing_life` | text | In your ideal relationship, how much of your life do you want to share with your partner? |
+| 4 | `sharing_life` | slider | In your ideal relationship, how much of your life do you want to share with your partner? |
 | 5 | `cared_for` | text | Think of a time someone made you feel really cared for. |
 | 6 | `not_done_yet` | text | What's something you really want to do with your life that you haven't done yet? |
 | 7 | `spoke_up_sooner` | text | What's something you wish you'd spoken up about sooner in a close relationship or friendship? |
@@ -327,6 +328,13 @@ Text answers are required, minimum two characters. While empty the button stays 
 and the meta line reads *"a sentence or two."* Answers persist to `localStorage` so a
 closed tab can resume.
 
+**Question 4 is a slider, not text.** A 0-100% drag input (labeled "separate lives" to
+"fully intertwined"), defaulting to 50, plus an optional textarea below it inviting the
+person to say why. The slider always has a valid value, so "next" is never blocked on it.
+The elaboration is folded into the same answer string: `70%` alone, or `70% — <note>` when
+they wrote something. The spreadsheet column (`q4_sharing_life`) sees that same string, so
+no Apps Script changes were needed to support it.
+
 ---
 
 ## 7. Technical
@@ -336,7 +344,8 @@ on push to `main`. Google Apps Script Web App as the form backend, writing to a 
 Sheet. No build step, no framework, nothing external except the PostHog snippet and
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
-**Repo, flat at root:** `index.html`, `ruby.jpg`, `404.html`, `vercel.json`, `context.md`
+**Repo, flat at root:** `index.html`, `privacy.html`, `ruby.jpg`, `404.html`, `vercel.json`,
+`context.md`
 
 ### URL structure, and why
 
@@ -348,6 +357,7 @@ The QR code is printed. Its target can never change.
 /qr        307 →  /c/01?src=qr
 /rsvp      307 →  /c/01?go=rsvp
 /c/01      rewrite → /index.html
+/privacy   rewrite → /privacy.html
 ```
 
 Redirects are **307 (temporary)** on purpose. A 301 is cached by browsers indefinitely and
@@ -396,6 +406,7 @@ age meet price consent
 adds_most adds_also
 q1_relationship_adds q2_wednesday q3_friendships q4_sharing_life
 q5_cared_for q6_not_done_yet q7_spoke_up_sooner
+sensitive_consent marketing_consent
 ```
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
@@ -410,6 +421,14 @@ q5_cared_for q6_not_done_yet q7_spoke_up_sooner
 - Poll answers are mapped **by the `key` field** each question carries, so reordering
   `CONFIG.poll` no longer corrupts the columns. If you add a question, add its key to
   `POLL_MAP` in the Apps Script and add the column to `COLUMNS`.
+- `consent` (18+), `sensitive_consent` (explicit consent to use dating/matching preferences
+  including anything revealing sexual orientation) and `marketing_consent` (optional,
+  opted-in comms) are three **separate** checkboxes as of 2026-09-19, per legal review.
+  `sensitive_consent` and `marketing_consent` were **appended to the end of `COLUMNS`**,
+  not inserted near `consent`, specifically so older rows' existing data doesn't shift
+  under new headers. Rows from before that date have `consent` only, blank
+  `sensitive_consent`/`marketing_consent` — that's correct, not a bug: those people were
+  never asked. Never backfill them. See `/privacy.html` for what each legal basis covers.
 
 ### 🔒 Promises made to users, in writing, on the page
 
@@ -432,9 +451,16 @@ never appear in this repo or in a chat.
 
 `person_profiles: "identified_only"`. Session replay masks all inputs, masks
 `[data-ph-mask]`, blocks `[data-ph-block]` (the photo dropzone), and does not capture
-console logs. `?team` opts a device out permanently, `?team=off` opts back in. `?src=…`
-tags traffic; `src=qr` is the printed code, `src=claude-test` is test traffic and every
-dashboard insight filters it out.
+console logs. `?src=…` tags traffic; `src=qr` is the printed code, `src=claude-test` is
+test traffic and every dashboard insight filters it out.
+
+> ⚠️ **Capture is opted out by default for everyone, as of 2026-09-19, on legal review.**
+> There is no consent flow yet, so PostHog must not fire for a regular visitor. `?team=on`
+> opts a device in for internal QA; `?team=off` opts back out. Do not flip
+> `opt_out_capturing_by_default` back to conditional without a real consent mechanism in
+> place. Meta Pixel / Google Analytics were checked and are **not** loaded anywhere on the
+> page (the dead `window.fbq?.()` call in `track()` was removed); if either is ever added,
+> it must be gated the same way.
 
 Events: `rsvp_sent`, `question_answered` (with `q`), `questions_done`, `poll_resume`,
 `verify_mode`. Dashboard **2107266**, "datein5days: cohort 01 launch."
@@ -448,7 +474,9 @@ fraction of visitors finish.
 ## 10. Open items
 
 - [ ] Instagram path collects no contact channel (see §3). Unresolved, and blocking.
-- [ ] Privacy policy. Footer link is still `href="#"`. Matters more than usual: face photos.
+- [x] Privacy notice. Live at `/privacy` (`privacy.html`), linked from the footer and from
+      the RSVP consent step. Controller, purposes, legal bases, recipients/processors,
+      transfers, retention, rights, withdrawal and complaint rights are all in it.
 - [ ] Move the Apps Script off the NYU Google account
 - [ ] Kai has no founder photo, renders as the initial "K"
 - [ ] Delete only the rows whose `src` is `claude-test`, and the one corrupted row (id repeated across every column). **Everything else in `leads` is a real sign-up.**
