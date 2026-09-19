@@ -187,10 +187,10 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .chip input[type=checkbox]:checked+span::before{content:"\2713\00a0"}
 .chip.off span{opacity:.35;cursor:not-allowed}
 .chip input:focus-visible+span{outline:3px solid #F2C94C;outline-offset:2px}
-.paddles{display:flex;flex-wrap:wrap;gap:14px 12px;justify-content:center;padding-top:4px}
+.paddles{display:flex;flex-direction:column;gap:14px;align-items:center;padding-top:4px}
+.paddle-row{display:flex;gap:12px;justify-content:center}
 .paddle{position:relative;cursor:pointer}
 .paddle input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.paddle:nth-child(1){--tilt:-6deg}.paddle:nth-child(2){--tilt:4deg}.paddle:nth-child(3){--tilt:-3deg}.paddle:nth-child(4){--tilt:5deg}.paddle:nth-child(5){--tilt:-4deg}
 .paddle-face{display:grid;place-items:center;width:66px;height:66px;border-radius:50%;border:1.5px solid var(--ink);font:700 14px/1 var(--type);color:var(--ink);background:var(--paper);transition:transform .18s,box-shadow .18s,border-color .18s,color .18s;transform:rotate(var(--tilt,0deg))}
 @media (hover:hover){.paddle:hover .paddle-face{transform:rotate(0deg) translateY(-3px);box-shadow:0 6px 12px -6px rgba(0,0,0,.35)}}
 .paddle input:checked+.paddle-face{transform:rotate(0deg);border-color:var(--tag);color:var(--tag);box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--tag)}
@@ -393,7 +393,8 @@ section{padding:56px 16px}
 @media (prefers-reduced-motion:no-preference){
 @keyframes pop{50%{transform:scale(1.08)}}
 .chip input:checked+span{animation:pop .22s ease}
-.paddle input:checked+.paddle-face{animation:pop .22s ease}
+@keyframes paddleSelect{0%{transform:rotate(var(--tilt,0deg)) scale(1)}55%{transform:rotate(calc(var(--tilt,0deg) * -1.6)) scale(1.14)}100%{transform:rotate(0deg) scale(1)}}
+.paddle input:checked+.paddle-face{animation:paddleSelect .38s cubic-bezier(.3,1.5,.5,1)}
 @keyframes rise{from{transform:translateY(32%) rotate(-1.2deg)}}
 @keyframes riseText{from{opacity:0;transform:translateY(calc(var(--w)*.22))}}
 @keyframes drop{from{opacity:0;transform:translateY(-46px) rotate(calc(var(--r) * -1.4)) scale(1.1)}}
@@ -752,11 +753,15 @@ section{padding:56px 16px}
 <fieldset class="group">
 <legend>your age</legend>
 <div class="paddles">
-<label class="paddle"><input type="radio" name="age" value="21 to 24" required data-msg="Choose your age range."><span class="paddle-face">21&ndash;24</span></label>
-<label class="paddle"><input type="radio" name="age" value="25 to 29"><span class="paddle-face">25&ndash;29</span></label>
-<label class="paddle"><input type="radio" name="age" value="30 to 34"><span class="paddle-face">30&ndash;34</span></label>
-<label class="paddle"><input type="radio" name="age" value="35 to 39"><span class="paddle-face">35&ndash;39</span></label>
-<label class="paddle"><input type="radio" name="age" value="40+"><span class="paddle-face">40+</span></label>
+<div class="paddle-row">
+<label class="paddle" style="--tilt:-6deg"><input type="radio" name="age" value="21 to 24" required data-msg="Choose your age range."><span class="paddle-face">21&ndash;24</span></label>
+<label class="paddle" style="--tilt:5deg"><input type="radio" name="age" value="25 to 29"><span class="paddle-face">25&ndash;29</span></label>
+<label class="paddle" style="--tilt:-4deg"><input type="radio" name="age" value="30 to 34"><span class="paddle-face">30&ndash;34</span></label>
+</div>
+<div class="paddle-row">
+<label class="paddle" style="--tilt:5deg"><input type="radio" name="age" value="35 to 39"><span class="paddle-face">35&ndash;39</span></label>
+<label class="paddle" style="--tilt:-5deg"><input type="radio" name="age" value="40+"><span class="paddle-face">40+</span></label>
+</div>
 </div>
 </fieldset>
 <label class="field"><span>you'd like to meet</span>
@@ -1124,6 +1129,11 @@ handle.addEventListener("pointercancel", drop);
 });
 }
 initRankList($("[data-looking-list]"));
+$$(".paddle").forEach(label => {
+const el = $("input", label);
+label.addEventListener("pointerdown", () => { el.dataset.wasChecked = el.checked; });
+el.addEventListener("click", () => { if (el.dataset.wasChecked === "true") el.checked = false; });
+});
 const dock = $(".dock");
 let heroVis = true, rsvpVis = false;
 const updDock = () => { const on = !heroVis && !rsvpVis; dock.classList.toggle("on", on); dock.inert = !on; };
