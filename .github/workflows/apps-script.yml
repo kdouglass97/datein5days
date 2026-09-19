@@ -1,17 +1,27 @@
 name: Deploy Apps Script
 
-# Any merge to main that touches apps-script/ pushes the code to Google
-# and moves the live web app (same /exec URL) to the new version.
+# Pushes apps-script/ to Google and moves the live web app (same /exec URL)
+# to the new version. Runs on:
+#   - a direct push to main that touches apps-script/
+#   - after "Auto-ship Claude branches" finishes (its merges use GITHUB_TOKEN,
+#     which can't trigger push workflows directly)
+#   - manually from the Actions tab
+# Skips if apps-script/ hasn't changed since the commit that's live, so
+# versions don't pile up (Apps Script caps a project at 200).
 on:
   push:
     branches: [main]
     paths: ["apps-script/**"]
+  workflow_run:
+    workflows: ["Auto-ship Claude branches"]
+    types: [completed]
   workflow_dispatch:
 
 concurrency: apps-script-deploy
 
 jobs:
   deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -21,15 +31,32 @@ jobs:
       DEPLOYMENT_ID: AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - run: npm install -g @google/clasp@3
       - name: Load clasp credentials
         env:
           CLASPRC: ${{ secrets.CLASPRC_JSON }}
         run: printf '%s' "$CLASPRC" > ~/.clasprc.json
+      - name: Skip if nothing changed since the live version
+        id: check
+        run: |
+          LIVE_SHA=$(clasp list-deployments | grep "$DEPLOYMENT_ID" | grep -oE 'gh [0-9a-f]{7}' | cut -d' ' -f2 || true)
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ -n "$LIVE_SHA" ] \
+             && git cat-file -e "$LIVE_SHA" 2>/dev/null \
+             && git diff --quiet "$LIVE_SHA" HEAD -- . ; then
+            echo "apps-script/ unchanged since live commit $LIVE_SHA, skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Push code to Apps Script
+        if: steps.check.outputs.skip != 'true'
         run: clasp push --force
       - name: Update live web app
-        run: clasp update-deployment "$DEPLOYMENT_ID" --description "gh ${GITHUB_SHA::7}"
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          SHA=$(git rev-parse --short=7 HEAD)
+          clasp update-deployment "$DEPLOYMENT_ID" --description "gh $SHA"
