@@ -393,6 +393,12 @@ hunting through markup.
 **Sheet** `1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw`, tab **`leads`**. Not `Sheet1`,
 which is an empty decoy that has cost us time twice.
 
+**QA rows never land in `leads`.** Any sign-up whose first name starts with `test`
+(case-insensitive: `test`, `testing test`, `Test User`) is routed to a separate **`test`**
+tab, created automatically on first use, with the same header row as `leads`. An id sticks
+to whichever tab it first landed on for every later stage update, so one person's answers
+never split across both sheets. See `targetSheetName_()` in `apps-script/Code.js`.
+
 Rows are keyed by a client-generated `id` and **upserted at every stage**, so someone who
 abandons at question four still leaves a usable partial row. This is already paying off:
 several live rows sit at `details` or `q6` and are still worth following up. Stages run
