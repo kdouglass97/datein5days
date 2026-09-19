@@ -309,7 +309,7 @@ once the person is invested and has already answered six times.
 | 1 | `relationship_adds` | rank | What do you most want a relationship to add to your life? |
 | 2 | `wednesday` | text | What does a good Wednesday in your life look like? |
 | 3 | `friendships` | text | What do you value most in your closest friendships? |
-| 4 | `sharing_life` | text | In your ideal relationship, how much of your life do you want to share with your partner? |
+| 4 | `sharing_life` | slider | In your ideal relationship, how much of your life do you want to share with your partner? |
 | 5 | `cared_for` | text | Think of a time someone made you feel really cared for. |
 | 6 | `not_done_yet` | text | What's something you really want to do with your life that you haven't done yet? |
 | 7 | `spoke_up_sooner` | text | What's something you wish you'd spoken up about sooner in a close relationship or friendship? |
@@ -327,6 +327,13 @@ it, which is the thing the checkbox apps cannot see.
 Text answers are required, minimum two characters. While empty the button stays disabled
 and the meta line reads *"a sentence or two."* Answers persist to `localStorage` so a
 closed tab can resume.
+
+**Question 4 is a slider, not text.** A 0-100% drag input (labeled "separate lives" to
+"fully intertwined"), defaulting to 50, plus an optional textarea below it inviting the
+person to say why. The slider always has a valid value, so "next" is never blocked on it.
+The elaboration is folded into the same answer string: `70%` alone, or `70% — <note>` when
+they wrote something. The spreadsheet column (`q4_sharing_life`) sees that same string, so
+no Apps Script changes were needed to support it.
 
 ---
 

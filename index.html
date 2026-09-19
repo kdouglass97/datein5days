@@ -220,6 +220,18 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll-bar i.done{background:var(--tag)}
 .poll-q{font:italic 400 clamp(28px,5vw,36px)/1.08 var(--serif);letter-spacing:-.02em;margin:0 0 20px}
 .poll textarea{display:block;width:100%;min-height:132px;font:17px/1.55 var(--type);color:var(--ink);background:rgba(255,255,255,.5);border:1.5px solid var(--ink);padding:12px 14px;resize:none;overflow:hidden;margin:0}
+.poll textarea::placeholder{color:rgba(70,85,58,.5)}
+.poll textarea.note{min-height:84px;margin-top:4px}
+.slider-wrap{margin:6px 0 18px}
+.slider-value{font-family:var(--serif);font-size:clamp(44px,11vw,60px);font-weight:500;text-align:center;color:var(--tag);letter-spacing:-.02em;margin-bottom:2px}
+.slider-wrap input[type=range]{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,var(--tag) 0 var(--pct,50%),var(--rule) var(--pct,50%) 100%);margin:16px 0 10px;cursor:pointer}
+.slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--paper);border:2.5px solid var(--tag);box-shadow:0 3px 6px -2px rgba(0,0,0,.4);cursor:grab;margin-top:-11px}
+.slider-wrap input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1.08)}
+.slider-wrap input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:var(--paper);border:2.5px solid var(--tag);box-shadow:0 3px 6px -2px rgba(0,0,0,.4);cursor:grab}
+.slider-wrap input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(--rule)}
+.slider-wrap input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--tag)}
+.slider-wrap input[type=range]:focus-visible{outline:3px solid #F2C94C;outline-offset:6px}
+.slider-labels{display:flex;justify-content:space-between;font-size:12px;opacity:.65}
 .poll-sub{margin:-10px 0 16px;font-size:15px;opacity:.8}
 .poll-q.long{font-size:clamp(24px,4.4vw,30px);line-height:1.12}
 .poll-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0 18px;font-size:12.5px;opacity:.7;min-height:18px}
@@ -788,7 +800,7 @@ poll: [
 options: ["Teammate", "Emotional support", "Companionship", "Adventure/activity", "Affection/closeness", "Growth", "Family/home", "Fun/playfulness", "Independence + partnership"] },
 { key: "wednesday", type: "text", q: "What does a good Wednesday in your life look like?" },
 { key: "friendships", type: "text", q: "What do you value most in your closest friendships?", sub: "What makes those relationships work?" },
-{ key: "sharing_life", type: "text", q: "In your ideal relationship, how much of your life do you want to share with your partner?", sub: "What does that look like day-to-day?" },
+{ key: "sharing_life", type: "slider", q: "In your ideal relationship, how much of your life do you want to share with your partner?", sub: "Drag to answer, then tell us why if you want.", lowLabel: "separate lives", highLabel: "fully intertwined", notePlaceholder: "care to say why? (totally optional)" },
 { key: "cared_for", type: "text", q: "Think of a time someone made you feel really cared for.", sub: "What did they do?" },
 { key: "not_done_yet", type: "text", q: "What\u2019s something you really want to do with your life that you haven\u2019t done yet?", sub: "What\u2019s stopping you?" },
 { key: "spoke_up_sooner", type: "text", q: "What\u2019s something you wish you\u2019d spoken up about sooner in a close relationship or friendship?" },
@@ -1094,8 +1106,9 @@ const DRAFT_KEY = `d5d_draft_${CONFIG.cohort}`;
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const answerText = (item, a) => {
 if (a == null) return "";
-if (item.type !== "rank") return a;
-return a.also.length ? `${a.top} (most), ${a.also.join(", ")}` : a.top;
+if (item.type === "rank") return a.also.length ? `${a.top} (most), ${a.also.join(", ")}` : a.top;
+if (item.type === "slider") return a.note ? `${a.value}% — ${a.note}` : `${a.value}%`;
+return a;
 };
 function syncPoll(stage) {
 lead.poll = CONFIG.poll.map((p, k) => ({ key: p.key, q: p.q, a: answerText(p, answers[k]) }));
@@ -1125,6 +1138,14 @@ body = `<div class="chips" data-rank>${item.options.map(o =>
 `<button type="button" class="chip btnchip" aria-pressed="false" data-v="${esc(o)}"><span>${esc(o)}</span></button>`).join("")}</div>
 <div class="rank-top" data-top hidden><p>which matters most?</p><div class="chips" data-top-opts></div></div>
 <div class="poll-meta"><span data-rank-note>pick 1 or 2</span></div>`;
+} else if (item.type === "slider") {
+body = `<div class="slider-wrap">
+<div class="slider-value" data-slider-value>50%</div>
+<input type="range" min="0" max="100" step="1" value="50" data-slider-input aria-label="${esc(item.q)}">
+<div class="slider-labels"><span>${esc(item.lowLabel || "not much")}</span><span>${esc(item.highLabel || "everything")}</span></div>
+</div>
+<textarea class="note" data-slider-note rows="3" placeholder="${esc(item.notePlaceholder || "care to say why? (optional)")}" aria-label="Optional: tell us why"></textarea>
+<div class="poll-meta"><span data-note>${i === P.length - 1 ? "last one" : ""}</span></div>`;
 } else {
 body = `<textarea data-text rows="4" required aria-required="true" placeholder="A few sentences is perfect." aria-label="${esc(item.q)}"></textarea>
 <div class="poll-meta"><span data-note>${i === P.length - 1 ? "last one" : ""}</span><span data-count></span></div>`;
@@ -1169,6 +1190,24 @@ if (adding && picked.length > 1) top = "";
 draw();
 }));
 draw();
+} else if (item.type === "slider") {
+const prev = answers[i];
+const range = $("[data-slider-input]", pollBox), val = $("[data-slider-value]", pollBox), note = $("[data-slider-note]", pollBox), tnote = $("[data-note]", pollBox);
+const draftNote = (() => { try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}"); return d.typing?.i === i ? d.typing.v : ""; } catch { return ""; } })();
+range.value = prev ? prev.value : 50;
+note.value = prev ? prev.note : draftNote;
+const grow = () => { note.style.height = "auto"; note.style.height = note.scrollHeight + 2 + "px"; };
+const upd = () => {
+range.style.setProperty("--pct", range.value + "%");
+val.textContent = range.value + "%";
+value = { value: Number(range.value), note: note.value.trim() };
+tnote.textContent = i === P.length - 1 ? "last one" : "";
+try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}"); d.typing = { i, v: note.value }; localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch {}
+};
+range.addEventListener("input", upd);
+note.addEventListener("input", () => { grow(); upd(); });
+upd();
+grow();
 } else {
 const t = $("[data-text]", pollBox), count = $("[data-count]", pollBox), tnote = $("[data-note]", pollBox);
 const grow = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; };
