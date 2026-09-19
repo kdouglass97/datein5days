@@ -4,6 +4,9 @@
  *   Execute as:  Me
  *   Who has access:  Anyone
  *
+ * This script is deployed from GitHub via .github/workflows/apps-script.yml.
+ * Edits made directly in the Apps Script editor will be overwritten.
+ *
  * Poll answers are mapped by the `key` each question sends, NOT by position,
  * so reordering CONFIG.poll in index.html can never scramble the columns again.
  */
