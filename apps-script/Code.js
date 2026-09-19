@@ -113,6 +113,8 @@ function buildRow_(d) {
   if (d.name) out.name = d.name;
   if (d.email) out.email = d.email;
   if (d.cities) out.cities = join_(d.cities);
+  // `looking` is a rank-ordered list (most wanted first), not a subset of picks.
+  // join_ preserves the order the page sends it in.
   if (d.looking) out.looking = join_(d.looking);
 
   if (d.verify) out.verify = d.verify;
