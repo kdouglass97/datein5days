@@ -233,6 +233,7 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll textarea{display:block;width:100%;min-height:132px;font:17px/1.55 var(--type);color:var(--ink);background:rgba(255,255,255,.5);border:1.5px solid var(--ink);padding:12px 14px;resize:none;overflow:hidden;margin:0}
 .poll textarea::placeholder{color:rgba(70,85,58,.5)}
 .poll textarea.note{min-height:84px;margin-top:4px}
+.poll textarea.invalid{border-color:#9B2C1C}
 .slider-wrap{margin:6px 0 18px}
 .slider-value{font-family:var(--serif);font-size:clamp(44px,11vw,60px);font-weight:500;text-align:center;color:var(--tag);letter-spacing:-.02em;margin-bottom:2px}
 .slider-wrap input[type=range]{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,var(--tag) 0 var(--pct,50%),var(--rule) var(--pct,50%) 100%);margin:16px 0 10px;cursor:pointer}
@@ -246,6 +247,8 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll-sub{margin:-10px 0 16px;font-size:15px;opacity:.8}
 .poll-q.long{font-size:clamp(24px,4.4vw,30px);line-height:1.12}
 .poll-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0 18px;font-size:12.5px;opacity:.7;min-height:18px}
+.poll-meta.has-error{opacity:1}
+.poll-meta.has-error [data-note]{color:#9B2C1C}
 .poll-foot{display:flex;justify-content:flex-end}
 .poll .chips{margin-bottom:6px}
 .chip.btnchip{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer}
@@ -1239,6 +1242,7 @@ ${body}
 </div>`;
 const next = $("[data-next]", pollBox);
 let value;
+let showInvalid = () => {};
 if (item.type === "rank") {
 const prev = answers[i];
 let picked = prev ? [prev.top, ...prev.also] : [];
@@ -1289,14 +1293,23 @@ upd();
 grow();
 } else {
 const t = $("[data-text]", pollBox), count = $("[data-count]", pollBox), tnote = $("[data-note]", pollBox);
+const metaRow = tnote.closest(".poll-meta");
 const grow = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + 2 + "px"; };
+const clearInvalid = () => { t.classList.remove("invalid"); metaRow.classList.remove("has-error"); };
+showInvalid = () => {
+t.classList.add("invalid");
+metaRow.classList.add("has-error");
+tnote.textContent = "Write a sentence or two before you continue.";
+t.focus({ preventScroll: true });
+};
 const upd = () => {
-value = t.value.trim();
-const words = value ? value.split(/\s+/).length : 0;
+const raw = t.value.trim();
+const words = raw ? raw.split(/\s+/).length : 0;
 count.textContent = words ? `${words} word${words === 1 ? "" : "s"}` : "";
-const short = value.length < 2;
-next.disabled = short;
-tnote.textContent = short ? "a sentence or two" : (i === P.length - 1 ? "last one" : "");
+const short = raw.length < 2;
+value = short ? "" : raw;
+if (!short) { clearInvalid(); tnote.textContent = i === P.length - 1 ? "last one" : ""; }
+else if (!t.classList.contains("invalid")) { tnote.textContent = "a sentence or two"; }
 grow();
 try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}"); d.typing = { i, v: t.value }; localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch {}
 };
@@ -1306,7 +1319,7 @@ upd();
 if (i) setTimeout(() => t.focus({ preventScroll: true }), 50);
 }
 next.addEventListener("click", () => {
-if (!value) return;
+if (!value) { showInvalid(); return; }
 answers[i] = value;
 track("question_answered", { q: i + 1 });
 syncPoll(i === P.length - 1 ? "poll_done" : `q${i + 1}`);
