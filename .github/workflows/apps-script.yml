@@ -1,0 +1,35 @@
+name: Deploy Apps Script
+
+# Any merge to main that touches apps-script/ pushes the code to Google
+# and moves the live web app (same /exec URL) to the new version.
+on:
+  push:
+    branches: [main]
+    paths: ["apps-script/**"]
+  workflow_dispatch:
+
+concurrency: apps-script-deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps-script
+    env:
+      # The live web app deployment the landing page posts to
+      DEPLOYMENT_ID: AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install -g @google/clasp@3
+      - name: Load clasp credentials
+        env:
+          CLASPRC: ${{ secrets.CLASPRC_JSON }}
+        run: printf '%s' "$CLASPRC" > ~/.clasprc.json
+      - name: Push code to Apps Script
+        run: clasp push --force
+      - name: Update live web app
+        run: clasp update-deployment "$DEPLOYMENT_ID" --description "gh ${GITHUB_SHA::7}"
