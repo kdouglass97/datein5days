@@ -306,7 +306,7 @@ once the person is invested and has already answered six times.
 
 | # | key | type | question |
 |---|---|---|---|
-| 1 | `relationship_adds` | rank | What do you most want a relationship to add to your life? |
+| 1 | `relationship_adds` | mostleast | What do you want most from them? |
 | 2 | `wednesday` | text | What does a good Wednesday in your life look like? |
 | 3 | `friendships` | text | What do you value most in your closest friendships? |
 | 4 | `sharing_life` | slider | In your ideal relationship, how much of your life do you want to share with your partner? |
@@ -315,10 +315,20 @@ once the person is invested and has already answered six times.
 | 7 | `spoke_up_sooner` | text | What's something you wish you'd spoken up about sooner in a close relationship or friendship? |
 
 **Question 1 is load-bearing.** It is the thesis from §1 turned into an input. Its two
-outputs, `adds_most` and `adds_also`, are the primary matching signal. Everything else is
-texture that helps a human judge fit. Options, choose up to 2 then pick the one that
-matters most: *Teammate, Emotional support, Companionship, Adventure/activity,
-Affection/closeness, Growth, Family/home, Fun/playfulness, Independence + partnership.*
+outputs, `want_most` and `could_skip`, are the primary matching signal. Everything else is
+texture that helps a human judge fit.
+
+As of 2026-09-20 it's a two-step **best-worst scaling** picker, not a checkbox pick. Five
+scene-line options (the tap target is the scene, e.g. "someone I'm a little obsessed
+with," with a small key label above it): *Chemistry, Ease, Play, Ambition, Building.* Step
+one, pick exactly one as **most**. Step two, the subhead changes to "And what could you
+live without?", the most pick locks in place (tap it again to reset both), and the person
+picks one of the remaining four as **least**. Both picks are required before "next"
+enables. This replaced the old choose-up-to-2-then-pick-the-top-one design (nine options:
+Teammate, Emotional support, Companionship, Adventure/activity, Affection/closeness,
+Growth, Family/home, Fun/playfulness, Independence + partnership), which wrote
+`adds_most`/`adds_also`. Those two columns are frozen, not deleted - old rows keep their
+data, the page just no longer writes to them. See §8.
 
 **Question 2 does hidden work.** "A good Wednesday" extracts life-shape without asking for
 it. Nobody performs on a Wednesday. The answers reveal whether someone's life has room in
@@ -413,6 +423,7 @@ adds_most adds_also
 q1_relationship_adds q2_wednesday q3_friendships q4_sharing_life
 q5_cared_for q6_not_done_yet q7_spoke_up_sooner
 sensitive_consent marketing_consent
+want_most could_skip
 ```
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
@@ -435,6 +446,11 @@ sensitive_consent marketing_consent
   under new headers. Rows from before that date have `consent` only, blank
   `sensitive_consent`/`marketing_consent` — that's correct, not a bug: those people were
   never asked. Never backfill them. See `/privacy.html` for what each legal basis covers.
+- `want_most`/`could_skip` (each an option key: `chemistry`, `ease`, `play`, `ambition`,
+  `building`) are Question 1's real output as of 2026-09-20, also **appended to the end of
+  `COLUMNS`** for the same shift-nothing-under-old-headers reason. `adds_most`/`adds_also`
+  are frozen: the page no longer writes them, but rows from before that date keep theirs.
+  Never backfill `want_most`/`could_skip` onto old rows, same rule as above.
 
 ### 🔒 Promises made to users, in writing, on the page
 

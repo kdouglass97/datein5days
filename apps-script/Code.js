@@ -36,6 +36,12 @@ const COLUMNS = [
   // Rows from before this date have only `consent` filled in; that's expected, not a bug -
   // they never had the chance to grant these, so leave them blank rather than backfilling.
   "sensitive_consent", "marketing_consent",
+  // Added 2026-09-20 when relationship_adds became a two-step most/least picker (5 options)
+  // instead of choose-up-to-2-then-pick-top-one. adds_most/adds_also above are now frozen:
+  // the page no longer sends them, but existing rows keep their data. Appended at the end
+  // for the same reason as sensitive_consent/marketing_consent - inserting mid-row would
+  // misalign every existing row under the wrong headers.
+  "want_most", "could_skip",
 ];
 
 /** question key (sent by the page) -> column name. Add a row here when you add a question. */
@@ -165,8 +171,10 @@ function buildRow_(d) {
   if (d.sensitive_consent !== undefined && d.sensitive_consent !== "") out.sensitive_consent = d.sensitive_consent ? "yes" : "";
   if (d.marketing_consent !== undefined && d.marketing_consent !== "") out.marketing_consent = d.marketing_consent ? "yes" : "no";
 
-  if (d.adds_most) out.adds_most = d.adds_most;
-  if (d.adds_also) out.adds_also = d.adds_also;
+  // adds_most/adds_also are frozen (see COLUMNS comment) - the page stops sending them,
+  // this stays only so a stray older payload can't write into the wrong column.
+  if (d.want_most) out.want_most = d.want_most;
+  if (d.could_skip) out.could_skip = d.could_skip;
 
   // photo: base64 data URL -> Drive file, store the link only
   if (d.photo && String(d.photo).indexOf("data:image/") === 0) {

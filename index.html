@@ -261,13 +261,21 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll-meta.has-error [data-note]{color:#9B2C1C}
 .poll-foot{display:flex;justify-content:flex-end}
 .poll .chips{margin-bottom:6px}
-.chip.btnchip{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer}
-.chip.btnchip[aria-pressed="true"] span{background:var(--tag);color:var(--paper);border-color:var(--tag)}
-.chip.btnchip[aria-pressed="true"] span::before{content:"\2713\00a0"}
-.chip.btnchip:disabled span{opacity:.35;cursor:not-allowed}
-.rank-top{margin:18px 0 6px;padding-top:14px;border-top:1px dashed rgba(70,85,58,.5)}
-.rank-top p{margin:0 0 10px;font-size:14px}
-.rank-top .chip span{border-style:dashed}
+.mostleast{display:flex;flex-direction:column;gap:7px;margin-bottom:2px}
+.ml-opt{position:relative;display:block;width:100%;text-align:left;border:1.5px solid var(--ink);background:rgba(255,255,255,.35);padding:7px 46px 8px 12px;font:inherit;color:inherit;cursor:pointer;transition:transform .12s,background .15s,border-color .15s,opacity .15s,color .15s}
+.ml-opt:active{transform:scale(.98)}
+.ml-opt:focus-visible{outline:3px solid #F2C94C;outline-offset:2px}
+.ml-label{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin-bottom:1px}
+.ml-scene{position:relative;display:block;font-size:14.5px;line-height:1.3}
+.ml-strike{position:absolute;left:-4px;top:-2px;width:calc(100% + 8px);height:calc(100% + 4px);overflow:visible;pointer-events:none;opacity:0}
+.ml-strike path{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
+.ml-tag{position:absolute;top:8px;right:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.ml-opt.is-most{background:var(--tag);color:var(--paper);border-color:var(--tag);animation:pop .22s ease}
+.ml-opt.is-most .ml-label{opacity:.8}
+[data-ml-sub]{margin:12px 0 2px}
+.ml-opt.is-least{opacity:.5}
+.ml-opt.is-least .ml-strike{opacity:1}
+.ml-opt.is-least .ml-strike path{animation:ink .3s cubic-bezier(.5,.1,.3,1) forwards}
 .resume{margin:0 auto 26px;padding:12px 14px;border:1.5px dashed var(--tag);font-size:14px;text-align:left}
 .resume .linkish{padding:0;min-height:0;font-size:14px}
 .poll-back{background:none;border:0;font:13px var(--type);color:var(--ink);text-decoration:underline;cursor:pointer;padding:2px 0}
@@ -436,7 +444,7 @@ section{padding:56px 16px}
 @keyframes cardIn{from{opacity:0;transform:translateX(26px)}}
 .step.enter{animation:stepIn .45s ease-out}
 .poll-card{animation:cardIn .35s ease-out}
-.rank-top:not([hidden]){animation:fadeDown .3s ease-out}
+[data-ml-sub]:not([hidden]){animation:fadeDown .3s ease-out}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}}
 .faq details[open] p{animation:fadeDown .25s ease-out}
 @keyframes tickIn{from{opacity:0;transform:scale(2.4) rotate(-25deg)}}
@@ -864,8 +872,14 @@ cityList: "Tbilisi, NYC, London, HK, Shanghai",
 cohortSize: 50,
 launch: "Sep 21",
 poll: [
-{ key: "relationship_adds", type: "rank", q: "What do you most want a relationship to add to your life?", sub: "Choose up to 2, then pick the one that matters most.", max: 2,
-options: ["Teammate", "Emotional support", "Companionship", "Adventure/activity", "Affection/closeness", "Growth", "Family/home", "Fun/playfulness", "Independence + partnership"] },
+{ key: "relationship_adds", type: "mostleast", q: "What do you want most from them?",
+options: [
+{ key: "chemistry", label: "Chemistry", scene: "someone I’m a little obsessed with" },
+{ key: "ease", label: "Ease", scene: "a soft place to land after a long day" },
+{ key: "play", label: "Play", scene: "a co-conspirator for weekends and bad ideas" },
+{ key: "ambition", label: "Ambition", scene: "someone who raises my bar" },
+{ key: "building", label: "Building", scene: "someone to build a life with" },
+] },
 { key: "wednesday", type: "text", q: "What does a good Wednesday in your life look like?" },
 { key: "friendships", type: "text", q: "What do you value most in your closest friendships?", sub: "What makes those relationships work?" },
 { key: "sharing_life", type: "slider", q: "In your ideal relationship, how much of your life do you want to share with your partner?", sub: "Drag to answer, then tell us why if you want.", lowLabel: "separate lives", highLabel: "fully intertwined", notePlaceholder: "care to say why? (totally optional)" },
@@ -1246,14 +1260,17 @@ const DRAFT_KEY = `d5d_draft_${CONFIG.cohort}`;
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const answerText = (item, a) => {
 if (a == null) return "";
-if (item.type === "rank") return a.also.length ? `${a.top} (most), ${a.also.join(", ")}` : a.top;
+if (item.type === "mostleast") {
+const label = k => item.options.find(o => o.key === k)?.label || k;
+return `${label(a.most)} (most), ${label(a.least)} (least)`;
+}
 if (item.type === "slider") return a.note ? `${a.value}% — ${a.note}` : `${a.value}%`;
 return a;
 };
 function syncPoll(stage) {
 lead.poll = CONFIG.poll.map((p, k) => ({ key: p.key, q: p.q, a: answerText(p, answers[k]) }));
-const rank = CONFIG.poll.findIndex(p => p.type === "rank");
-if (rank > -1 && answers[rank]) { lead.adds_most = answers[rank].top; lead.adds_also = answers[rank].also.join(", "); }
+const ml = CONFIG.poll.findIndex(p => p.type === "mostleast");
+if (ml > -1 && answers[ml]) { lead.want_most = answers[ml].most; lead.could_skip = answers[ml].least; }
 sendLead(stage);
 }
 function saveDraft(i) {
@@ -1273,11 +1290,15 @@ const item = P[i];
 const bar = P.map((_, k) => `<i class="${k < i ? "done" : ""}"></i>`).join("");
 const long = item.q.length > 70 ? " long" : "";
 let body;
-if (item.type === "rank") {
-body = `<div class="chips" data-rank>${item.options.map(o =>
-`<button type="button" class="chip btnchip" aria-pressed="false" data-v="${esc(o)}"><span>${esc(o)}</span></button>`).join("")}</div>
-<div class="rank-top" data-top hidden><p>which matters most?</p><div class="chips" data-top-opts></div></div>
-<div class="poll-meta"><span data-rank-note>pick 1 or 2</span></div>`;
+if (item.type === "mostleast") {
+body = `<div class="mostleast" data-mostleast>${item.options.map(o =>
+`<button type="button" class="ml-opt" aria-pressed="false" data-v="${esc(o.key)}">
+<span class="ml-tag" data-ml-tag hidden></span>
+<span class="ml-label">${esc(o.label)}</span>
+<span class="ml-scene">${esc(o.scene)}<svg class="ml-strike" viewBox="0 0 220 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M3 13C50 6 140 4 216 10"/></svg></span>
+</button>`).join("")}</div>
+<p class="poll-sub" data-ml-sub hidden></p>
+<div class="poll-meta"><span data-ml-note>pick one to start</span></div>`;
 } else if (item.type === "slider") {
 body = `<div class="slider-wrap">
 <div class="slider-value" data-slider-value>50%</div>
@@ -1301,33 +1322,35 @@ ${body}
 const next = $("[data-next]", pollBox);
 let value;
 let showInvalid = () => {};
-if (item.type === "rank") {
+if (item.type === "mostleast") {
 const prev = answers[i];
-let picked = prev ? [prev.top, ...prev.also] : [];
-let top = prev ? prev.top : "";
-const chips = $$("[data-rank] .btnchip", pollBox);
-const topWrap = $("[data-top]", pollBox), topOpts = $("[data-top-opts]", pollBox), note = $("[data-rank-note]", pollBox);
+let most = prev ? prev.most : null, least = prev ? prev.least : null;
+const opts = $$("[data-mostleast] .ml-opt", pollBox);
+const sub = $("[data-ml-sub]", pollBox), note = $("[data-ml-note]", pollBox);
+const byKey = k => item.options.find(o => o.key === k);
 const draw = () => {
-chips.forEach(c => {
-const on = picked.includes(c.dataset.v);
-c.setAttribute("aria-pressed", on);
-c.disabled = !on && picked.length >= item.max;
+opts.forEach(btn => {
+const k = btn.dataset.v, isMost = k === most, isLeast = k === least;
+const tag = $("[data-ml-tag]", btn);
+btn.classList.toggle("is-most", isMost);
+btn.classList.toggle("is-least", isLeast);
+btn.setAttribute("aria-pressed", String(isMost || isLeast));
+tag.hidden = !(isMost || isLeast);
+tag.textContent = isMost ? "most" : isLeast ? "least" : "";
+btn.setAttribute("aria-label", isMost ? `${byKey(k).label}, your most pick. Tap to change.` : `${byKey(k).label}: ${byKey(k).scene}`);
 });
-if (picked.length === 1) top = picked[0];
-if (!picked.includes(top)) top = "";
-topWrap.hidden = picked.length < 2;
-topOpts.innerHTML = picked.length < 2 ? "" : picked.map(o =>
-`<label class="chip"><input type="radio" name="top" value="${esc(o)}"${o === top ? " checked" : ""}><span>${esc(o)}</span></label>`).join("");
-$$("input", topOpts).forEach(r => r.addEventListener("change", () => { top = r.value; draw(); }));
-note.textContent = !picked.length ? `pick 1 or ${item.max}` : picked.length < item.max ? `${picked.length} of ${item.max}` : top ? "" : "now pick the one that matters most";
-value = top ? { top, also: picked.filter(o => o !== top) } : null;
+sub.hidden = !most;
+sub.textContent = most ? "And what could you live without?" : "";
+note.textContent = !most ? "pick one to start" : !least ? "pick one you could live without" : "";
+value = most && least ? { most, least } : null;
 next.disabled = !value;
 };
-chips.forEach(c => c.addEventListener("click", () => {
-const v = c.dataset.v;
-const adding = !picked.includes(v);
-picked = adding ? [...picked, v].slice(0, item.max) : picked.filter(o => o !== v);
-if (adding && picked.length > 1) top = "";
+opts.forEach(btn => btn.addEventListener("click", () => {
+const k = btn.dataset.v;
+if (k === most) { most = null; least = null; }
+else if (!most) { most = k; }
+else if (k === least) { least = null; }
+else { least = k; }
 draw();
 }));
 draw();
