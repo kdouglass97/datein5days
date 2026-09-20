@@ -242,7 +242,7 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll-q{font:italic 400 clamp(28px,5vw,36px)/1.08 var(--serif);letter-spacing:-.02em;margin:0 0 20px}
 .poll textarea{display:block;width:100%;min-height:132px;font:17px/1.55 var(--type);color:var(--ink);background:rgba(255,255,255,.5);border:1.5px solid var(--ink);padding:12px 14px;resize:none;overflow:hidden;margin:0}
 .poll textarea::placeholder{color:rgba(70,85,58,.5)}
-.poll textarea.note{min-height:84px;margin-top:4px}
+.poll textarea.slider-note{min-height:84px;margin-top:4px}
 .poll textarea.invalid{border-color:#9B2C1C}
 .slider-wrap{margin:6px 0 18px}
 .slider-value{font-family:var(--serif);font-size:clamp(44px,11vw,60px);font-weight:500;text-align:center;color:var(--tag);letter-spacing:-.02em;margin-bottom:2px}
@@ -1284,7 +1284,7 @@ body = `<div class="slider-wrap">
 <input type="range" min="0" max="100" step="1" value="50" data-slider-input aria-label="${esc(item.q)}">
 <div class="slider-labels"><span>${esc(item.lowLabel || "not much")}</span><span>${esc(item.highLabel || "everything")}</span></div>
 </div>
-<textarea class="note" data-slider-note rows="3" placeholder="${esc(item.notePlaceholder || "care to say why? (optional)")}" aria-label="Optional: tell us why"></textarea>
+<textarea class="slider-note" data-slider-note rows="3" placeholder="${esc(item.notePlaceholder || "care to say why? (optional)")}" aria-label="Optional: tell us why"></textarea>
 <div class="poll-meta"><span data-note>${i === P.length - 1 ? "last one" : ""}</span></div>`;
 } else {
 body = `<textarea data-text rows="4" required aria-required="true" placeholder="A few sentences is perfect." aria-label="${esc(item.q)}"></textarea>
