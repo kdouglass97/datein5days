@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#4F6B45">
-<meta property="og:title" content="five days">
-<meta property="og:description" content="We handle the admin, you go on the date. An experiment in slower, better dating.">
-<title>five days: dating, but planned</title>
-<meta name="description" content="We handle the admin, you go on the date. A small experiment in slower, better dating.">
+<meta property="og:title" content="date in 5 days">
+<meta property="og:description" content="no swiping. we pick someone, book the place, you show up. cohort 01 · by invitation.">
+<title>date in 5 days</title>
+<meta name="description" content="no swiping. we pick someone, book the place, you show up. cohort 01 · by invitation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
@@ -64,8 +64,13 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .env-back{background:var(--kraft-deep);box-shadow:0 30px 50px -30px rgba(0,0,0,.6)}
 .letter{position:absolute;left:6%;right:6%;top:11%;bottom:20%;z-index:2;background:var(--paper);transform:rotate(-1.2deg);box-shadow:0 12px 30px -16px rgba(0,0,0,.4);text-align:center;padding-top:calc(var(--w)*.075)}
 .kicker{margin:0;text-transform:uppercase;letter-spacing:.05em;font-size:max(12px,calc(var(--w)*.034))}
-.env-front{z-index:3;background-color:var(--kraft);clip-path:polygon(0 0,50% 40%,100% 0,100% 100%,0 100%);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 12% 10%;text-transform:uppercase;letter-spacing:.03em;font-size:max(12px,calc(var(--w)*.036));line-height:1.3}
+.env-front{z-index:3;background-color:var(--kraft);clip-path:polygon(0 0,50% 40%,100% 0,100% 100%,0 100%);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 10% 7%;text-transform:uppercase;letter-spacing:.03em;font-size:max(11px,calc(var(--w)*.032));line-height:1.3}
 .env-front p{margin:0 0 1em}
+.invite-form{align-self:flex-start;width:74%;margin:0 0 .35em 26%;text-align:left;display:grid;gap:.2em 0;line-height:1.1}
+.invite-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 .5em}
+.invite-row dt{margin:0;flex:none;min-width:3.6em}
+.invite-row dd{margin:0;text-transform:none;letter-spacing:0;font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.1em;line-height:1.1}
+.invite-tag{margin:0;text-transform:none;letter-spacing:.01em;opacity:.85;line-height:1.2}
 .hero h1{position:absolute;inset:21% 0 auto;z-index:6;font-weight:500;text-align:center;text-transform:uppercase;font-size:calc(var(--w)*.18);line-height:.92;letter-spacing:-.05em}
 .hero h1 span{display:block}
 .pol{position:absolute;z-index:5;margin:0;background:#F4F3EF;padding:5% 5% 17%;box-shadow:0 14px 26px -12px rgba(0,0,0,.55);transform:rotate(var(--r,0deg));transition:transform .35s cubic-bezier(.2,.8,.2,1.25),box-shadow .35s}
@@ -89,6 +94,8 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--tag)}
 .spots{color:var(--line);font-size:15px;margin:18px 0 0}
 .spots b{font-family:var(--serif);font-size:24px;font-weight:500;margin-left:4px}
+.spots-sub{color:var(--line);font-size:12px;opacity:.75;margin:6px 0 0}
+.cities-line{color:var(--line);font-size:13px;letter-spacing:.04em;margin:0 0 16px;opacity:.85}
 .lc{text-transform:lowercase}
 .scroll-cue{display:none}
 @media (max-width:640px){
@@ -348,7 +355,8 @@ transform:translateY(110%);transition:transform .25s ease}
 .dock.on{transform:none}
 .dock p{margin:0;font-size:13px;line-height:1.3}
 .dock p b{font:500 20px/1 var(--serif)}
-.dock .btn{padding:13px 22px;box-shadow:3px 3px 0 var(--tag)}
+.dock .btn{padding:13px 18px;font-size:14px;white-space:nowrap;box-shadow:3px 3px 0 var(--tag)}
+.dock p{white-space:nowrap}
 @media (max-width:960px){
 .week-wrap{max-width:620px}
 .week{padding:18px 16px 22px}
@@ -366,9 +374,13 @@ transform:translateY(110%);transition:transform .25s ease}
 @media (max-width:820px){
 .dock{display:flex}
 footer{padding-bottom:120px}
-.p1{left:-8%}
-.p2{right:-8%}
-.p3{left:-8%}
+.p1{left:0%;top:-8%;width:22%}
+.p2{right:-10%;width:26%}
+.p3{left:0%;width:20%}
+.hero h1{inset:27% 0 auto}
+.kicker{font-size:11px;letter-spacing:.03em}
+.kbreak{display:block;margin-top:.2em}
+.invite-form{width:58%}
 }
 @media (max-width:640px){
 body{font-size:16px}
@@ -499,6 +511,11 @@ section{padding:56px 16px}
 @keyframes sweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.js .draw.in .watch .hand{animation:none}}
 @media (max-width:400px){.sevens{gap:9px;padding:9px 12px}.sevens .tally{width:58px}.sevens .watch{width:36px}.sevens-copy b{font-size:14px}.sevens-copy span{font-size:12px}}
+@media (max-width:360px){
+.env-front{padding-bottom:4%;font-size:10px}
+.invite-form{gap:.05em 0;margin-bottom:.15em}
+.invite-tag{line-height:1.05}
+}
 </style>
 </head>
 <body>
@@ -516,24 +533,31 @@ section{padding:56px 16px}
 </defs>
 </svg>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span>experiment no. 01</span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>date in 5 days</a><span>experiment no. 01</span></div>
 <div class="stage">
 <div class="flap" aria-hidden="true"></div>
 <div class="env-back" aria-hidden="true"></div>
-<div class="letter"><p class="kicker">You're invited to a</p></div>
+<div class="letter"><p class="kicker">no swiping. no texting. <span class="kbreak">no planning.</span></p></div>
 <h1><span>Date in</span><span>5 days</span></h1>
 <div class="env-front">
-<p>We handle the admin,<br>you go on the date</p>
-<p>Founding cohort<br>Any City</p>
+<dl class="invite-form">
+<div class="invite-row"><dt>with:</dt><dd>someone we pick for you</dd></div>
+<div class="invite-row"><dt>where:</dt><dd>somewhere we book</dd></div>
+<div class="invite-row"><dt>when:</dt><dd>five days from now</dd></div>
+<div class="invite-row"><dt>you:</dt><dd>just show up</dd></div>
+</dl>
+<p class="invite-tag">we set you up. you show up.</p>
 </div>
-<figure class="pol p1" aria-hidden="true"><div class="ph"></div><figcaption>thu, 8pm</figcaption></figure>
-<figure class="pol p2" aria-hidden="true"><div class="ph"></div><span class="badge">no. 01</span><figcaption>sat, late</figcaption></figure>
-<figure class="pol p3" aria-hidden="true"><div class="ph"></div><figcaption>sun, slow</figcaption></figure>
+<figure class="pol p1" aria-hidden="true"><div class="ph"></div><figcaption>day 1 · tell us your type</figcaption></figure>
+<figure class="pol p2" aria-hidden="true"><div class="ph"></div><span class="badge">no. 01</span><figcaption>day 5 · you meet</figcaption></figure>
+<figure class="pol p3" aria-hidden="true"><div class="ph"></div><figcaption>day 3 · we find someone</figcaption></figure>
 <svg class="clip" viewBox="0 0 30 92" aria-hidden="true"><path d="M20 30v40a8 8 0 0 1-16 0V16a12 12 0 0 1 24 0v50a4 4 0 0 1-8 0V26" fill="none" stroke="#4d4d4d" stroke-width="2.4" stroke-linecap="round"/></svg>
 </div>
 <div class="cta-wrap">
-<a class="btn" href="#rsvp" data-track="cta_hero">rsvp</a>
-<p class="spots">first cohort launches <b class="lc" data-launch>Sep 21</b></p>
+<p class="cities-line">nyc · london · tbilisi · hong kong · shanghai</p>
+<a class="btn" href="#rsvp" data-track="cta_hero">get me a date</a>
+<p class="spots">cohort <b class="lc">01</b> · by invitation</p>
+<p class="spots-sub">first dates go out when your city fills.</p>
 <a class="scroll-cue" href="#problem-h" aria-label="Scroll to keep reading"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </div>
 </header>
@@ -846,17 +870,17 @@ section{padding:56px 16px}
 <path class="ink thin" pathLength="1" d="M36 138C90 135 170 140 226 136"/>
 </g>
 </svg>
-<a class="brand" href="#" data-brand>five days</a>
+<a class="brand" href="#" data-brand>date in 5 days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
 <p><a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
 </footer>
 <div class="dock" inert>
-<p><b class="lc" data-launch>Sep 21</b><br>first cohort launches</p>
-<a class="btn" href="#rsvp" data-track="cta_dock">rsvp</a>
+<p><b class="lc">01</b><br>cohort · by invitation</p>
+<a class="btn" href="#rsvp" data-track="cta_dock">get me a date</a>
 </div>
 <script>
 const CONFIG = {
-brand: "five days",
+brand: "date in 5 days",
 cohort: "01",
 igAccount: "@datein5days",
 cities: ["Tbilisi", "New York", "London", "Hong Kong", "Shanghai"],
