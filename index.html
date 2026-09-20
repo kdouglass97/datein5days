@@ -187,6 +187,15 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .chip input[type=checkbox]:checked+span::before{content:"\2713\00a0"}
 .chip.off span{opacity:.35;cursor:not-allowed}
 .chip input:focus-visible+span{outline:3px solid #F2C94C;outline-offset:2px}
+.paddles{display:flex;flex-direction:column;gap:14px;align-items:center;padding-top:4px}
+.paddle-row{display:flex;gap:12px;justify-content:center}
+.paddle{position:relative;cursor:pointer}
+.paddle input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.paddle-face{display:grid;place-items:center;width:66px;height:66px;border-radius:50%;border:1.5px solid var(--ink);font:700 14px/1 var(--type);color:var(--ink);background:var(--paper);transition:transform .18s,box-shadow .18s,border-color .18s,color .18s;transform:rotate(var(--tilt,0deg))}
+@media (hover:hover){.paddle:hover .paddle-face{transform:rotate(0deg) translateY(-3px);box-shadow:0 6px 12px -6px rgba(0,0,0,.35)}}
+.paddle input:checked+.paddle-face{transform:rotate(0deg);border-color:var(--tag);color:var(--tag);box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--tag)}
+.paddle input:focus-visible+.paddle-face{outline:3px solid #F2C94C;outline-offset:3px}
+@media (max-width:640px){.paddle-face{width:58px;height:58px;font-size:12.5px}}
 .rank-list{list-style:none;margin:0;padding:0}
 .rank-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 10px;background:var(--paper);border:1.5px solid var(--ink);transition:box-shadow .15s,border-color .15s,transform .15s ease}
 .rank-item.dragging{position:relative;z-index:5;box-shadow:0 12px 24px -10px rgba(0,0,0,.5);border-color:var(--tag);transition:box-shadow .15s,border-color .15s}
@@ -368,7 +377,7 @@ section{padding:56px 16px}
 .memo h2{max-width:100%}
 .log div{grid-template-columns:1fr}
 .log dt{padding-top:0}
-.stamp{top:auto;bottom:-34px;right:10px;width:92px;height:92px;font-size:11px}
+.stamp{top:16px;right:10px;width:92px;height:92px;font-size:11px}
 .founders{gap:18px}
 .fcard{width:calc(50% - 12px)}
 .front{padding:9px 9px 54px}
@@ -388,6 +397,8 @@ section{padding:56px 16px}
 @media (prefers-reduced-motion:no-preference){
 @keyframes pop{50%{transform:scale(1.08)}}
 .chip input:checked+span{animation:pop .22s ease}
+@keyframes paddleSelect{0%{transform:rotate(var(--tilt,0deg)) scale(1)}55%{transform:rotate(calc(var(--tilt,0deg) * -1.6)) scale(1.14)}100%{transform:rotate(0deg) scale(1)}}
+.paddle input:checked+.paddle-face{animation:paddleSelect .38s cubic-bezier(.3,1.5,.5,1)}
 @keyframes rise{from{transform:translateY(32%) rotate(-1.2deg)}}
 @keyframes riseText{from{opacity:0;transform:translateY(calc(var(--w)*.22))}}
 @keyframes drop{from{opacity:0;transform:translateY(-46px) rotate(calc(var(--r) * -1.4)) scale(1.1)}}
@@ -750,10 +761,20 @@ section{padding:56px 16px}
 <form class="step" data-step="2" hidden novalidate>
 <h2>rsvp received</h2>
 <p class="sub">Three more, so we set you up well.</p>
-<label class="field"><span>your age</span>
-<select name="age" required data-msg="Choose your age range.">
-<option value="" disabled selected>choose one</option><option>21 to 24</option><option>25 to 29</option><option>30 to 34</option><option>35 to 39</option><option>40+</option>
-</select></label>
+<fieldset class="group">
+<legend>your age</legend>
+<div class="paddles">
+<div class="paddle-row">
+<label class="paddle" style="--tilt:-6deg"><input type="radio" name="age" value="21 to 24" required data-msg="Choose your age range."><span class="paddle-face">21&ndash;24</span></label>
+<label class="paddle" style="--tilt:5deg"><input type="radio" name="age" value="25 to 29"><span class="paddle-face">25&ndash;29</span></label>
+<label class="paddle" style="--tilt:-4deg"><input type="radio" name="age" value="30 to 34"><span class="paddle-face">30&ndash;34</span></label>
+</div>
+<div class="paddle-row">
+<label class="paddle" style="--tilt:5deg"><input type="radio" name="age" value="35 to 39"><span class="paddle-face">35&ndash;39</span></label>
+<label class="paddle" style="--tilt:-5deg"><input type="radio" name="age" value="40+"><span class="paddle-face">40+</span></label>
+</div>
+</div>
+</fieldset>
 <label class="field"><span>you'd like to meet</span>
 <select name="meet" required data-msg="Tell us who you'd like to meet.">
 <option value="" disabled selected>choose one</option><option>women</option><option>men</option><option>anyone</option>
@@ -1139,6 +1160,11 @@ handle.addEventListener("pointercancel", drop);
 });
 }
 initRankList($("[data-looking-list]"));
+$$(".paddle").forEach(label => {
+const el = $("input", label);
+label.addEventListener("pointerdown", () => { el.dataset.wasChecked = el.checked; });
+el.addEventListener("click", () => { if (el.dataset.wasChecked === "true") el.checked = false; });
+});
 const dock = $(".dock");
 let heroVis = true, rsvpVis = false;
 const updDock = () => { const on = !heroVis && !rsvpVis; dock.classList.toggle("on", on); dock.inert = !on; };
