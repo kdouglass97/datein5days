@@ -9,10 +9,16 @@
  *
  * Poll answers are mapped by the `key` each question sends, NOT by position,
  * so reordering CONFIG.poll in index.html can never scramble the columns again.
+ *
+ * Sign-ups whose first name starts with "test" write to the `test` tab instead of
+ * `leads`, so QA runs never mix into real sign-up data. See targetSheetName_().
  */
 
 const SHEET_ID = "1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw";
 const SHEET = "leads";
+// Anyone whose first name starts with "test" (e.g. "test", "testing test") gets routed
+// here instead of `leads`, so QA runs never mix into real sign-ups.
+const TEST_SHEET = "test";
 const PHOTO_FOLDER = "datein5days / verification photos";
 
 const COLUMNS = [
@@ -63,7 +69,7 @@ function doPost(e) {
     const data = JSON.parse(body);
     if (!data.id) return json_({ ok: false, error: "no id" });
 
-    const sheet = getSheet_();
+    const sheet = getSheet_(targetSheetName_(data));
     const row = buildRow_(data);
     upsert_(sheet, row);
 
@@ -83,10 +89,11 @@ function json_(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function getSheet_() {
+function getSheet_(name) {
+  const sheetName = name || SHEET;
   const ss = SpreadsheetApp.openById(SHEET_ID);
-  let sheet = ss.getSheetByName(SHEET);
-  if (!sheet) sheet = ss.insertSheet(SHEET);
+  let sheet = ss.getSheetByName(sheetName);
+  if (!sheet) sheet = ss.insertSheet(sheetName);
 
   // make sure the header row exists and matches COLUMNS exactly
   const width = COLUMNS.length;
@@ -98,6 +105,36 @@ function getSheet_() {
     sheet.setFrozenRows(1);
   }
   return sheet;
+}
+
+/** true when the submitted first name marks this as test traffic, e.g. "test" or "testing test" */
+function isTestName_(name) {
+  return /^test\b/i.test(String(name || "").trim());
+}
+
+/**
+ * Which tab a row belongs on. An id already seen on one tab stays there for every later
+ * stage update, even if that update doesn't resend `name` - otherwise a partial upsert
+ * could split one person's answers across both sheets.
+ */
+function targetSheetName_(data) {
+  return findExistingSheet_(data.id) || (isTestName_(data.name) ? TEST_SHEET : SHEET);
+}
+
+function findExistingSheet_(id) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const names = [SHEET, TEST_SHEET];
+  for (let n = 0; n < names.length; n++) {
+    const sheet = ss.getSheetByName(names[n]);
+    if (!sheet) continue;
+    const last = sheet.getLastRow();
+    if (last < 2) continue;
+    const ids = sheet.getRange(2, 1, last - 1, 1).getValues();
+    for (let i = 0; i < ids.length; i++) {
+      if (String(ids[i][0]) === String(id)) return names[n];
+    }
+  }
+  return null;
 }
 
 /** flatten whatever the page sent into a { columnName: value } object */
@@ -211,8 +248,9 @@ function savePhoto_(dataUrl, name, id) {
 /* Run this once from the editor after pasting, to create/fix the tab.  */
 
 function setup() {
-  const sheet = getSheet_();
-  Logger.log("Ready. Tab: " + sheet.getName() + ", columns: " + COLUMNS.length);
+  const sheet = getSheet_(SHEET);
+  const test = getSheet_(TEST_SHEET);
+  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + " (columns: " + COLUMNS.length + ")");
 }
 
 /**
