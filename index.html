@@ -249,6 +249,14 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll textarea::placeholder{color:rgba(70,85,58,.5)}
 .poll textarea.slider-note{min-height:84px;margin-top:4px}
 .poll textarea.invalid{border-color:#9B2C1C}
+.ta-wrap{position:relative}
+.ta-wrap.has-mic textarea{padding-right:48px}
+.mic-btn{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--ink);background:rgba(255,255,255,.75);display:grid;place-items:center;padding:0;cursor:pointer;color:var(--ink)}
+.mic-btn svg{width:16px;height:16px}
+.mic-btn[aria-pressed="true"]{background:var(--tag);border-color:var(--tag);color:var(--paper)}
+@media (prefers-reduced-motion:no-preference){.mic-btn[aria-pressed="true"]{animation:mic-pulse 1.4s ease-in-out infinite}}
+@keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(31,77,27,.4)}50%{box-shadow:0 0 0 7px rgba(31,77,27,0)}}
+.mic-btn:disabled{opacity:.35;cursor:not-allowed}
 .slider-wrap{margin:6px 0 18px}
 .slider-value{font-family:var(--serif);font-size:clamp(44px,11vw,60px);font-weight:500;text-align:center;color:var(--tag);letter-spacing:-.02em;margin-bottom:2px}
 .slider-wrap input[type=range]{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,var(--tag) 0 var(--pct,50%),var(--rule) var(--pct,50%) 100%);margin:16px 0 10px;cursor:pointer}
@@ -1252,6 +1260,55 @@ swap(f2, s3);
 renderPoll(0);
 });
 const pollBox = $("[data-poll]");
+let activeMic = null;
+function attachDictation(ta, qIndex) {
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) return;
+const wrap = ta.closest(".ta-wrap");
+wrap.classList.add("has-mic");
+const btn = document.createElement("button");
+btn.type = "button";
+btn.className = "mic-btn";
+btn.setAttribute("aria-pressed", "false");
+btn.setAttribute("aria-label", "Dictate your answer");
+btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>';
+wrap.appendChild(btn);
+const rec = new SR();
+rec.continuous = true;
+rec.interimResults = true;
+rec.lang = navigator.language || "en-US";
+let base = "", listening = false;
+const stop = () => { listening = false; try { rec.stop(); } catch {} btn.setAttribute("aria-pressed", "false"); };
+rec.onresult = (e) => {
+let interim = "";
+for (let k = e.resultIndex; k < e.results.length; k++) {
+const r = e.results[k];
+if (r.isFinal) base += (base && !/\s$/.test(base) ? " " : "") + r[0].transcript.trim();
+else interim += r[0].transcript;
+}
+ta.value = (base + (interim ? (base ? " " : "") + interim : "")).trim();
+ta.dispatchEvent(new Event("input", { bubbles: true }));
+};
+rec.onerror = (e) => {
+stop();
+if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+btn.disabled = true;
+btn.title = "Mic access blocked — check your browser settings.";
+}
+};
+rec.onend = () => { if (listening) { try { rec.start(); } catch { stop(); } } };
+btn.addEventListener("click", () => {
+if (listening) { stop(); activeMic = null; return; }
+activeMic?.();
+base = ta.value.trim();
+listening = true;
+btn.setAttribute("aria-pressed", "true");
+try { rec.start(); } catch { listening = false; return; }
+activeMic = stop;
+ta.focus({ preventScroll: true });
+track("dictation_started", { q: qIndex + 1 });
+});
+}
 let answers = {};
 const DRAFT_KEY = `d5d_draft_${CONFIG.cohort}`;
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -1277,6 +1334,8 @@ localStorage.setItem(DRAFT_KEY, JSON.stringify({ lead: rest, answers, i, typing,
 }
 function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch {} }
 function renderPoll(i) {
+activeMic?.();
+activeMic = null;
 const P = CONFIG.poll;
 if (i >= P.length) return finishPoll();
 saveDraft(i);
@@ -1295,10 +1354,10 @@ body = `<div class="slider-wrap">
 <input type="range" min="0" max="100" step="1" value="50" data-slider-input aria-label="${esc(item.q)}">
 <div class="slider-labels"><span>${esc(item.lowLabel || "not much")}</span><span>${esc(item.highLabel || "everything")}</span></div>
 </div>
-<textarea class="slider-note" data-slider-note rows="3" placeholder="${esc(item.notePlaceholder || "care to say why? (optional)")}" aria-label="Optional: tell us why"></textarea>
+<div class="ta-wrap"><textarea class="slider-note" data-slider-note rows="3" placeholder="${esc(item.notePlaceholder || "care to say why? (optional)")}" aria-label="Optional: tell us why"></textarea></div>
 <div class="poll-meta"><span data-note>${i === P.length - 1 ? "last one" : ""}</span></div>`;
 } else {
-body = `<textarea data-text rows="4" required aria-required="true" placeholder="A few sentences is perfect." aria-label="${esc(item.q)}"></textarea>
+body = `<div class="ta-wrap"><textarea data-text rows="4" required aria-required="true" placeholder="A few sentences is perfect." aria-label="${esc(item.q)}"></textarea></div>
 <div class="poll-meta"><span data-note>${i === P.length - 1 ? "last one" : ""}</span><span data-count></span></div>`;
 }
 pollBox.innerHTML = `<div class="poll-card">
@@ -1360,6 +1419,7 @@ range.addEventListener("input", upd);
 note.addEventListener("input", () => { grow(); upd(); });
 upd();
 grow();
+attachDictation(note, i);
 } else {
 const t = $("[data-text]", pollBox), count = $("[data-count]", pollBox), tnote = $("[data-note]", pollBox);
 const metaRow = tnote.closest(".poll-meta");
@@ -1386,6 +1446,7 @@ t.value = answers[i] || (() => { try { const d = JSON.parse(localStorage.getItem
 t.addEventListener("input", upd);
 upd();
 if (i) setTimeout(() => t.focus({ preventScroll: true }), 50);
+attachDictation(t, i);
 }
 next.addEventListener("click", () => {
 if (!value) { showInvalid(); return; }
