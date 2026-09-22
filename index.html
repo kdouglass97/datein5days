@@ -441,8 +441,8 @@ section{padding:56px 16px}
 .faq details[open] p{animation:fadeDown .25s ease-out}
 @keyframes tickIn{from{opacity:0;transform:scale(2.4) rotate(-25deg)}}
 @keyframes rowIn{from{opacity:0;transform:translateX(-10px)}}
-@keyframes dealA{from{opacity:0;transform:translate(40%,-24px) rotate(5deg)}}
-@keyframes dealB{from{opacity:0;transform:translate(-40%,-24px) rotate(-5deg)}}
+@keyframes dealA{from{opacity:0;transform:translate(40%,-24px) rotate(5deg)}to{opacity:1;transform:rotate(-1.4deg)}}
+@keyframes dealB{from{opacity:0;transform:translate(-40%,-24px) rotate(-5deg)}to{opacity:1;transform:rotate(1.2deg)}}
 .js .match-sheet:not(.in) li,.js .match-sheet:not(.in) .match-stamp,.js .wants:not(.in) .want{opacity:0}
 .match-sheet.in li{animation:rowIn .35s var(--d,0s) ease-out backwards}
 .match-sheet.in .ck{display:inline-block;animation:tickIn .4s calc(var(--d,0s) + .15s) cubic-bezier(.3,1.6,.5,1) backwards}
@@ -1424,14 +1424,28 @@ if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
 }), { threshold: .2 });
 $$("[data-reveal]").forEach(el => io.observe(el));
 const wantsEl = $(".wants");
-if (wantsEl && !reduced) {
-wantsEl.dataset.spot = "a";
-let spotTimer = null;
-const spotStart = () => { if (!spotTimer) spotTimer = setInterval(() => { wantsEl.dataset.spot = wantsEl.dataset.spot === "a" ? "b" : "a"; }, 2600); };
-const spotStop = () => { clearInterval(spotTimer); spotTimer = null; };
-new IntersectionObserver(([e]) => (e.isIntersecting ? spotStart() : spotStop()), { threshold: .4 }).observe(wantsEl);
-wantsEl.addEventListener("pointerenter", spotStop);
-wantsEl.addEventListener("pointerleave", spotStart);
+if (wantsEl) {
+const wantA = $(".want-a", wantsEl);
+const wantB = $(".want-b", wantsEl);
+let hovering = false;
+let introTimers = [];
+const clearIntro = () => { introTimers.forEach(clearTimeout); introTimers = []; };
+const setSpot = spot => { if (spot) wantsEl.dataset.spot = spot; else delete wantsEl.dataset.spot; };
+const runIntro = () => {
+if (reduced) return;
+clearIntro();
+introTimers.push(setTimeout(() => { if (!hovering) setSpot("a"); }, 1400));
+introTimers.push(setTimeout(() => { if (!hovering) setSpot("b"); }, 2600));
+introTimers.push(setTimeout(() => { if (!hovering) setSpot(null); }, 3800));
+};
+new IntersectionObserver(([e], obs) => {
+if (e.isIntersecting) { runIntro(); obs.unobserve(e.target); }
+}, { threshold: .2 }).observe(wantsEl);
+const focus = spot => { hovering = true; clearIntro(); setSpot(spot); };
+const unfocus = () => { hovering = false; setSpot(null); };
+wantA.addEventListener("pointerenter", () => focus("a"));
+wantB.addEventListener("pointerenter", () => focus("b"));
+wantsEl.addEventListener("pointerleave", unfocus);
 }
 $$("[data-track]").forEach(el => el.addEventListener("click", () => track(el.dataset.track)));
 track("landing_viewed");
