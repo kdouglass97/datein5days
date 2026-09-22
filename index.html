@@ -262,7 +262,8 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll-foot{display:flex;justify-content:flex-end}
 .poll .chips{margin-bottom:6px}
 .rank-opt-head{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.rank-opt-label{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.55}
+.rank-opt-label{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;flex:none}
+.rank-opt-leader{flex:1;min-width:10px;border-bottom:1.5px dotted var(--ink);opacity:.35;margin:0 2px 3px}
 .poll-rank .rank-label{padding:8px 0;font-size:14.5px;line-height:1.3}
 .rank-icon{flex:none;width:22px;height:22px;overflow:visible;pointer-events:none}
 .rank-icon path,.rank-icon circle{stroke-dasharray:1;stroke-dashoffset:1;animation:ink .4s var(--dl,0s) cubic-bezier(.5,.1,.3,1) forwards}
@@ -866,7 +867,7 @@ poll: [
 { key: "relationship_adds", type: "bestworst", q: "What do you want most from them?", sub: "Drag to rank. Top is what you want most, bottom is what you could live without.",
 options: [
 { key: "chemistry", label: "Chemistry", scene: "someone I’m a little obsessed with", icon: '<path class="ink" pathLength="1" d="M50 10C58 22 68 32 66 46C65 54 60 56 61 63C67 68 66 78 57 82C53 84 47 84 43 82C34 78 33 68 39 63C40 56 35 54 34 46C32 32 42 22 50 10Z"/><path class="ink thin" pathLength="1" style="--dl2:.1s" d="M50 40C46 48 45 56 49 62C51 65 55 63 54 58C52 54 55 50 53 46C52 43 51 41 50 40Z"/>' },
-{ key: "ease", label: "Ease", scene: "a soft place to land after a long day", icon: '<path class="ink" pathLength="1" d="M15 20V85M85 20V85M15 40C35 65 65 65 85 40"/><path class="ink thin" pathLength="1" style="--dl2:.1s" d="M32 51L36 56M48 58L51 63M64 55L68 60"/>' },
+{ key: "ease", label: "Ease", scene: "a soft place to land after a long day", icon: '<path class="ink" pathLength="1" d="M22 40H60V68C60 76 52 82 41 82C30 82 22 76 22 68V40Z"/><path class="ink" pathLength="1" d="M60 48C72 48 72 66 60 66"/><path class="ink thin" pathLength="1" style="--dl2:.15s" d="M34 30C31 25 37 22 34 17M46 30C43 25 49 22 46 17"/>' },
 { key: "play", label: "Play", scene: "a co-conspirator for weekends and bad ideas", icon: '<path class="ink" pathLength="1" d="M20 24C40 20 65 21 80 23C82 45 81 65 79 79C55 82 35 80 21 78C18 55 19 38 20 24Z"/><circle class="ink" pathLength="1" cx="35" cy="35" r="3.4"/><circle class="ink" pathLength="1" cx="50" cy="50" r="3.4"/><circle class="ink" pathLength="1" cx="65" cy="65" r="3.4"/>' },
 { key: "ambition", label: "Ambition", scene: "someone who raises my bar", icon: '<path class="ink" pathLength="1" d="M15 68H27V85H15V68ZM40 52H52V85H40V52ZM65 28H77V85H65V28Z"/><path class="ink thin" pathLength="1" style="--dl2:.1s" d="M18 62C35 40 55 25 72 15M64 13L72 15L70 23"/>' },
 { key: "building", label: "Building", scene: "someone to build a life with", icon: '<path class="ink" pathLength="1" d="M12 45L50 12L88 45M22 42V85H78V42"/><path class="ink thin" pathLength="1" style="--dl2:.1s" d="M42 85V62C42 57 58 57 58 62V85"/><path class="ink thin" pathLength="1" style="--dl2:.2s" d="M66 26V10C69 8 64 6 67 3"/>' },
@@ -1287,7 +1288,7 @@ body = `<ol class="rank-list poll-rank" data-poll-rank>${item.options.map((o, id
 `<li class="rank-item" data-v="${esc(o.key)}">
 <button type="button" class="rank-handle" aria-label="${esc(o.label)}: ${esc(o.scene)}. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
 <span class="rank-num" aria-hidden="true">${idx + 1}</span>
-<span class="rank-label"><span class="rank-opt-head"><svg class="rank-icon sk" viewBox="0 0 100 100" aria-hidden="true" style="--dl:${(idx * .07).toFixed(2)}s"><g filter="url(#pen)">${o.icon}</g></svg><span class="rank-opt-label">${esc(o.label)}</span></span>${esc(o.scene)}</span>
+<span class="rank-label"><span class="rank-opt-head"><svg class="rank-icon sk" viewBox="0 0 100 100" aria-hidden="true" style="--dl:${(idx * .07).toFixed(2)}s"><g filter="url(#pen)">${o.icon}</g></svg><span class="rank-opt-label">${esc(o.label)}</span><span class="rank-opt-leader" aria-hidden="true"></span></span>${esc(o.scene)}</span>
 </li>`).join("")}</ol>
 <p class="rank-status" aria-live="polite" data-poll-rank-status></p>`;
 } else if (item.type === "slider") {
