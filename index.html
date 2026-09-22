@@ -266,13 +266,15 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll-meta.has-error [data-note]{color:#9B2C1C}
 .poll-foot{display:flex;justify-content:flex-end}
 .poll .chips{margin-bottom:6px}
-.chip.btnchip{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer}
-.chip.btnchip[aria-pressed="true"] span{background:var(--tag);color:var(--paper);border-color:var(--tag)}
-.chip.btnchip[aria-pressed="true"] span::before{content:"\2713\00a0"}
-.chip.btnchip:disabled span{opacity:.35;cursor:not-allowed}
-.rank-top{margin:18px 0 6px;padding-top:14px;border-top:1px dashed rgba(70,85,58,.5)}
-.rank-top p{margin:0 0 10px;font-size:14px}
-.rank-top .chip span{border-style:dashed}
+.rank-opt-head{display:flex;align-items:center;gap:9px;margin-bottom:3px}
+.rank-opt-label{font-size:13.5px;letter-spacing:.07em;text-transform:uppercase;opacity:.75;flex:none}
+.rank-opt-leader{flex:1;min-width:10px;border-bottom:1.5px dotted var(--ink);opacity:.35;margin:0 2px 3px}
+.poll-rank .rank-label{padding:5px 0;font-size:14.5px;line-height:1.3}
+.poll-rank .rank-item{margin-bottom:6px;padding:5px 10px}
+.rank-icon{flex:none;width:32px;height:32px;overflow:visible;pointer-events:none}
+.rank-icon path,.rank-icon circle{stroke-dasharray:1;stroke-dashoffset:1;animation:ink .4s var(--dl,0s) cubic-bezier(.5,.1,.3,1) forwards}
+.rank-icon .thin{animation-delay:calc(var(--dl,0s) + var(--dl2,0s))}
+.poll-rank{margin-bottom:2px}
 .resume{margin:0 auto 26px;padding:12px 14px;border:1.5px dashed var(--tag);font-size:14px;text-align:left}
 .resume .linkish{padding:0;min-height:0;font-size:14px}
 .poll-back{background:none;border:0;font:13px var(--type);color:var(--ink);text-decoration:underline;cursor:pointer;padding:2px 0}
@@ -441,7 +443,6 @@ section{padding:56px 16px}
 @keyframes cardIn{from{opacity:0;transform:translateX(26px)}}
 .step.enter{animation:stepIn .45s ease-out}
 .poll-card{animation:cardIn .35s ease-out}
-.rank-top:not([hidden]){animation:fadeDown .3s ease-out}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}}
 .faq details[open] p{animation:fadeDown .25s ease-out}
 @keyframes tickIn{from{opacity:0;transform:scale(2.4) rotate(-25deg)}}
@@ -875,8 +876,14 @@ cityList: "Tbilisi, NYC, London, HK, Shanghai",
 cohortSize: 50,
 launch: "Sep 21",
 poll: [
-{ key: "relationship_adds", type: "rank", q: "What do you most want a relationship to add to your life?", sub: "Choose up to 2, then pick the one that matters most.", max: 2,
-options: ["Teammate", "Emotional support", "Companionship", "Adventure/activity", "Affection/closeness", "Growth", "Family/home", "Fun/playfulness", "Independence + partnership"] },
+{ key: "relationship_adds", type: "bestworst", q: "What do you want most from them?", sub: "Drag to rank. Top is what you want most, bottom is what you could live without.",
+options: [
+{ key: "chemistry", label: "Chemistry", scene: "someone I’m a little obsessed with", icon: '<path class="ink" pathLength="1" d="M50 10C58 22 68 32 66 46C65 54 60 56 61 63C67 68 66 78 57 82C53 84 47 84 43 82C34 78 33 68 39 63C40 56 35 54 34 46C32 32 42 22 50 10Z"/><path class="ink thin" pathLength="1" style="--dl2:.1s" d="M50 40C46 48 45 56 49 62C51 65 55 63 54 58C52 54 55 50 53 46C52 43 51 41 50 40Z"/>' },
+{ key: "ease", label: "Ease", scene: "a soft place to land after a long day", icon: '<path class="ink" pathLength="1" d="M22 40H60V68C60 76 52 82 41 82C30 82 22 76 22 68V40Z"/><path class="ink" pathLength="1" d="M60 48C72 48 72 66 60 66"/><path class="ink thin" pathLength="1" style="--dl2:.15s" d="M34 30C31 25 37 22 34 17M46 30C43 25 49 22 46 17"/>' },
+{ key: "play", label: "Play", scene: "a co-conspirator for weekends and bad ideas", icon: '<path class="ink" pathLength="1" d="M20 24C40 20 65 21 80 23C82 45 81 65 79 79C55 82 35 80 21 78C18 55 19 38 20 24Z"/><circle class="ink" pathLength="1" cx="35" cy="35" r="3.4"/><circle class="ink" pathLength="1" cx="50" cy="50" r="3.4"/><circle class="ink" pathLength="1" cx="65" cy="65" r="3.4"/>' },
+{ key: "ambition", label: "Ambition", scene: "someone who raises my bar", icon: '<path class="ink" pathLength="1" d="M15 68H27V85H15V68ZM40 52H52V85H40V52ZM65 28H77V85H65V28Z"/><path class="ink thin" pathLength="1" style="--dl2:.1s" d="M18 62C35 40 55 25 72 15M64 13L72 15L70 23"/>' },
+{ key: "building", label: "Building", scene: "someone to build a life with", icon: '<path class="ink" pathLength="1" d="M12 45L50 12L88 45M22 42V85H78V42"/><path class="ink thin" pathLength="1" style="--dl2:.1s" d="M42 85V62C42 57 58 57 58 62V85"/><path class="ink thin" pathLength="1" style="--dl2:.2s" d="M66 26V10C69 8 64 6 67 3"/>' },
+] },
 { key: "wednesday", type: "text", q: "What does a good Wednesday in your life look like?" },
 { key: "friendships", type: "text", q: "What do you value most in your closest friendships?", sub: "What makes those relationships work?" },
 { key: "sharing_life", type: "slider", q: "In your ideal relationship, how much of your life do you want to share with your partner?", sub: "Drag to answer, then tell us why if you want.", lowLabel: "separate lives", highLabel: "fully intertwined", notePlaceholder: "care to say why? (totally optional)" },
@@ -1103,11 +1110,11 @@ if (!rest.length) otherBox.checked = false;
 updCities();
 });
 updCities();
-function initRankList(list) {
-const status = $("[data-looking-status]", list.closest(".group"));
+function initRankList(list, status, onChange) {
 const items = () => $$(".rank-item", list);
 function renumber() {
 items().forEach((li, i) => { $(".rank-num", li).textContent = i + 1; });
+onChange?.();
 }
 function announce(li) {
 const all = items();
@@ -1119,6 +1126,7 @@ if (!sib) return;
 if (dir < 0) list.insertBefore(li, sib); else list.insertBefore(sib, li);
 renumber();
 announce(li);
+$(".rank-handle", li).focus({ preventScroll: true });
 }
 let drag = null;
 function virtualOrder() {
@@ -1170,7 +1178,7 @@ handle.addEventListener("pointerup", drop);
 handle.addEventListener("pointercancel", drop);
 });
 }
-initRankList($("[data-looking-list]"));
+initRankList($("[data-looking-list]"), $("[data-looking-status]"));
 $$(".paddle").forEach(label => {
 const el = $("input", label);
 label.addEventListener("pointerdown", () => { el.dataset.wasChecked = el.checked; });
@@ -1257,14 +1265,17 @@ const DRAFT_KEY = `d5d_draft_${CONFIG.cohort}`;
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const answerText = (item, a) => {
 if (a == null) return "";
-if (item.type === "rank") return a.also.length ? `${a.top} (most), ${a.also.join(", ")}` : a.top;
+if (item.type === "bestworst") {
+const label = k => item.options.find(o => o.key === k)?.label || k;
+return `${a.map(label).join(", ")} (most to least)`;
+}
 if (item.type === "slider") return a.note ? `${a.value}% — ${a.note}` : `${a.value}%`;
 return a;
 };
 function syncPoll(stage) {
 lead.poll = CONFIG.poll.map((p, k) => ({ key: p.key, q: p.q, a: answerText(p, answers[k]) }));
-const rank = CONFIG.poll.findIndex(p => p.type === "rank");
-if (rank > -1 && answers[rank]) { lead.adds_most = answers[rank].top; lead.adds_also = answers[rank].also.join(", "); }
+const bw = CONFIG.poll.findIndex(p => p.type === "bestworst");
+if (bw > -1 && answers[bw]) { lead.want_most = answers[bw][0]; lead.could_skip = answers[bw][answers[bw].length - 1]; }
 sendLead(stage);
 }
 function saveDraft(i) {
@@ -1284,11 +1295,14 @@ const item = P[i];
 const bar = P.map((_, k) => `<i class="${k < i ? "done" : ""}"></i>`).join("");
 const long = item.q.length > 70 ? " long" : "";
 let body;
-if (item.type === "rank") {
-body = `<div class="chips" data-rank>${item.options.map(o =>
-`<button type="button" class="chip btnchip" aria-pressed="false" data-v="${esc(o)}"><span>${esc(o)}</span></button>`).join("")}</div>
-<div class="rank-top" data-top hidden><p>which matters most?</p><div class="chips" data-top-opts></div></div>
-<div class="poll-meta"><span data-rank-note>pick 1 or 2</span></div>`;
+if (item.type === "bestworst") {
+body = `<ol class="rank-list poll-rank" data-poll-rank>${item.options.map((o, idx) =>
+`<li class="rank-item" data-v="${esc(o.key)}">
+<button type="button" class="rank-handle" aria-label="${esc(o.label)}: ${esc(o.scene)}. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
+<span class="rank-num" aria-hidden="true">${idx + 1}</span>
+<span class="rank-label"><span class="rank-opt-head"><svg class="rank-icon sk" viewBox="0 0 100 100" aria-hidden="true" style="--dl:${(idx * .07).toFixed(2)}s"><g filter="url(#pen)">${o.icon}</g></svg><span class="rank-opt-label">${esc(o.label)}</span><span class="rank-opt-leader" aria-hidden="true"></span></span>${esc(o.scene)}</span>
+</li>`).join("")}</ol>
+<p class="rank-status" aria-live="polite" data-poll-rank-status></p>`;
 } else if (item.type === "slider") {
 body = `<div class="slider-wrap">
 <div class="slider-value" data-slider-value>50%</div>
@@ -1312,36 +1326,15 @@ ${body}
 const next = $("[data-next]", pollBox);
 let value;
 let showInvalid = () => {};
-if (item.type === "rank") {
+if (item.type === "bestworst") {
 const prev = answers[i];
-let picked = prev ? [prev.top, ...prev.also] : [];
-let top = prev ? prev.top : "";
-const chips = $$("[data-rank] .btnchip", pollBox);
-const topWrap = $("[data-top]", pollBox), topOpts = $("[data-top-opts]", pollBox), note = $("[data-rank-note]", pollBox);
-const draw = () => {
-chips.forEach(c => {
-const on = picked.includes(c.dataset.v);
-c.setAttribute("aria-pressed", on);
-c.disabled = !on && picked.length >= item.max;
-});
-if (picked.length === 1) top = picked[0];
-if (!picked.includes(top)) top = "";
-topWrap.hidden = picked.length < 2;
-topOpts.innerHTML = picked.length < 2 ? "" : picked.map(o =>
-`<label class="chip"><input type="radio" name="top" value="${esc(o)}"${o === top ? " checked" : ""}><span>${esc(o)}</span></label>`).join("");
-$$("input", topOpts).forEach(r => r.addEventListener("change", () => { top = r.value; draw(); }));
-note.textContent = !picked.length ? `pick 1 or ${item.max}` : picked.length < item.max ? `${picked.length} of ${item.max}` : top ? "" : "now pick the one that matters most";
-value = top ? { top, also: picked.filter(o => o !== top) } : null;
-next.disabled = !value;
-};
-chips.forEach(c => c.addEventListener("click", () => {
-const v = c.dataset.v;
-const adding = !picked.includes(v);
-picked = adding ? [...picked, v].slice(0, item.max) : picked.filter(o => o !== v);
-if (adding && picked.length > 1) top = "";
-draw();
-}));
-draw();
+const list = $("[data-poll-rank]", pollBox), status = $("[data-poll-rank-status]", pollBox);
+if (prev) prev.forEach(k => list.appendChild($(`[data-v="${k}"]`, list)));
+$$(".rank-item", list).forEach((li, idx) => { $(".rank-num", li).textContent = idx + 1; });
+const sync = () => { value = $$(".rank-item", list).map(li => li.dataset.v); };
+initRankList(list, status, sync);
+sync();
+next.disabled = false;
 } else if (item.type === "slider") {
 const prev = answers[i];
 const range = $("[data-slider-input]", pollBox), val = $("[data-slider-value]", pollBox), note = $("[data-slider-note]", pollBox), tnote = $("[data-note]", pollBox);
