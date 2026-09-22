@@ -196,6 +196,11 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .paddle input:checked+.paddle-face{transform:rotate(0deg);border-color:var(--tag);color:var(--tag);box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--tag)}
 .paddle input:focus-visible+.paddle-face{outline:3px solid #F2C94C;outline-offset:3px}
 @media (max-width:640px){.paddle-face{width:58px;height:58px;font-size:12.5px}}
+.meet-paddle{display:flex;flex-direction:column;align-items:center;gap:12px}
+.meet-paddle .paddle-face svg{width:30px;height:30px}
+.meet-tag{font:700 14px/1 var(--type);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);transition:color .18s}
+.meet-paddle input:checked~.meet-tag{color:var(--tag)}
+@media (max-width:640px){.meet-paddle .paddle-face svg{width:26px;height:26px}}
 .rank-list{list-style:none;margin:0;padding:0}
 .rank-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px 10px;background:var(--paper);border:1.5px solid var(--ink);transition:box-shadow .15s,border-color .15s,transform .15s ease}
 .rank-item.dragging{position:relative;z-index:5;box-shadow:0 12px 24px -10px rgba(0,0,0,.5);border-color:var(--tag);transition:box-shadow .15s,border-color .15s}
@@ -442,8 +447,8 @@ section{padding:56px 16px}
 .faq details[open] p{animation:fadeDown .25s ease-out}
 @keyframes tickIn{from{opacity:0;transform:scale(2.4) rotate(-25deg)}}
 @keyframes rowIn{from{opacity:0;transform:translateX(-10px)}}
-@keyframes dealA{from{opacity:0;transform:translate(40%,-24px) rotate(5deg)}}
-@keyframes dealB{from{opacity:0;transform:translate(-40%,-24px) rotate(-5deg)}}
+@keyframes dealA{from{opacity:0;transform:translate(40%,-24px) rotate(5deg)}to{opacity:1;transform:rotate(-1.4deg)}}
+@keyframes dealB{from{opacity:0;transform:translate(-40%,-24px) rotate(-5deg)}to{opacity:1;transform:rotate(1.2deg)}}
 .js .match-sheet:not(.in) li,.js .match-sheet:not(.in) .match-stamp,.js .wants:not(.in) .want{opacity:0}
 .match-sheet.in li{animation:rowIn .35s var(--d,0s) ease-out backwards}
 .match-sheet.in .ck{display:inline-block;animation:tickIn .4s calc(var(--d,0s) + .15s) cubic-bezier(.3,1.6,.5,1) backwards}
@@ -776,10 +781,16 @@ section{padding:56px 16px}
 </div>
 </div>
 </fieldset>
-<label class="field"><span>you'd like to meet</span>
-<select name="meet" required data-msg="Tell us who you'd like to meet.">
-<option value="" disabled selected>choose one</option><option>women</option><option>men</option><option>anyone</option>
-</select></label>
+<fieldset class="group">
+<legend>you'd like to meet</legend>
+<div class="paddles">
+<div class="paddle-row">
+<label class="paddle meet-paddle" style="--tilt:-5deg"><input type="radio" name="meet" value="women" required data-msg="Tell us who you'd like to meet."><span class="paddle-face"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="12" cy="6.4" r="3.1"/><path d="M9.4 10.2h5.2l2.6 9.3a1.1 1.1 0 0 1-1.06 1.4H7.86A1.1 1.1 0 0 1 6.8 19.5z"/></svg></span><span class="meet-tag">women</span></label>
+<label class="paddle meet-paddle" style="--tilt:4deg"><input type="radio" name="meet" value="men"><span class="paddle-face"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="12" cy="6.4" r="3.1"/><rect x="8.3" y="10.2" width="7.4" height="10.6" rx="2.4"/></svg></span><span class="meet-tag">men</span></label>
+<label class="paddle meet-paddle" style="--tilt:-3deg"><input type="radio" name="meet" value="anyone"><span class="paddle-face"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="7.2" cy="6.6" r="2.05"/><path d="M5.7 9.4h3l1.5 6a.8.8 0 0 1-.78 1H5a.8.8 0 0 1-.78-1z"/><circle cx="16.8" cy="6.6" r="2.05"/><rect x="14.3" y="9.4" width="5" height="7.1" rx="1.6"/></svg></span><span class="meet-tag">anyone</span></label>
+</div>
+</div>
+</fieldset>
 <fieldset class="group">
 <legend>what's a perfectly planned date worth to you?</legend>
 <div class="chips">
@@ -1417,14 +1428,28 @@ if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
 }), { threshold: .2 });
 $$("[data-reveal]").forEach(el => io.observe(el));
 const wantsEl = $(".wants");
-if (wantsEl && !reduced) {
-wantsEl.dataset.spot = "a";
-let spotTimer = null;
-const spotStart = () => { if (!spotTimer) spotTimer = setInterval(() => { wantsEl.dataset.spot = wantsEl.dataset.spot === "a" ? "b" : "a"; }, 2600); };
-const spotStop = () => { clearInterval(spotTimer); spotTimer = null; };
-new IntersectionObserver(([e]) => (e.isIntersecting ? spotStart() : spotStop()), { threshold: .4 }).observe(wantsEl);
-wantsEl.addEventListener("pointerenter", spotStop);
-wantsEl.addEventListener("pointerleave", spotStart);
+if (wantsEl) {
+const wantA = $(".want-a", wantsEl);
+const wantB = $(".want-b", wantsEl);
+let hovering = false;
+let introTimers = [];
+const clearIntro = () => { introTimers.forEach(clearTimeout); introTimers = []; };
+const setSpot = spot => { if (spot) wantsEl.dataset.spot = spot; else delete wantsEl.dataset.spot; };
+const runIntro = () => {
+if (reduced) return;
+clearIntro();
+introTimers.push(setTimeout(() => { if (!hovering) setSpot("a"); }, 1400));
+introTimers.push(setTimeout(() => { if (!hovering) setSpot("b"); }, 2600));
+introTimers.push(setTimeout(() => { if (!hovering) setSpot(null); }, 3800));
+};
+new IntersectionObserver(([e], obs) => {
+if (e.isIntersecting) { runIntro(); obs.unobserve(e.target); }
+}, { threshold: .2 }).observe(wantsEl);
+const focus = spot => { hovering = true; clearIntro(); setSpot(spot); };
+const unfocus = () => { hovering = false; setSpot(null); };
+wantA.addEventListener("pointerenter", () => focus("a"));
+wantB.addEventListener("pointerenter", () => focus("b"));
+wantsEl.addEventListener("pointerleave", unfocus);
 }
 $$("[data-track]").forEach(el => el.addEventListener("click", () => track(el.dataset.track)));
 track("landing_viewed");
