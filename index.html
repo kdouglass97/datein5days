@@ -261,21 +261,9 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll-meta.has-error [data-note]{color:#9B2C1C}
 .poll-foot{display:flex;justify-content:flex-end}
 .poll .chips{margin-bottom:6px}
-.mostleast{display:flex;flex-direction:column;gap:7px;margin-bottom:2px}
-.ml-opt{position:relative;display:block;width:100%;text-align:left;border:1.5px solid var(--ink);background:rgba(255,255,255,.35);padding:7px 46px 8px 12px;font:inherit;color:inherit;cursor:pointer;transition:transform .12s,background .15s,border-color .15s,opacity .15s,color .15s}
-.ml-opt:active{transform:scale(.98)}
-.ml-opt:focus-visible{outline:3px solid #F2C94C;outline-offset:2px}
-.ml-label{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin-bottom:1px}
-.ml-scene{position:relative;display:block;font-size:14.5px;line-height:1.3}
-.ml-strike{position:absolute;left:-4px;top:-2px;width:calc(100% + 8px);height:calc(100% + 4px);overflow:visible;pointer-events:none;opacity:0}
-.ml-strike path{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
-.ml-tag{position:absolute;top:8px;right:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-.ml-opt.is-most{background:var(--tag);color:var(--paper);border-color:var(--tag);animation:pop .22s ease}
-.ml-opt.is-most .ml-label{opacity:.8}
-[data-ml-sub]{margin:12px 0 2px}
-.ml-opt.is-least{opacity:.5}
-.ml-opt.is-least .ml-strike{opacity:1}
-.ml-opt.is-least .ml-strike path{animation:ink .3s cubic-bezier(.5,.1,.3,1) forwards}
+.rank-opt-label{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin-bottom:1px}
+.poll-rank .rank-label{padding:8px 0;font-size:14.5px;line-height:1.3}
+.poll-rank{margin-bottom:2px}
 .resume{margin:0 auto 26px;padding:12px 14px;border:1.5px dashed var(--tag);font-size:14px;text-align:left}
 .resume .linkish{padding:0;min-height:0;font-size:14px}
 .poll-back{background:none;border:0;font:13px var(--type);color:var(--ink);text-decoration:underline;cursor:pointer;padding:2px 0}
@@ -444,7 +432,6 @@ section{padding:56px 16px}
 @keyframes cardIn{from{opacity:0;transform:translateX(26px)}}
 .step.enter{animation:stepIn .45s ease-out}
 .poll-card{animation:cardIn .35s ease-out}
-[data-ml-sub]:not([hidden]){animation:fadeDown .3s ease-out}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}}
 .faq details[open] p{animation:fadeDown .25s ease-out}
 @keyframes tickIn{from{opacity:0;transform:scale(2.4) rotate(-25deg)}}
@@ -872,7 +859,7 @@ cityList: "Tbilisi, NYC, London, HK, Shanghai",
 cohortSize: 50,
 launch: "Sep 21",
 poll: [
-{ key: "relationship_adds", type: "mostleast", q: "What do you want most from them?",
+{ key: "relationship_adds", type: "bestworst", q: "What do you want most from them?", sub: "Drag to rank. Top is what you want most, bottom is what you could live without.",
 options: [
 { key: "chemistry", label: "Chemistry", scene: "someone I’m a little obsessed with" },
 { key: "ease", label: "Ease", scene: "a soft place to land after a long day" },
@@ -1106,11 +1093,11 @@ if (!rest.length) otherBox.checked = false;
 updCities();
 });
 updCities();
-function initRankList(list) {
-const status = $("[data-looking-status]", list.closest(".group"));
+function initRankList(list, status, onChange) {
 const items = () => $$(".rank-item", list);
 function renumber() {
 items().forEach((li, i) => { $(".rank-num", li).textContent = i + 1; });
+onChange?.();
 }
 function announce(li) {
 const all = items();
@@ -1122,6 +1109,7 @@ if (!sib) return;
 if (dir < 0) list.insertBefore(li, sib); else list.insertBefore(sib, li);
 renumber();
 announce(li);
+$(".rank-handle", li).focus({ preventScroll: true });
 }
 let drag = null;
 function virtualOrder() {
@@ -1173,7 +1161,7 @@ handle.addEventListener("pointerup", drop);
 handle.addEventListener("pointercancel", drop);
 });
 }
-initRankList($("[data-looking-list]"));
+initRankList($("[data-looking-list]"), $("[data-looking-status]"));
 $$(".paddle").forEach(label => {
 const el = $("input", label);
 label.addEventListener("pointerdown", () => { el.dataset.wasChecked = el.checked; });
@@ -1260,17 +1248,17 @@ const DRAFT_KEY = `d5d_draft_${CONFIG.cohort}`;
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const answerText = (item, a) => {
 if (a == null) return "";
-if (item.type === "mostleast") {
+if (item.type === "bestworst") {
 const label = k => item.options.find(o => o.key === k)?.label || k;
-return `${label(a.most)} (most), ${label(a.least)} (least)`;
+return `${a.map(label).join(", ")} (most to least)`;
 }
 if (item.type === "slider") return a.note ? `${a.value}% — ${a.note}` : `${a.value}%`;
 return a;
 };
 function syncPoll(stage) {
 lead.poll = CONFIG.poll.map((p, k) => ({ key: p.key, q: p.q, a: answerText(p, answers[k]) }));
-const ml = CONFIG.poll.findIndex(p => p.type === "mostleast");
-if (ml > -1 && answers[ml]) { lead.want_most = answers[ml].most; lead.could_skip = answers[ml].least; }
+const bw = CONFIG.poll.findIndex(p => p.type === "bestworst");
+if (bw > -1 && answers[bw]) { lead.want_most = answers[bw][0]; lead.could_skip = answers[bw][answers[bw].length - 1]; }
 sendLead(stage);
 }
 function saveDraft(i) {
@@ -1290,15 +1278,14 @@ const item = P[i];
 const bar = P.map((_, k) => `<i class="${k < i ? "done" : ""}"></i>`).join("");
 const long = item.q.length > 70 ? " long" : "";
 let body;
-if (item.type === "mostleast") {
-body = `<div class="mostleast" data-mostleast>${item.options.map(o =>
-`<button type="button" class="ml-opt" aria-pressed="false" data-v="${esc(o.key)}">
-<span class="ml-tag" data-ml-tag hidden></span>
-<span class="ml-label">${esc(o.label)}</span>
-<span class="ml-scene">${esc(o.scene)}<svg class="ml-strike" viewBox="0 0 220 20" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M3 13C50 6 140 4 216 10"/></svg></span>
-</button>`).join("")}</div>
-<p class="poll-sub" data-ml-sub hidden></p>
-<div class="poll-meta"><span data-ml-note>pick one to start</span></div>`;
+if (item.type === "bestworst") {
+body = `<ol class="rank-list poll-rank" data-poll-rank>${item.options.map((o, idx) =>
+`<li class="rank-item" data-v="${esc(o.key)}">
+<button type="button" class="rank-handle" aria-label="${esc(o.label)}: ${esc(o.scene)}. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
+<span class="rank-num" aria-hidden="true">${idx + 1}</span>
+<span class="rank-label"><span class="rank-opt-label">${esc(o.label)}</span>${esc(o.scene)}</span>
+</li>`).join("")}</ol>
+<p class="rank-status" aria-live="polite" data-poll-rank-status></p>`;
 } else if (item.type === "slider") {
 body = `<div class="slider-wrap">
 <div class="slider-value" data-slider-value>50%</div>
@@ -1322,38 +1309,15 @@ ${body}
 const next = $("[data-next]", pollBox);
 let value;
 let showInvalid = () => {};
-if (item.type === "mostleast") {
+if (item.type === "bestworst") {
 const prev = answers[i];
-let most = prev ? prev.most : null, least = prev ? prev.least : null;
-const opts = $$("[data-mostleast] .ml-opt", pollBox);
-const sub = $("[data-ml-sub]", pollBox), note = $("[data-ml-note]", pollBox);
-const byKey = k => item.options.find(o => o.key === k);
-const draw = () => {
-opts.forEach(btn => {
-const k = btn.dataset.v, isMost = k === most, isLeast = k === least;
-const tag = $("[data-ml-tag]", btn);
-btn.classList.toggle("is-most", isMost);
-btn.classList.toggle("is-least", isLeast);
-btn.setAttribute("aria-pressed", String(isMost || isLeast));
-tag.hidden = !(isMost || isLeast);
-tag.textContent = isMost ? "most" : isLeast ? "least" : "";
-btn.setAttribute("aria-label", isMost ? `${byKey(k).label}, your most pick. Tap to change.` : `${byKey(k).label}: ${byKey(k).scene}`);
-});
-sub.hidden = !most;
-sub.textContent = most ? "And what could you live without?" : "";
-note.textContent = !most ? "pick one to start" : !least ? "pick one you could live without" : "";
-value = most && least ? { most, least } : null;
-next.disabled = !value;
-};
-opts.forEach(btn => btn.addEventListener("click", () => {
-const k = btn.dataset.v;
-if (k === most) { most = null; least = null; }
-else if (!most) { most = k; }
-else if (k === least) { least = null; }
-else { least = k; }
-draw();
-}));
-draw();
+const list = $("[data-poll-rank]", pollBox), status = $("[data-poll-rank-status]", pollBox);
+if (prev) prev.forEach(k => list.appendChild($(`[data-v="${k}"]`, list)));
+$$(".rank-item", list).forEach((li, idx) => { $(".rank-num", li).textContent = idx + 1; });
+const sync = () => { value = $$(".rank-item", list).map(li => li.dataset.v); };
+initRankList(list, status, sync);
+sync();
+next.disabled = false;
 } else if (item.type === "slider") {
 const prev = answers[i];
 const range = $("[data-slider-input]", pollBox), val = $("[data-slider-value]", pollBox), note = $("[data-slider-note]", pollBox), tnote = $("[data-note]", pollBox);

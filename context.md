@@ -306,7 +306,7 @@ once the person is invested and has already answered six times.
 
 | # | key | type | question |
 |---|---|---|---|
-| 1 | `relationship_adds` | mostleast | What do you want most from them? |
+| 1 | `relationship_adds` | bestworst (drag-rank) | What do you want most from them? |
 | 2 | `wednesday` | text | What does a good Wednesday in your life look like? |
 | 3 | `friendships` | text | What do you value most in your closest friendships? |
 | 4 | `sharing_life` | slider | In your ideal relationship, how much of your life do you want to share with your partner? |
@@ -318,17 +318,25 @@ once the person is invested and has already answered six times.
 outputs, `want_most` and `could_skip`, are the primary matching signal. Everything else is
 texture that helps a human judge fit.
 
-As of 2026-09-20 it's a two-step **best-worst scaling** picker, not a checkbox pick. Five
-scene-line options (the tap target is the scene, e.g. "someone I'm a little obsessed
-with," with a small key label above it): *Chemistry, Ease, Play, Ambition, Building.* Step
-one, pick exactly one as **most**. Step two, the subhead changes to "And what could you
-live without?", the most pick locks in place (tap it again to reset both), and the person
-picks one of the remaining four as **least**. Both picks are required before "next"
-enables. This replaced the old choose-up-to-2-then-pick-the-top-one design (nine options:
-Teammate, Emotional support, Companionship, Adventure/activity, Affection/closeness,
-Growth, Family/home, Fun/playfulness, Independence + partnership), which wrote
-`adds_most`/`adds_also`. Those two columns are frozen, not deleted - old rows keep their
-data, the page just no longer writes to them. See §8.
+As of 2026-09-22 it's a **drag-to-rank** picker, not a checkbox pick. Five scene-line
+options, each with a small key label above the scene line: *Chemistry, Ease, Play,
+Ambition, Building.* The person drags all five into order (top to bottom); the top item is
+`want_most`, the bottom item is `could_skip`. It reuses the exact same drag/keyboard-reorder
+engine as the `looking` question in step 1 (`initRankList()`, `.rank-item`/`.rank-handle`
+6-dot grip, `moveBy()`), just fed different content and a different status/live-region
+element - see `initRankList(list, status, onChange)` in the script block. A default order
+(options in `CONFIG.poll[0].options` order) is valid and submittable without any drag,
+same as `looking`; "next" is never blocked on it.
+
+This design went through two iterations before landing here. The nine-option
+choose-up-to-2-then-pick-the-top-one picker (*Teammate, Emotional support, Companionship,
+Adventure/activity, Affection/closeness, Growth, Family/home, Fun/playfulness, Independence
++ partnership*) wrote `adds_most`/`adds_also`; a tap-based two-step most/then-least picker
+(five options, same as now) briefly replaced it and wrote `want_most`/`could_skip` via two
+taps plus a strikethrough for "least." Both `adds_most`/`adds_also` and that tap flow are
+gone from the page. `adds_most`/`adds_also` are frozen, not deleted - old rows keep their
+data, the page just no longer writes to them. `want_most`/`could_skip` are unchanged by
+this second pivot (still the two column names, still one option key each). See §8.
 
 **Question 2 does hidden work.** "A good Wednesday" extracts life-shape without asking for
 it. Nobody performs on a Wednesday. The answers reveal whether someone's life has room in
