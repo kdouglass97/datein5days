@@ -260,6 +260,7 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .mic-wave{display:flex;align-items:center;justify-content:center;gap:2.5px;width:16px;height:16px;pointer-events:none}
 .mic-wave i{display:block;width:2.5px;height:4px;border-radius:1px;background:currentColor}
 .mic-status{position:absolute;right:8px;bottom:46px;max-width:calc(100% - 16px);font-size:11.5px;line-height:1.35;text-align:right;color:#9B2C1C}
+.mic-status.neutral{color:rgba(70,85,58,.65)}
 .slider-wrap{margin:6px 0 18px}
 .slider-value{font-family:var(--serif);font-size:clamp(44px,11vw,60px);font-weight:500;text-align:center;color:var(--tag);letter-spacing:-.02em;margin-bottom:2px}
 .slider-wrap input[type=range]{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,var(--tag) 0 var(--pct,50%),var(--rule) var(--pct,50%) 100%);margin:16px 0 10px;cursor:pointer}
@@ -1264,9 +1265,11 @@ renderPoll(0);
 });
 const pollBox = $("[data-poll]");
 let activeMic = null;
+const STT_KEY = "d5d_stt_support";
+let sttSupport = (() => { try { return localStorage.getItem(STT_KEY); } catch { return null; } })();
 function attachDictation(ta, qIndex) {
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-if (!SR) return;
+if (!SR || sttSupport === "no") return;
 const wrap = ta.closest(".ta-wrap");
 wrap.classList.add("has-mic");
 const btn = document.createElement("button");
@@ -1282,15 +1285,26 @@ status.hidden = true;
 status.setAttribute("aria-live", "polite");
 wrap.appendChild(status);
 const icon = $(".mic-icon", btn), waveEl = $(".mic-wave", btn), bars = $$(".mic-wave i", btn);
-const showStatus = (msg) => { status.hidden = !msg; status.textContent = msg || ""; };
+const showStatus = (msg, neutral) => { status.hidden = !msg; status.textContent = msg || ""; status.classList.toggle("neutral", !!neutral); };
 
 const rec = new SR();
 rec.continuous = false;
 rec.interimResults = true;
 rec.lang = navigator.language || "en-US";
-let base = "", listening = false, restartTimer = null;
-let audioCtx = null, analyser = null, micStream = null, waveData = null, rafId = null;
+let base = "", listening = false, restartTimer = null, statusTimer = null;
+let audioCtx = null, analyser = null, micStream = null, waveData = null, rafId = null, lastFrame = 0;
+let gotResult = false, loudMs = 0;
+const PROBE_LOUD_MS = 4000, PROBE_LEVEL = 0.15;
 
+function markUnsupported() {
+sttSupport = "no";
+try { localStorage.setItem(STT_KEY, "no"); } catch {}
+stop();
+btn.remove();
+wrap.classList.remove("has-mic");
+showStatus("Voice input isn’t available in this browser — type your answer instead.", true);
+statusTimer = setTimeout(() => showStatus(""), 5000);
+}
 function drawWave() {
 if (!listening || !analyser) return;
 analyser.getByteTimeDomainData(waveData);
@@ -1298,6 +1312,12 @@ let sum = 0;
 for (let k = 0; k < waveData.length; k++) { const d = (waveData[k] - 128) / 128; sum += d * d; }
 const level = Math.min(1, Math.sqrt(sum / waveData.length) * 6);
 const t = performance.now();
+const dt = lastFrame ? t - lastFrame : 0;
+lastFrame = t;
+if (sttSupport !== "ok" && !gotResult) {
+loudMs += level > PROBE_LEVEL ? dt : 0;
+if (loudMs > PROBE_LOUD_MS) { markUnsupported(); return; }
+}
 bars.forEach((bar, k) => {
 const jitter = 0.55 + 0.45 * Math.abs(Math.sin(t / 140 + k * 1.3));
 bar.style.height = (4 + level * 14 * jitter).toFixed(1) + "px";
@@ -1307,6 +1327,7 @@ rafId = requestAnimationFrame(drawWave);
 function startWave() {
 icon.hidden = true;
 waveEl.hidden = false;
+lastFrame = 0;
 navigator.mediaDevices?.getUserMedia({ audio: true }).then(stream => {
 if (!listening) { stream.getTracks().forEach(t => t.stop()); return; }
 micStream = stream;
@@ -1338,6 +1359,10 @@ btn.setAttribute("aria-pressed", "false");
 teardownWave();
 };
 rec.onresult = (e) => {
+if (!gotResult) {
+gotResult = true;
+if (sttSupport !== "ok") { sttSupport = "ok"; try { localStorage.setItem(STT_KEY, "ok"); } catch {} }
+}
 let interim = "";
 for (let k = e.resultIndex; k < e.results.length; k++) {
 const r = e.results[k];
@@ -1369,9 +1394,12 @@ try { rec.start(); } catch { stop(); }
 btn.addEventListener("click", () => {
 if (listening) { stop(); activeMic = null; return; }
 activeMic?.();
+if (statusTimer) clearTimeout(statusTimer);
 showStatus("");
 base = ta.value.trim();
 listening = true;
+gotResult = false;
+loudMs = 0;
 btn.setAttribute("aria-pressed", "true");
 startWave();
 try { rec.start(); } catch { stop(); return; }
