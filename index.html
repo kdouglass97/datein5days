@@ -263,6 +263,8 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .poll .chips{margin-bottom:6px}
 .rank-opt-label{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin-bottom:1px}
 .poll-rank .rank-label{padding:8px 0;font-size:14.5px;line-height:1.3}
+.rank-icon{flex:none;width:22px;height:22px;overflow:visible;pointer-events:none}
+.rank-icon path{stroke-dasharray:1;stroke-dashoffset:1;animation:ink .4s var(--dl,0s) cubic-bezier(.5,.1,.3,1) forwards}
 .poll-rank{margin-bottom:2px}
 .resume{margin:0 auto 26px;padding:12px 14px;border:1.5px dashed var(--tag);font-size:14px;text-align:left}
 .resume .linkish{padding:0;min-height:0;font-size:14px}
@@ -861,11 +863,11 @@ launch: "Sep 21",
 poll: [
 { key: "relationship_adds", type: "bestworst", q: "What do you want most from them?", sub: "Drag to rank. Top is what you want most, bottom is what you could live without.",
 options: [
-{ key: "chemistry", label: "Chemistry", scene: "someone I’m a little obsessed with" },
-{ key: "ease", label: "Ease", scene: "a soft place to land after a long day" },
-{ key: "play", label: "Play", scene: "a co-conspirator for weekends and bad ideas" },
-{ key: "ambition", label: "Ambition", scene: "someone who raises my bar" },
-{ key: "building", label: "Building", scene: "someone to build a life with" },
+{ key: "chemistry", label: "Chemistry", scene: "someone I’m a little obsessed with", icon: "M10 3C7 7 6 10 8 12C7 9 9 8 10 6C10 9 13 10 12 13C15 11 15 7 10 3Z" },
+{ key: "ease", label: "Ease", scene: "a soft place to land after a long day", icon: "M4 13C2 13 2 9 5 9C5 6 10 5 11 8C14 6 17 9 15 12C17 13 16 16 13 16H5C3 16 2 14 4 13Z" },
+{ key: "play", label: "Play", scene: "a co-conspirator for weekends and bad ideas", icon: "M2 10L18 3L11 18L9 11L2 10M9 11L15 6" },
+{ key: "ambition", label: "Ambition", scene: "someone who raises my bar", icon: "M5 17V6M15 17V6M4 6H16" },
+{ key: "building", label: "Building", scene: "someone to build a life with", icon: "M3 10L10 3L17 10M5 9V17H15V9" },
 ] },
 { key: "wednesday", type: "text", q: "What does a good Wednesday in your life look like?" },
 { key: "friendships", type: "text", q: "What do you value most in your closest friendships?", sub: "What makes those relationships work?" },
@@ -1283,6 +1285,7 @@ body = `<ol class="rank-list poll-rank" data-poll-rank>${item.options.map((o, id
 `<li class="rank-item" data-v="${esc(o.key)}">
 <button type="button" class="rank-handle" aria-label="${esc(o.label)}: ${esc(o.scene)}. Focus and press up or down arrow to change its rank."><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="6" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="6" cy="10" r="1.6"/><circle cx="14" cy="10" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="14" cy="16" r="1.6"/></svg></button>
 <span class="rank-num" aria-hidden="true">${idx + 1}</span>
+<svg class="rank-icon sk" viewBox="0 0 20 20" aria-hidden="true" style="--dl:${(idx * .07).toFixed(2)}s"><g filter="url(#pen)"><path class="ink" pathLength="1" d="${o.icon}"/></g></svg>
 <span class="rank-label"><span class="rank-opt-label">${esc(o.label)}</span>${esc(o.scene)}</span>
 </li>`).join("")}</ol>
 <p class="rank-status" aria-live="polite" data-poll-rank-status></p>`;
