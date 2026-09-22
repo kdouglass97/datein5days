@@ -252,11 +252,14 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .ta-wrap{position:relative}
 .ta-wrap.has-mic textarea{padding-right:48px}
 .mic-btn{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--ink);background:rgba(255,255,255,.75);display:grid;place-items:center;padding:0;cursor:pointer;color:var(--ink)}
-.mic-btn svg{width:16px;height:16px}
+.mic-btn svg{width:16px;height:16px;pointer-events:none}
 .mic-btn[aria-pressed="true"]{background:var(--tag);border-color:var(--tag);color:var(--paper)}
 @media (prefers-reduced-motion:no-preference){.mic-btn[aria-pressed="true"]{animation:mic-pulse 1.4s ease-in-out infinite}}
 @keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(31,77,27,.4)}50%{box-shadow:0 0 0 7px rgba(31,77,27,0)}}
 .mic-btn:disabled{opacity:.35;cursor:not-allowed}
+.mic-wave{display:flex;align-items:center;justify-content:center;gap:2.5px;width:16px;height:16px;pointer-events:none}
+.mic-wave i{display:block;width:2.5px;height:4px;border-radius:1px;background:currentColor}
+.mic-status{position:absolute;right:8px;bottom:46px;max-width:calc(100% - 16px);font-size:11.5px;line-height:1.35;text-align:right;color:#9B2C1C}
 .slider-wrap{margin:6px 0 18px}
 .slider-value{font-family:var(--serif);font-size:clamp(44px,11vw,60px);font-weight:500;text-align:center;color:var(--tag);letter-spacing:-.02em;margin-bottom:2px}
 .slider-wrap input[type=range]{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:linear-gradient(to right,var(--tag) 0 var(--pct,50%),var(--rule) var(--pct,50%) 100%);margin:16px 0 10px;cursor:pointer}
@@ -1271,14 +1274,69 @@ btn.type = "button";
 btn.className = "mic-btn";
 btn.setAttribute("aria-pressed", "false");
 btn.setAttribute("aria-label", "Dictate your answer");
-btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>';
+btn.innerHTML = '<svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg><span class="mic-wave" hidden><i></i><i></i><i></i><i></i></span>';
 wrap.appendChild(btn);
+const status = document.createElement("span");
+status.className = "mic-status";
+status.hidden = true;
+status.setAttribute("aria-live", "polite");
+wrap.appendChild(status);
+const icon = $(".mic-icon", btn), waveEl = $(".mic-wave", btn), bars = $$(".mic-wave i", btn);
+const showStatus = (msg) => { status.hidden = !msg; status.textContent = msg || ""; };
+
 const rec = new SR();
-rec.continuous = true;
+rec.continuous = false;
 rec.interimResults = true;
 rec.lang = navigator.language || "en-US";
-let base = "", listening = false;
-const stop = () => { listening = false; try { rec.stop(); } catch {} btn.setAttribute("aria-pressed", "false"); };
+let base = "", listening = false, restartTimer = null;
+let audioCtx = null, analyser = null, micStream = null, waveData = null, rafId = null;
+
+function drawWave() {
+if (!listening || !analyser) return;
+analyser.getByteTimeDomainData(waveData);
+let sum = 0;
+for (let k = 0; k < waveData.length; k++) { const d = (waveData[k] - 128) / 128; sum += d * d; }
+const level = Math.min(1, Math.sqrt(sum / waveData.length) * 6);
+const t = performance.now();
+bars.forEach((bar, k) => {
+const jitter = 0.55 + 0.45 * Math.abs(Math.sin(t / 140 + k * 1.3));
+bar.style.height = (4 + level * 14 * jitter).toFixed(1) + "px";
+});
+rafId = requestAnimationFrame(drawWave);
+}
+function startWave() {
+icon.hidden = true;
+waveEl.hidden = false;
+navigator.mediaDevices?.getUserMedia({ audio: true }).then(stream => {
+if (!listening) { stream.getTracks().forEach(t => t.stop()); return; }
+micStream = stream;
+audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+analyser = audioCtx.createAnalyser();
+analyser.fftSize = 256;
+waveData = new Uint8Array(analyser.fftSize);
+audioCtx.createMediaStreamSource(stream).connect(analyser);
+drawWave();
+}).catch(() => {});
+}
+function teardownWave() {
+icon.hidden = false;
+waveEl.hidden = true;
+bars.forEach(bar => bar.style.height = "4px");
+if (rafId) cancelAnimationFrame(rafId);
+rafId = null;
+micStream?.getTracks().forEach(t => t.stop());
+micStream = null;
+try { audioCtx?.close(); } catch {}
+audioCtx = null;
+analyser = null;
+}
+const stop = () => {
+listening = false;
+if (restartTimer) clearTimeout(restartTimer);
+try { rec.stop(); } catch {}
+btn.setAttribute("aria-pressed", "false");
+teardownWave();
+};
 rec.onresult = (e) => {
 let interim = "";
 for (let k = e.resultIndex; k < e.results.length; k++) {
@@ -1288,22 +1346,35 @@ else interim += r[0].transcript;
 }
 ta.value = (base + (interim ? (base ? " " : "") + interim : "")).trim();
 ta.dispatchEvent(new Event("input", { bubbles: true }));
+showStatus("");
 };
 rec.onerror = (e) => {
-stop();
 if (e.error === "not-allowed" || e.error === "service-not-allowed") {
-btn.disabled = true;
-btn.title = "Mic access blocked — check your browser settings.";
+stop();
+showStatus("Mic blocked — allow microphone access for this site and try again.");
+} else if (e.error === "audio-capture") {
+stop();
+showStatus("No microphone found.");
+} else if (e.error !== "no-speech" && e.error !== "aborted") {
+showStatus("Mic hiccup, still listening — keep talking.");
 }
 };
-rec.onend = () => { if (listening) { try { rec.start(); } catch { stop(); } } };
+rec.onend = () => {
+if (!listening) { teardownWave(); return; }
+restartTimer = setTimeout(() => {
+if (!listening) return;
+try { rec.start(); } catch { stop(); }
+}, 250);
+};
 btn.addEventListener("click", () => {
 if (listening) { stop(); activeMic = null; return; }
 activeMic?.();
+showStatus("");
 base = ta.value.trim();
 listening = true;
 btn.setAttribute("aria-pressed", "true");
-try { rec.start(); } catch { listening = false; return; }
+startWave();
+try { rec.start(); } catch { stop(); return; }
 activeMic = stop;
 ta.focus({ preventScroll: true });
 track("dictation_started", { q: qIndex + 1 });
