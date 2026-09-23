@@ -25,6 +25,7 @@
 --grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
 --serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
 --type:"Courier Prime","Courier New",Courier,monospace;
+--opsz:10;
 --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
@@ -35,10 +36,16 @@ a{color:inherit}
 a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 :focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
 h1,h2{font-family:var(--serif);font-weight:400;margin:0}
+/* bodoni's auto optical size keeps hairlines ~0.2px at every size: print-thin, invisible on screens. pin it per tier (!important: font shorthands reset it) */
+*{font-variation-settings:"opsz" var(--opsz)!important}
+.intro h1,.section-head{--opsz:18}
 
 .hero{position:relative;padding:calc(22px + env(safe-area-inset-top)) 0 30px;background:var(--grass)}
 .arc{display:block;width:100%;height:clamp(44px,7vw,84px);margin-top:-1px}
-.topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
+.topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
+@media (max-width:360px){.topbar{font-size:12.5px}}
 .brand{font-family:var(--serif);font-size:29px;text-decoration:none;letter-spacing:-.02em}
 .topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
 @media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
@@ -113,7 +120,7 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .way:active{transform:rotate(0deg) translateY(-3px)}
 .way:has(.go:focus-visible){outline:3px solid #F2C94C;outline-offset:4px}
 .way .sk{display:block;width:100%;max-width:280px;height:auto;margin:0 auto 14px}
-.way h2{font-size:27px;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
+.way h2{font-size:27px;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px;text-wrap:balance}
 .way p{margin:0 0 18px;font-size:15px}
 .go{display:inline-block;font:700 14px/1.2 var(--type);text-decoration:none;color:var(--ink);border:2px solid var(--tag);box-shadow:4px 4px 0 var(--tag);padding:11px 14px;background:var(--paper);transition:transform .12s,box-shadow .12s}
 .go::after{content:"";position:absolute;inset:0}
