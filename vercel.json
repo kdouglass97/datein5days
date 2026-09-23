@@ -8,7 +8,6 @@
   ],
   "rewrites": [
     { "source": "/c/01", "destination": "/index.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/involved", "destination": "/involved.html" }
+    { "source": "/privacy", "destination": "/privacy.html" }
   ]
 }
