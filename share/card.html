@@ -28,6 +28,8 @@ body::after{content:"";position:absolute;inset:0;pointer-events:none;background-
 .kicker{margin:0;text-transform:uppercase;letter-spacing:.05em;font-size:calc(var(--w)*.036)}
 .env-front{z-index:3;background-color:var(--kraft);clip-path:polygon(0 0,50% 40%,100% 0,100% 100%,0 100%);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 12% 10%;text-transform:uppercase;letter-spacing:.03em;font-size:calc(var(--w)*.038);line-height:1.3;color:var(--ink)}
 .env-front p{margin:0 0 1em}
+.env-front p:first-child{margin-bottom:.75em}
+.env-city b{display:block;font:500 calc(var(--w)*.064)/1 var(--serif);letter-spacing:-.01em;text-transform:none;margin-top:.15em}
 .stage h1{position:absolute;inset:21% 0 auto;margin:0;font-family:var(--serif);z-index:6;font-weight:500;text-align:center;text-transform:uppercase;font-size:calc(var(--w)*.18);line-height:.92;letter-spacing:-.05em;color:var(--ink)}
 .stage h1 span{display:block}
 .pol{position:absolute;z-index:5;margin:0;background:#F4F3EF;padding:5% 5% 17%;box-shadow:0 14px 26px -12px rgba(0,0,0,.55);transform:rotate(var(--r,0deg))}
@@ -36,11 +38,11 @@ body::after{content:"";position:absolute;inset:0;pointer-events:none;background-
 .pol figcaption{position:absolute;left:0;right:0;bottom:5%;text-align:center;font-size:calc(var(--w)*.03);color:var(--ink)}
 .p1{width:34%;left:-26%;top:-9%;--r:14deg}
 .p1 .ph{background:linear-gradient(165deg,#EDC08E,#B8674B 55%,#4A2A22)}
-.p2{width:34%;right:-24%;top:41%;--r:-8deg;outline:3px solid var(--tag)}
+.p2{width:34%;right:-24%;top:41%;--r:-8deg}
 .p2 .ph{background:radial-gradient(circle at 32% 28%,#F6DFA9,#C98A52 38%,#3C3230 88%)}
 .p3{width:30%;left:-17%;bottom:-7%;--r:9deg}
 .p3 .ph{background:linear-gradient(205deg,#A7BCC9,#DCC9A9 58%,#8B6F57)}
-.badge{position:absolute;top:-3px;right:-3px;background:var(--tag);color:var(--line);font-size:calc(var(--w)*.03);padding:.35em .7em;border-radius:0 0 0 10px}
+.badge{position:absolute;top:0;right:0;background:var(--tag);color:var(--line);font-size:calc(var(--w)*.03);padding:.35em .7em;border-radius:0 0 0 10px}
 </style>
 </head>
 <body>
@@ -50,7 +52,7 @@ body::after{content:"";position:absolute;inset:0;pointer-events:none;background-
 <div class="env-back"></div>
 <div class="letter"><p class="kicker">You're invited to a</p></div>
 <h1><span>Date in</span><span>5 days</span></h1>
-<div class="env-front"><p>We handle the admin,<br>you go on the date</p><p>Founding cohort<br>Any City</p></div>
+<div class="env-front"><p>We handle the admin,<br>you go on the date</p><p class="env-city">private beta<b>New York</b></p></div>
 <figure class="pol p1"><div class="ph"></div><figcaption>thu, 8pm</figcaption></figure>
 <figure class="pol p2"><div class="ph"></div><span class="badge">no. 01</span><figcaption>sat, late</figcaption></figure>
 <figure class="pol p3"><div class="ph"></div><figcaption>sun, slow</figcaption></figure>
