@@ -66,8 +66,9 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .kicker{margin:0;text-transform:uppercase;letter-spacing:.05em;font-size:max(12px,calc(var(--w)*.034))}
 .env-front{z-index:3;background-color:var(--kraft);clip-path:polygon(0 0,50% 40%,100% 0,100% 100%,0 100%);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 12% 10%;text-transform:uppercase;letter-spacing:.03em;font-size:max(12px,calc(var(--w)*.036));line-height:1.3}
 .env-front p{margin:0 0 1em}
-.env-city b{display:block;font:500 max(24px,calc(var(--w)*.085))/1 var(--serif);letter-spacing:-.01em;text-transform:none;margin-bottom:.3em}
-.env-city span{font-size:.85em;opacity:.8}
+.env-front p:first-child{margin-bottom:.75em}
+.env-front:has(.env-city){padding-bottom:7%}
+.env-city b{display:block;font:500 max(20px,calc(var(--w)*.064))/1 var(--serif);letter-spacing:-.01em;text-transform:none;margin-top:.15em}
 .hero h1{position:absolute;inset:21% 0 auto;z-index:6;font-weight:500;text-align:center;text-transform:uppercase;font-size:calc(var(--w)*.18);line-height:.92;letter-spacing:-.05em}
 .hero h1 span{display:block}
 .pol{position:absolute;z-index:5;margin:0;background:#F4F3EF;padding:5% 5% 17%;box-shadow:0 14px 26px -12px rgba(0,0,0,.55);transform:rotate(var(--r,0deg));transition:transform .35s cubic-bezier(.2,.8,.2,1.25),box-shadow .35s}
@@ -94,8 +95,9 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .lc{text-transform:lowercase}
 .scroll-cue{display:none}
 @media (max-width:640px){
-.hero{padding-bottom:34px}
+.hero{padding-bottom:0}
 .cta-wrap{margin-top:34px}
+.problem .cups{margin-top:-18px}
 .problem{padding-top:0}
 .scroll-cue{display:grid;place-items:center;width:34px;height:34px;margin:20px auto 0;color:var(--line);text-decoration:none;animation:bob 1.8s ease-in-out infinite}
 .scroll-cue svg{width:18px;height:18px}
@@ -554,7 +556,7 @@ section{padding:56px 16px}
 <h1><span>Date in</span><span>5 days</span></h1>
 <div class="env-front">
 <p>We handle the admin,<br>you go on the date</p>
-<p class="env-city"><b>New York</b><span>private beta</span></p>
+<p class="env-city">private beta<b>New York</b></p>
 </div>
 <figure class="pol p1" aria-hidden="true"><div class="ph"></div><figcaption>thu, 8pm</figcaption></figure>
 <figure class="pol p2" aria-hidden="true"><div class="ph"></div><span class="badge">no. 01</span><figcaption>sat, late</figcaption></figure>
@@ -911,7 +913,7 @@ const CONFIG = {
 brand: "five days",
 cohort: "01",
 igAccount: "@datein5days",
-cities: ["New York", "Los Angeles", "London", "Paris", "Tokyo", "Hong Kong"],
+cities: ["New York", "London", "Paris", "Tokyo", "Hong Kong", "Tbilisi"],
 cohortSize: 50,
 poll: [
 { key: "relationship_adds", type: "bestworst", q: "What do you want most from them?", sub: "Drag to rank. Top is what you want most, bottom is what you could live without.",
@@ -1011,8 +1013,23 @@ let guess = "US";
 try { const reg = new Intl.Locale(navigator.language).maximize().region; if (DIAL[reg]) guess = reg; } catch {}
 ccSelect.value = guess;
 const paint = () => { ccFace.textContent = `${flag(ccSelect.value)} +${DIAL[ccSelect.value]}`; };
-ccSelect.addEventListener("change", paint);
+// US/Canada numbers read as 212 555 0100 while typing; other countries keep what was typed,
+// since their groupings vary too much to guess.
+const phoneEl = $("[name=phone]");
+const nanp = () => DIAL[ccSelect.value] === "1";
+const fmt = () => {
+const v = phoneEl.value;
+if (!nanp() || v.trim().startsWith("+")) return;
+let d = v.replace(/\D/g, "");
+if (d.length === 11 && d[0] === "1") d = d.slice(1);
+if (d.length > 10) return;
+phoneEl.value = [d.slice(0, 3), d.slice(3, 6), d.slice(6)].filter(Boolean).join(" ");
+};
+phoneEl.addEventListener("input", e => { if (phoneEl.selectionStart === phoneEl.value.length && e.inputType !== "deleteContentBackward") fmt(); });
+phoneEl.addEventListener("blur", fmt);
+ccSelect.addEventListener("change", () => { paint(); phoneEl.placeholder = nanp() ? "212 555 0100" : "phone number"; fmt(); });
 paint();
+phoneEl.placeholder = nanp() ? "212 555 0100" : "phone number";
 })();
 const looksReachable = v => /\S+@\S+\.\S+/.test(v) || v.replace(/\D/g, "").length >= 7;
 const HANDLE = /^(?!.*\.\.)(?!\.)[a-z0-9._]{1,30}(?<!\.)$/;

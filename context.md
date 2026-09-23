@@ -74,8 +74,8 @@ coincidence: we plan every date ourselves, so we only open where we can. The pag
 **not** name the next cities. "Somewhere else? RSVP anyway" routes everyone else into the
 `other` city field, and those replies are the demand signal for which city opens next.
 Copy must never imply a date or a promise for any other city.
-The city chips still list major cities (New York, Los Angeles, London, Paris, Tokyo, Hong Kong
-+ other), framed as "where you live or keep ties." Up to three. That's matching data, not a
+The city chips still list major cities (New York, London, Paris, Tokyo, Hong Kong, Tbilisi
++ other). Walkable cities only, no car cities. Tbilisi is honorary: it's where we build, framed as "where you live or keep ties." Up to three. That's matching data, not a
 launch list: two people who don't share a base but share a second city are a good match for
 this ICP.
 The page frames this as a **private beta you found early**: no launch date anywhere, since a
