@@ -19,35 +19,99 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
 <style>
 :root{
---grass:#4F6B45;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;--line:#EDEAE1;
---rule:rgba(70,85,58,.2);
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
 --serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
 --type:"Courier Prime","Courier New",Courier,monospace;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--kraft);color:var(--ink);font:17px/1.6 var(--type);-webkit-font-smoothing:antialiased}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--clay);color:var(--ink);font:17px/1.6 var(--type);-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:var(--noise);opacity:.2;mix-blend-mode:multiply;z-index:50}
 a{color:inherit}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 :focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
-header{padding:28px clamp(18px,4vw,40px);color:var(--paper);background:var(--grass)}
-.brand{font-family:var(--serif);font-size:24px;text-decoration:none;letter-spacing:-.02em}
-main{max-width:680px;margin:0 auto;padding:clamp(28px,6vw,56px) clamp(16px,6vw,32px) 80px}
-.doc{background:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);padding:clamp(24px,6vw,48px)}
-.kicker{margin:0 0 10px;text-transform:uppercase;letter-spacing:.05em;font-size:13px}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,8vw,56px);letter-spacing:-.03em;line-height:1;margin:0 0 18px}
-h2{font-family:var(--serif);font-weight:400;font-size:23px;letter-spacing:-.01em;margin:0 0 6px;color:var(--ink)}
-p{margin:0 0 14px;max-width:60ch}
-.ways{list-style:none;margin:32px 0 0;padding:0;display:grid;gap:14px}
-.way{position:relative;border:2px solid var(--tag);box-shadow:5px 5px 0 var(--tag);padding:20px 22px 18px;background:var(--paper);transition:transform .12s,box-shadow .12s}
-@media (hover:hover){.way:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
-.way:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
-.way:has(.go:focus-visible){outline:3px solid #F2C94C;outline-offset:3px}
-.way p{margin:0 0 12px;font-size:15px}
-.direct a{text-underline-offset:3px;white-space:nowrap}
-.go{font-weight:700;font-size:15px;text-decoration:none}
+h1,h2{font-family:var(--serif);font-weight:400;margin:0}
+
+.hero{position:relative;overflow:hidden;padding:calc(22px + env(safe-area-inset-top)) 0 64px;
+background:radial-gradient(ellipse 420% 100% at 0% -8%,var(--grass) 0 67.6%,var(--line) 67.7% 69%,var(--clay) 69.1%)}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.brand{font-family:var(--serif);font-size:29px;text-decoration:none;letter-spacing:-.02em}
+.topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
+@media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
+.topbar a:not(.brand):focus-visible{text-decoration:underline}
+@media (max-width:480px){.topbar .xp{display:none}}
+
+.intro{max-width:620px;margin:0 auto;padding:clamp(44px,8vw,72px) 24px 0;text-align:center;color:var(--line)}
+.kicker{margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+.intro h1{color:var(--line);font-size:clamp(44px,9vw,76px);line-height:.98;letter-spacing:-.04em;margin:0 0 22px}
+.intro p{margin:0 auto;max-width:42ch}
+.mk{position:relative;white-space:nowrap}
+.mk svg{position:absolute;left:-2%;bottom:-8px;width:104%;height:10px;overflow:visible;pointer-events:none}
+.mk path{fill:none;stroke:#F2C38F;stroke-width:2;stroke-linecap:round}
+
+.paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
+.tape::before{content:"";position:absolute;top:-14px;left:50%;width:110px;height:28px;transform:translateX(-50%) rotate(-3deg);background:rgba(223,214,190,.85);z-index:2}
+.note{max-width:470px;margin:clamp(44px,7vw,64px) auto 0;padding:40px 30px 28px;transform:rotate(-.8deg);text-align:center}
+.note h2{font-size:30px;letter-spacing:-.02em;line-height:1.05;margin:0 0 14px}
+.note ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.note li{display:flex;flex-direction:column;align-items:center}
+.note li span{font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.65}
+.note li a{font-weight:700;text-underline-offset:4px;overflow-wrap:anywhere}
+
+.ways-wrap{padding:24px 18px 40px;max-width:900px;margin:0 auto}
+.section-head{color:var(--line);text-align:center;font-size:clamp(38px,6vw,52px);letter-spacing:-.03em;line-height:1;margin:0 0 10px}
+.section-sub{color:var(--line);text-align:center;margin:0 auto 40px;max-width:36ch}
+.ways{list-style:none;margin:0;padding:0;display:grid;gap:34px}
+@media (min-width:760px){.ways{grid-template-columns:1fr 1fr;gap:40px 34px}}
+.way{padding:26px;transform:rotate(var(--r,0deg));transition:transform .35s cubic-bezier(.2,.8,.2,1.25),box-shadow .35s}
+@media (hover:hover){.way:hover{transform:rotate(0deg) translateY(-6px);box-shadow:0 26px 40px -20px rgba(0,0,0,.65)}}
+.way:active{transform:rotate(0deg) translateY(-3px)}
+.way:has(.go:focus-visible){outline:3px solid #F2C94C;outline-offset:4px}
+.way .sk{display:block;width:100%;max-width:280px;height:auto;margin:0 auto 14px}
+.way h2{font-size:27px;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
+.way p{margin:0 0 18px;font-size:15px}
+.go{display:inline-block;font:700 14px/1.2 var(--type);text-decoration:none;color:var(--ink);border:2px solid var(--tag);box-shadow:4px 4px 0 var(--tag);padding:11px 14px;background:var(--paper);transition:transform .12s,box-shadow .12s}
 .go::after{content:"";position:absolute;inset:0}
 .go:focus-visible{outline:none}
+@media (hover:hover){.way:hover .go{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--tag)}}
+.way:active .go{transform:translate(4px,4px);box-shadow:0 0 0 var(--tag)}
+
+.sk{overflow:visible;pointer-events:none}
+.sk path,.sk circle{fill:none;stroke:#34422C;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sk .thin{stroke-width:1.1}
+.sk .dot{fill:var(--clay);stroke:none}
+.js .draw .ink{stroke-dasharray:1;stroke-dashoffset:1}
+.js .draw.in .ink{animation:ink 1.3s var(--dl,.2s) cubic-bezier(.5,.1,.3,1) forwards}
+.js .draw .washes,.js .draw .dot{opacity:0;transition:opacity 1.2s .9s}
+.js .draw.in .washes,.js .draw.in .dot{opacity:1}
+@keyframes ink{to{stroke-dashoffset:0}}
+
+.pin,.pencil,.heart{transform-box:view-box}
+.pin{transform-origin:151px 56px}
+.pencil{transform-origin:136px 118px}
+.draw.in .pin{animation:pinDrop .7s 1.5s cubic-bezier(.3,1.5,.5,1) backwards,pinBob 2.6s 2.4s ease-in-out infinite}
+.js .draw.in .wave{animation:ink 1.3s var(--dl) cubic-bezier(.5,.1,.3,1) forwards,wave 1.8s ease-in-out infinite}
+.js .draw.in .w1{animation-delay:.8s,2.1s}.js .draw.in .w2{animation-delay:.95s,2.3s}.js .draw.in .w3{animation-delay:1.1s,2.5s}
+.draw.in .heart{animation:heartUp 3.2s 2.4s ease-out infinite backwards}
+.draw.in .flash{animation:flash 3.4s 2.2s steps(1,end) infinite}
+.draw.in .pencil{animation:scribble 1.6s 2s ease-in-out infinite}
+.draw.in .rays{animation:flicker 2.8s 2s ease-in-out infinite}
+@keyframes pinDrop{from{transform:translateY(-26px);opacity:0}}
+@keyframes pinBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes wave{0%,100%{opacity:.2}40%{opacity:1}}
+@keyframes heartUp{0%{opacity:0;transform:translateY(6px) scale(.7)}25%{opacity:1}100%{opacity:0;transform:translateY(-26px) scale(1.1)}}
+@keyframes flash{0%,82%{opacity:1}86%{opacity:0}90%{opacity:1}94%{opacity:0}}
+@keyframes scribble{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-4deg)}75%{transform:rotate(3deg)}}
+@keyframes flicker{0%,100%{opacity:1}45%{opacity:.35}50%{opacity:1}55%{opacity:.5}60%{opacity:1}}
+
+footer{color:var(--line);text-align:center;padding:40px 20px 64px;font-size:14px}
+footer .brand{display:block;margin-bottom:6px;font-size:30px}
+footer p{margin:4px 0}
+
 .btn{display:block;text-align:center;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 20px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
 @media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
 .btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
@@ -58,9 +122,9 @@ html:has(.sheet[open]){overflow:hidden}
 @keyframes sheet-up{from{transform:translateY(100%)}}
 @keyframes sheet-in{from{opacity:0;transform:translateY(12px)}}
 .sheet-in{position:relative;padding:30px clamp(20px,6vw,32px) calc(26px + env(safe-area-inset-bottom))}
-.sheet .kicker{padding-right:44px}
+.sheet .kicker{padding-right:44px;margin-bottom:10px}
 .sheet h2{font-size:30px;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
-.sheet p{font-size:15px}
+.sheet p{font-size:15px;margin:0}
 .picks{display:grid;gap:16px;margin:22px 0 18px}
 .x{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;background:none;font:400 30px/1 var(--serif);color:var(--ink);cursor:pointer}
 .copy{display:block;margin:0 auto;padding:8px;border:0;background:none;font:14px/1.4 var(--type);color:var(--ink);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
@@ -68,45 +132,141 @@ html:has(.sheet[open]){overflow:hidden}
 .sheet{inset:0;margin:auto;width:calc(100% - 48px);max-width:440px;height:fit-content;border:2px solid var(--tag);box-shadow:8px 8px 0 var(--tag)}
 .sheet[open]{animation:sheet-in .22s ease-out}
 }
-@media (prefers-reduced-motion:reduce){.sheet[open]{animation:none}}
-.back{display:inline-block;margin-top:36px;font-size:14px}
+@media (prefers-reduced-motion:reduce){
+*{animation:none!important;transition:none!important}
+.js .draw .ink{stroke-dashoffset:0}
+.js .draw .washes,.js .draw .dot{opacity:1}
+}
 </style>
 </head>
 <body>
-<header><a class="brand" href="/">five days</a></header>
-<main>
-<article class="doc">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<filter id="pen" x="-10%" y="-10%" width="120%" height="120%">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/>
+<feDisplacementMap in="SourceGraphic" scale="2.4"/>
+</filter>
+<filter id="wash" x="-30%" y="-30%" width="160%" height="160%">
+<feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="3" seed="9"/>
+<feDisplacementMap in="SourceGraphic" scale="18"/>
+<feGaussianBlur stdDeviation="3"/>
+</filter>
+</defs>
+</svg>
+
+<header class="hero">
+<div class="topbar"><a class="brand" href="/">five days</a><span><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; <a href="/involved" aria-current="page">get involved</a></span></div>
+<div class="intro">
 <p class="kicker">get involved</p>
 <h1>help us seat the right people together.</h1>
-<p>Five Days is two people and one hunch: matching interests isn't the same as matching lives. We're testing it one city at a time, and we'd rather not do it alone.</p>
-<p class="direct">Say hi however you like: <a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a> on Instagram, or <a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a>. Or tap whichever of these sounds like you.</p>
+<p class="draw" data-reveal>Five Days is two people and one hunch: matching interests isn't the same as matching lives. We're testing it one city at a time, and we'd <span class="mk">rather not do it alone.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
+</div>
+<div class="paper note tape">
+<h2>say hi however you like</h2>
+<ul>
+<li><span>instagram</span><a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></li>
+<li><span>email</span><a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a></li>
+</ul>
+</div>
+</header>
 
+<main class="ways-wrap">
+<h2 class="section-head">or pick a door</h2>
+<p class="section-sub">Tap whichever sounds like you. None of them are a commitment.</p>
 <ul class="ways">
-<li class="way">
+
+<li class="paper way" style="--r:-.9deg">
+<svg class="sk draw" data-reveal viewBox="0 0 220 124" aria-hidden="true">
+<g class="washes" filter="url(#wash)">
+<ellipse cx="66" cy="84" rx="46" ry="26" style="fill:#A9B89A;opacity:.4"/>
+<circle cx="152" cy="40" r="20" style="fill:#E7B48C;opacity:.5"/>
+</g>
+<g filter="url(#pen)">
+<path class="ink thin" pathLength="1" d="M6 108C60 104 150 111 214 106"/>
+<path class="ink" pathLength="1" d="M40 106L55 60L58 22L61 60L76 106M47 86H69M52 66H64M47 106C51 94 65 94 69 106M58 22V12"/>
+<path class="ink" pathLength="1" style="--dl:.35s" d="M94 106V50H112V106M94 50L103 34L112 50M103 34V25"/>
+<circle class="ink thin" pathLength="1" style="--dl:.55s" cx="103" cy="62" r="5"/>
+<path class="ink" pathLength="1" style="--dl:.55s" d="M130 106V74H172V106M141 106V94C141 84 161 84 161 94V106M127 74H175M130 74V68H172V74"/>
+<path class="ink" pathLength="1" style="--dl:.75s" d="M186 106V64H202V106M189 64V52H199V64M192 52V42H196V52M194 42V32"/>
+</g>
+<g class="pin">
+<path class="ink" pathLength="1" style="--dl:1.2s" d="M151 56C145 48 142 44 142 39A9 9 0 1 1 160 39C160 44 157 48 151 56Z"/>
+<circle class="dot" cx="151" cy="39" r="3.2"/>
+</g>
+</svg>
 <h2>launch it in your city</h2>
 <p>You know the good bars, the quiet corners, and the people who'd actually show up. Help us run a cohort where you live.</p>
 <a class="go" href="mailto:datein5days@gmail.com?subject=Launch%20Five%20Days%20in%20my%20city">I want five days in my city&nbsp;&rarr;</a>
 </li>
-<li class="way">
+
+<li class="paper way tape" style="--r:.8deg">
+<svg class="sk draw" data-reveal viewBox="0 0 220 124" aria-hidden="true">
+<g class="washes" filter="url(#wash)">
+<ellipse cx="92" cy="80" rx="48" ry="24" style="fill:#A9B89A;opacity:.4"/>
+<circle cx="186" cy="40" r="16" style="fill:#F2C38F;opacity:.5"/>
+</g>
+<g filter="url(#pen)">
+<path class="ink" pathLength="1" d="M56 70H72L116 46V108L72 88H56Z"/>
+<path class="ink thin" pathLength="1" style="--dl:.3s" d="M72 70V88M64 88L68 102H78L76 88"/>
+<path class="ink thin" pathLength="1" style="--dl:.5s" d="M116 46C122 58 122 96 116 108"/>
+</g>
+<path class="ink wave w1" pathLength="1" style="--dl:.8s" d="M134 66C140 72 140 84 134 90"/>
+<path class="ink wave w2" pathLength="1" style="--dl:.95s" d="M146 58C156 68 156 88 146 98"/>
+<path class="ink wave w3" pathLength="1" style="--dl:1.1s" d="M158 50C172 64 172 92 158 106"/>
+<g class="heart"><path class="ink thin" pathLength="1" style="--dl:1.3s" d="M180 38C180 33 187 33 187 38C187 33 194 33 194 38C194 44 187 47 187 50C187 47 180 44 180 38Z"/></g>
+</svg>
 <h2>help us spread the word</h2>
 <p>Writers, posters, group-chat instigators, people with a following or just a very good friend list. Help us reach the right fifty.</p>
 <a class="go" href="mailto:datein5days@gmail.com?subject=Help%20market%20Five%20Days">I can help with marketing&nbsp;&rarr;</a>
 </li>
-<li class="way">
+
+<li class="paper way" style="--r:.6deg">
+<svg class="sk draw" data-reveal viewBox="0 0 220 124" aria-hidden="true">
+<g class="washes" filter="url(#wash)">
+<circle cx="70" cy="84" r="30" style="fill:#E7B48C;opacity:.45"/>
+<ellipse cx="160" cy="92" rx="34" ry="18" style="fill:#A9B89A;opacity:.4"/>
+</g>
+<g filter="url(#pen)">
+<path class="ink" pathLength="1" d="M34 62H106C110 62 112 64 112 68V102C112 106 110 108 106 108H34C30 108 28 106 28 102V68C28 64 30 62 34 62Z"/>
+<path class="ink thin" pathLength="1" style="--dl:.3s" d="M50 62L56 52H80L86 62"/>
+<circle class="ink" pathLength="1" style="--dl:.4s" cx="70" cy="85" r="15"/>
+<circle class="ink thin" pathLength="1" style="--dl:.6s" cx="70" cy="85" r="8"/>
+<path class="ink thin" pathLength="1" style="--dl:.7s" d="M94 70H104V76H94Z"/>
+</g>
+<g class="flash"><path class="ink thin" pathLength="1" style="--dl:1s" d="M99 44V34M107 48L114 41M91 48L84 41"/></g>
+<g class="pencil"><g filter="url(#pen)"><path class="ink" pathLength="1" style="--dl:.5s" d="M140 104L184 52L196 62L152 114ZM140 104L136 118L152 114M178 58L190 68"/></g></g>
+<path class="ink thin" pathLength="1" style="--dl:1.1s" d="M100 118C108 114 114 121 122 117S130 119 136 118"/>
+</svg>
 <h2>lend us a skill</h2>
 <p>Design, photo, code, venues, events, law, research. If you're good at something and this made you curious, we'd love to get in touch.</p>
 <a class="go" href="mailto:datein5days@gmail.com?subject=I%20have%20a%20skill%20for%20Five%20Days">Here's what I'm good at&nbsp;&rarr;</a>
 </li>
-<li class="way">
+
+<li class="paper way" style="--r:-.7deg">
+<svg class="sk draw" data-reveal viewBox="0 0 220 124" aria-hidden="true">
+<g class="washes" filter="url(#wash)">
+<circle cx="110" cy="58" r="34" style="fill:#F2C38F;opacity:.55"/>
+</g>
+<g filter="url(#pen)">
+<path class="ink" pathLength="1" d="M98 76C86 68 84 42 110 38C136 42 134 68 122 76C119 79 119 84 119 88H101C101 84 101 79 98 76Z"/>
+<path class="ink thin" pathLength="1" style="--dl:.4s" d="M101 94H119M103 100H117M107 106H113"/>
+<path class="ink thin" pathLength="1" style="--dl:.6s" d="M104 76L106 66C107 60 113 60 114 66L116 76"/>
+</g>
+<g class="rays"><path class="ink thin" pathLength="1" style="--dl:1s" d="M110 26V16M84 36L77 29M136 36L143 29M76 58H66M144 58H154"/></g>
+</svg>
 <h2>something else</h2>
 <p>An intro, a venue, an idea we haven't had yet. It doesn't have to be one of the above.</p>
 <a class="go" href="mailto:datein5days@gmail.com?subject=Something%20else%20for%20Five%20Days">I have something else in mind&nbsp;&rarr;</a>
 </li>
-</ul>
 
-<a class="back" href="/">&larr; back to five days</a>
-</article>
+</ul>
 </main>
+
+<footer>
+<a class="brand" href="/">five days</a>
+<p>A table for two, somewhere good. An experiment in slower, better dating.</p>
+<p><a href="/">experiment no. 01</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+</footer>
 
 <dialog class="sheet" id="reach" aria-labelledby="reach-h">
 <div class="sheet-in">
@@ -123,6 +283,11 @@ html:has(.sheet[open]){overflow:hidden}
 </dialog>
 <script>
 (() => {
+const io = new IntersectionObserver(es => es.forEach(e => {
+if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}), { threshold: .2 });
+document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
+
 const sheet = document.getElementById("reach");
 if (!sheet.showModal) return;
 const topic = sheet.querySelector("[data-topic]");
