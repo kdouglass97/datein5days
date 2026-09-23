@@ -1001,24 +1001,77 @@ const igWrap = $("[data-ig-wrap]"), photoWrap = $("[data-photo-wrap]");
 const igInput = $("[name=instagram]"), igHint = $("[data-ig-hint]");
 const photoInput = $("[data-photo-input]"), photoStatus = $("[data-photo-status]");
 const contactInput = $("[name=contact]");
-// Phone numbers are stored E.164 (+countrycode...). The dial code comes from the country
-// picker, unless the person typed a full international number (+ or 00) themselves.
-// Region -> dial code, generated from libphonenumber metadata.
-const DIAL = Object.fromEntries("AC247,AD376,AE971,AF93,AG1,AI1,AL355,AM374,AO244,AR54,AS1,AT43,AU61,AW297,AX358,AZ994,BA387,BB1,BD880,BE32,BF226,BG359,BH973,BI257,BJ229,BL590,BM1,BN673,BO591,BQ599,BR55,BS1,BT975,BW267,BY375,BZ501,CA1,CC61,CD243,CF236,CG242,CH41,CI225,CK682,CL56,CM237,CN86,CO57,CR506,CU53,CV238,CW599,CX61,CY357,CZ420,DE49,DJ253,DK45,DM1,DO1,DZ213,EC593,EE372,EG20,EH212,ER291,ES34,ET251,FI358,FJ679,FK500,FM691,FO298,FR33,GA241,GB44,GD1,GE995,GF594,GG44,GH233,GI350,GL299,GM220,GN224,GP590,GQ240,GR30,GT502,GU1,GW245,GY592,HK852,HN504,HR385,HT509,HU36,ID62,IE353,IL972,IM44,IN91,IO246,IQ964,IR98,IS354,IT39,JE44,JM1,JO962,JP81,KE254,KG996,KH855,KI686,KM269,KN1,KP850,KR82,KW965,KY1,KZ7,LA856,LB961,LC1,LI423,LK94,LR231,LS266,LT370,LU352,LV371,LY218,MA212,MC377,MD373,ME382,MF590,MG261,MH692,MK389,ML223,MM95,MN976,MO853,MP1,MQ596,MR222,MS1,MT356,MU230,MV960,MW265,MX52,MY60,MZ258,NA264,NC687,NE227,NF672,NG234,NI505,NL31,NO47,NP977,NR674,NU683,NZ64,OM968,PA507,PE51,PF689,PG675,PH63,PK92,PL48,PM508,PR1,PS970,PT351,PW680,PY595,QA974,RE262,RO40,RS381,RU7,RW250,SA966,SB677,SC248,SD249,SE46,SG65,SH290,SI386,SJ47,SK421,SL232,SM378,SN221,SO252,SR597,SS211,ST239,SV503,SX1,SY963,SZ268,TA290,TC1,TD235,TG228,TH66,TJ992,TK690,TL670,TM993,TN216,TO676,TR90,TT1,TV688,TW886,TZ255,UA380,UG256,US1,UY598,UZ998,VA39,VC1,VE58,VG1,VI1,VN84,VU678,WF681,WS685,XK383,YE967,YT262,ZA27,ZM260,ZW263".split(",").map(x => [x.slice(0, 2), x.slice(2)]));
-function normPhone(v, dial) {
-let s = String(v || "").trim().replace(/[\s().\-\u2010-\u2015]/g, "");
-if (s.startsWith("00")) s = "+" + s.slice(2);
-if (s.startsWith("+")) return "+" + s.slice(1).replace(/\D/g, "");
-let d = s.replace(/\D/g, "");
+// Phone numbers are stored E.164 (+countrycode...). The country picker owns the dial code;
+// the text box only ever holds the national number. A pasted or autofilled "+44 ..." moves
+// its code into the picker. Per region: dial code, possible national lengths, and whether
+// the country dials a trunk "0" at home (UK 07700 -> +44 7700). Generated from libphonenumber.
+const PH = {};
+"AC247/5.6,AD376/6.8.9,AE971/5.6.7.8.9.10.11.12/0,AF93/9/0,AG1/10,AI1/10,AL355/6.7.8.9/0,AM374/8/0,AO244/9,AR54/10.11/0,AS1/10,AT43/4.5.6.7.8.9.10.11.12.13/0,AU61/5.6.7.8.9.10.12/0,AW297/7,AX358/5.6.7.8.9.10.11.12/0,AZ994/9/0,BA387/8.9/0,BB1/10,BD880/6.7.8.9.10/0,BE32/8.9/0,BF226/8,BG359/6.7.8.9.12/0,BH973/8,BI257/8,BJ229/8.10,BL590/9/0,BM1/10,BN673/7,BO591/8.9/0,BQ599/7,BR55/8.9.10.11/0,BS1/10,BT975/7.8,BW267/7.8.10,BY375/6.7.8.9.10.11,BZ501/7.11,CA1/7.10,CC61/6.7.8.9.10.12/0,CD243/7.8.9.10/0,CF236/8,CG242/9,CH41/9.12/0,CI225/10,CK682/5,CL56/9.10.11,CM237/8.9,CN86/7.8.9.10.11.12/0,CO57/8.10.11/0,CR506/8.10,CU53/6.7.8.10/0,CV238/7,CW599/7.8,CX61/6.7.8.9.10.12/0,CY357/8,CZ420/9.10.11.12,DE49/4.5.6.7.8.9.10.11.12.13.14.15/0,DJ253/8,DK45/8,DM1/10,DO1/10,DZ213/8.9/0,EC593/8.9.10.11/0,EE372/7.8.10,EG20/8.9.10/0,EH212/9/0,ER291/7/0,ES34/9,ET251/9/0,FI358/5.6.7.8.9.10.11.12/0,FJ679/7.11,FK500/5,FM691/7,FO298/6,FR33/9/0,GA241/7.8,GB44/7.9.10/0,GD1/10,GE995/9/0,GF594/9/0,GG44/7.9.10/0,GH233/8.9/0,GI350/8,GL299/6,GM220/7.9,GN224/8.9,GP590/9/0,GQ240/9,GR30/10.11.12,GT502/8.11,GU1/10,GW245/7.9,GY592/7,HK852/5.6.7.8.9.11,HN504/8.11,HR385/7.8.9/0,HT509/8,HU36/8.9,ID62/7.8.9.10.11.12.13.14.15.16.17/0,IE353/7.8.9.10/0,IL972/7.8.9.10.11.12/0,IM44/10/0,IN91/8.9.10.11.12.13/0,IO246/7,IQ964/8.9.10/0,IR98/4.5.6.7.10/0,IS354/7.9,IT39/6.7.8.9.10.11.12,JE44/10/0,JM1/10,JO962/8.9/0,JP81/8.9.10.11.12.13.14.15.16.17/0,KE254/7.8.9.10/0,KG996/9.10/0,KH855/8.9.10/0,KI686/5.8/0,KM269/7,KN1/10,KP850/8.10/0,KR82/5.6.8.9.10.11.12.13.14/0,KW965/7.8,KY1/10,KZ7/10.14,LA856/8.9.10/0,LB961/7.8/0,LC1/10,LI423/7.9/0,LK94/9/0,LR231/7.8.9/0,LS266/8,LT370/8/0,LU352/4.5.6.7.8.9.10.11,LV371/8,LY218/9/0,MA212/9/0,MC377/8.9/0,MD373/8/0,ME382/8.9/0,MF590/9/0,MG261/9/0,MH692/7,MK389/8/0,ML223/8,MM95/6.7.8.9.10/0,MN976/8.9.10/0,MO853/7.8,MP1/10,MQ596/9/0,MR222/8,MS1/10,MT356/8,MU230/7.8.10,MV960/7.10,MW265/7.9/0,MX52/10,MY60/8.9.10/0,MZ258/8.9,NA264/8.9/0,NC687/6,NE227/8,NF672/6,NG234/10.11.12.13.14/0,NI505/8,NL31/5.6.7.8.9.10.11/0,NO47/5.8,NP977/8.10.11/0,NR674/7,NU683/4.7,NZ64/5.6.7.8.9.10/0,OM968/7.8.9,PA507/7.8.10.11,PE51/8.9/0,PF689/6.8.9,PG675/7.8,PH63/6.8.9.10.11.12.13/0,PK92/8.9.10.11.12/0,PL48/6.7.8.9.10,PM508/6.9/0,PR1/10,PS970/8.9.10/0,PT351/9,PW680/7,PY595/6.7.8.9.10.11/0,QA974/7.8.9.11,RE262/9/0,RO40/6.9/0,RS381/6.7.8.9.10.11.12/0,RU7/10.14,RW250/8.9/0,SA966/9.10/0,SB677/5.7,SC248/7,SD249/9/0,SE46/6.7.8.9.10.12/0,SG65/8.10.11,SH290/4.5,SI386/5.6.7.8/0,SJ47/5.8,SK421/6.7.9/0,SL232/8/0,SM378/8.10,SN221/9,SO252/6.7.8.9/0,SR597/6.7,SS211/9/0,ST239/7,SV503/7.8.11,SX1/10,SY963/8.9/0,SZ268/8.9,TA290/4,TC1/10,TD235/8,TG228/8,TH66/8.9.10.13/0,TJ992/9,TK690/4.5.6.7,TL670/7.8,TM993/8,TN216/8,TO676/5.7,TR90/7.10.12.13/0,TT1/10,TV688/5.6.7,TW886/7.8.9.10.11/0,TZ255/9/0,UA380/9.10/0,UG256/9/0,US1/10,UY598/4.5.6.7.8.9.10.11.12.13/0,UZ998/9,VA39/6.7.8.9.10.11.12,VC1/10,VE58/10/0,VG1/10,VI1/10,VN84/7.8.9.10/0,VU678/5.7,WF681/6.9,WS685/5.6.7.10,XK383/8.9.10.11.12/0,YE967/7.8.9/0,YT262/9/0,ZA27/5.6.7.8.9.10/0,ZM260/9/0,ZW263/7.9.10/0".split(",").forEach(x => {
+const [rc, lens, trunk] = x.split("/");
+PH[rc.slice(0, 2)] = { dial: rc.slice(2), lens: lens ? lens.split(".").map(Number) : [], trunk: !!trunk };
+});
+const DIAL = Object.fromEntries(Object.entries(PH).map(([r, o]) => [r, o.dial]));
+// the region a shared dial code usually means (+1 is the US, not Antigua)
+const MAIN_REGION = { "1": "US","7": "RU","39": "IT","44": "GB","47": "NO","61": "AU","212": "MA","262": "RE","290": "SH","358": "FI","590": "GP","599": "CW" };
+function nationalDigits(v, region) {
+let d = String(v || "").replace(/\D/g, "");
+const { dial, trunk } = PH[region];
 if (dial === "1" && d.length === 11 && d[0] === "1") d = d.slice(1);
 else if (dial === "7" && d.length === 11 && d[0] === "8") d = d.slice(1);
-else if (dial !== "39" && d[0] === "0") d = d.slice(1); // trunk 0 (UK 07700 -> 7700), Italy keeps it
-return "+" + dial + d;
+else if (trunk && d[0] === "0") d = d.slice(1);
+return d;
 }
-const PHONE = /^\+[1-9]\d{7,14}$/;
-const ccSelect = $("[data-cc]"), ccFace = $("[data-cc-face]");
-(() => {
+const normPhone = (v, region) => "+" + PH[region].dial + nationalDigits(v, region);
+function phoneOk(v, region) {
+const n = nationalDigits(v, region).length, lens = PH[region].lens;
+return lens.length ? lens.includes(n) : n >= 4 && n <= 14;
+}
+const ccSelect = $("[data-cc]"), ccFace = $("[data-cc-face]"), phoneEl = $("[name=phone]");
 const flag = r => r.replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0)));
+const nanp = () => DIAL[ccSelect.value] === "1";
+const paintCc = () => {
+ccFace.textContent = `${flag(ccSelect.value)} +${DIAL[ccSelect.value]}`;
+phoneEl.placeholder = nanp() ? "212 555 0100" : "phone number";
+};
+// "+44 7700 900123" / "0044..." -> { region, rest }. Dial codes are prefix-free, so the first
+// match while typing "+", "+4", "+44" is the right one. null until a full code is there.
+function splitIntl(v) {
+let s = v.trim();
+if (s.startsWith("00")) s = "+" + s.slice(2);
+if (!s.startsWith("+")) return null;
+const d = s.slice(1).replace(/\D/g, "");
+for (const n of [1, 2, 3]) {
+const code = d.slice(0, n);
+const regions = Object.keys(PH).filter(r => PH[r].dial === code);
+if (!regions.length) continue;
+const region = DIAL[ccSelect.value] === code ? ccSelect.value : (MAIN_REGION[code] || regions[0]);
+return { region, rest: d.slice(n) };
+}
+return null;
+}
+// the longest number this country allows, plus one digit only when it starts with the
+// prefix people dial at home (UK 0, US 1, Russia 8)
+function maxDigits(region, digits) {
+const { dial, lens, trunk } = PH[region];
+const home = (trunk && digits[0] === "0") || (dial === "1" && digits[0] === "1") || (dial === "7" && digits[0] === "8");
+return (lens.length ? Math.max(...lens) : 14) + (home ? 1 : 0);
+}
+function setPhone(v, { format = true } = {}) {
+v = String(v || "");
+const intl = splitIntl(v);
+if (intl) { ccSelect.value = intl.region; paintCc(); v = intl.rest; }
+else if (/^\s*(\+|00)/.test(v)) { phoneEl.value = v.replace(/[^\d+\s]/g, ""); return; } // mid-typing "+4"
+v = v.replace(/[^\d\s().\-]/g, "");
+let extra = v.replace(/\D/g, "").length - maxDigits(ccSelect.value, v.replace(/\D/g, ""));
+while (extra-- > 0) v = v.replace(/\d(?=\D*$)/, "");
+if (format && nanp()) {
+let d = v.replace(/\D/g, "");
+if (d.length === 11 && d[0] === "1") d = d.slice(1);
+v = [d.slice(0, 3), d.slice(3, 6), d.slice(6)].filter(Boolean).join(" ");
+}
+phoneEl.value = v;
+}
+(() => {
 let names; try { names = new Intl.DisplayNames(["en"], { type: "region" }); } catch { names = { of: r => r }; }
 const all = Object.keys(DIAL).map(r => ({ r, name: names.of(r) || r })).sort((a, b) => a.name.localeCompare(b.name));
 const TOP = ["US", "GB", "CA", "FR", "JP", "HK", "AU", "DE"];
@@ -1027,24 +1080,16 @@ ccSelect.innerHTML = TOP.map(r => opt(all.find(o => o.r === r))).join("") + '<op
 let guess = "US";
 try { const reg = new Intl.Locale(navigator.language).maximize().region; if (DIAL[reg]) guess = reg; } catch {}
 ccSelect.value = guess;
-const paint = () => { ccFace.textContent = `${flag(ccSelect.value)} +${DIAL[ccSelect.value]}`; };
-// US/Canada numbers read as 212 555 0100 while typing; other countries keep what was typed,
-// since their groupings vary too much to guess.
-const phoneEl = $("[name=phone]");
-const nanp = () => DIAL[ccSelect.value] === "1";
-const fmt = () => {
-const v = phoneEl.value;
-if (!nanp() || v.trim().startsWith("+")) return;
-let d = v.replace(/\D/g, "");
-if (d.length === 11 && d[0] === "1") d = d.slice(1);
-if (d.length > 10) return;
-phoneEl.value = [d.slice(0, 3), d.slice(3, 6), d.slice(6)].filter(Boolean).join(" ");
-};
-phoneEl.addEventListener("input", e => { if (phoneEl.selectionStart === phoneEl.value.length && e.inputType !== "deleteContentBackward") fmt(); });
-phoneEl.addEventListener("blur", fmt);
-ccSelect.addEventListener("change", () => { paint(); phoneEl.placeholder = nanp() ? "212 555 0100" : "phone number"; fmt(); });
-paint();
-phoneEl.placeholder = nanp() ? "212 555 0100" : "phone number";
+paintCc();
+// US/Canada numbers read as 212 555 0100 while typing; other countries keep their own
+// spacing, since groupings vary too much to guess. Formatting waits for blur when the
+// caret is mid-number, so editing a digit doesn't throw the caret to the end.
+phoneEl.addEventListener("input", e => {
+const atEnd = phoneEl.selectionStart === phoneEl.value.length;
+setPhone(phoneEl.value, { format: atEnd && e.inputType !== "deleteContentBackward" });
+});
+phoneEl.addEventListener("blur", () => setPhone(phoneEl.value));
+ccSelect.addEventListener("change", () => { paintCc(); setPhone(phoneEl.value); });
 })();
 const looksReachable = v => /\S+@\S+\.\S+/.test(v) || v.replace(/\D/g, "").length >= 7;
 const HANDLE = /^(?!.*\.\.)(?!\.)[a-z0-9._]{1,30}(?<!\.)$/;
@@ -1337,7 +1382,7 @@ Object.assign(lead, d);
 sendLead("rsvp");
 track("rsvp_sent", { cities: cities.join(","), looking: looking.join(","), verify: verify.mode });
 const phoneInput = $("[name=phone]", f2);
-if (verify.mode === "photo" && !phoneInput.value && !d.email.includes("@")) phoneInput.value = d.email;
+if (verify.mode === "photo" && !phoneInput.value && !d.email.includes("@")) setPhone(d.email);
 const btn = $("button[type=submit]", f1);
 btn.textContent = "sealed \u2713";
 setTimeout(() => swap(f1, f2), reduced ? 0 : 450);
@@ -1345,12 +1390,12 @@ setTimeout(() => swap(f1, f2), reduced ? 0 : 450);
 f2.addEventListener("submit", e => {
 e.preventDefault();
 const phoneInput = $("[name=phone]", f2);
-const dial = DIAL[ccSelect.value];
-if (!check(f2, () => PHONE.test(normPhone(phoneInput.value, dial)) ? "" : (phoneInput.focus(), "That number doesn't look right. Check the country code too."))) return;
+const region = ccSelect.value;
+if (!check(f2, () => phoneOk(phoneInput.value, region) ? "" : (phoneInput.focus(), `That doesn't look like a full number for ${flag(region)} +${DIAL[region]}. Check the country too.`))) return;
 const fd = new FormData(f2);
 Object.assign(lead, {
 age: fd.get("age"), meet: fd.get("meet"), price: fd.get("price"),
-phone: normPhone(phoneInput.value, dial), reach_on: fd.get("reach_on"),
+phone: normPhone(phoneInput.value, region), reach_on: fd.get("reach_on"),
 consent: true,
 sensitive_consent: true,
 marketing_consent: fd.has("marketing_consent"),
