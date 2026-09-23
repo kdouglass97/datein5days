@@ -225,6 +225,7 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .linkish{background:none;border:0;padding:6px 0;font:14px var(--type);color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:left;min-height:32px}
 .verify-label{font-size:14px;margin:0 0 8px}
 .contact-field{margin:14px 0 4px}
+.phone-field{margin:6px 0 22px}
 .verify-label small{opacity:.65;font-size:13px}
 .drop{position:relative;display:grid;grid-template-columns:92px 1fr;gap:16px;align-items:center;cursor:pointer}
 .drop input{position:absolute;opacity:0;width:1px;height:1px}
@@ -778,7 +779,7 @@ section{padding:56px 16px}
 </form>
 <form class="step" data-step="2" hidden novalidate>
 <h2>rsvp received</h2>
-<p class="sub">Three more, so we set you up well.</p>
+<p class="sub">A few more, so we set you up well.</p>
 <fieldset class="group">
 <legend>your age</legend>
 <div class="paddles">
@@ -810,6 +811,15 @@ section{padding:56px 16px}
 <label class="chip"><input type="radio" name="price" value="25"><span>$25</span></label>
 <label class="chip"><input type="radio" name="price" value="50"><span>$50</span></label>
 <label class="chip"><input type="radio" name="price" value="100+"><span>$100+</span></label>
+</div>
+</fieldset>
+<label class="field phone-field"><span>your number</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+1 212 555 0100" required data-msg="Add your number so we can reach you." data-ph-mask><small class="hint">We text when your city opens, and to set up your date. Nothing else. Outside the US? Start with your country code.</small></label>
+<fieldset class="group">
+<legend>text me on</legend>
+<div class="chips">
+<label class="chip"><input type="radio" name="reach_on" value="imessage" required data-msg="Pick where you'd rather hear from us."><span>iMessage</span></label>
+<label class="chip"><input type="radio" name="reach_on" value="whatsapp"><span>WhatsApp</span></label>
+<label class="chip"><input type="radio" name="reach_on" value="sms"><span>regular text</span></label>
 </div>
 </fieldset>
 <label class="check"><input type="checkbox" name="age_consent" required data-msg="Confirm you're 18 or older to continue."><span>I confirm that I am 18 or older.</span></label>
@@ -956,6 +966,18 @@ const igWrap = $("[data-ig-wrap]"), photoWrap = $("[data-photo-wrap]");
 const igInput = $("[name=instagram]"), igHint = $("[data-ig-hint]");
 const photoInput = $("[data-photo-input]"), photoStatus = $("[data-photo-status]");
 const contactInput = $("[name=contact]");
+// Phone numbers are stored E.164 (+countrycode...). Ten US-shaped digits with no "+" get +1,
+// since New York is the launch city; anything else must carry its own country code.
+function normPhone(v) {
+let s = String(v || "").trim().replace(/[\s().\-\u2010-\u2015]/g, "");
+if (s.startsWith("00")) s = "+" + s.slice(2);
+if (s.startsWith("+")) return "+" + s.slice(1).replace(/\D/g, "");
+const d = s.replace(/\D/g, "");
+if (d.length === 10) return "+1" + d;
+if (d.length === 11 && d[0] === "1") return "+" + d;
+return d;
+}
+const PHONE = /^\+[1-9]\d{7,14}$/;
 const looksReachable = v => /\S+@\S+\.\S+/.test(v) || v.replace(/\D/g, "").length >= 7;
 const HANDLE = /^(?!.*\.\.)(?!\.)[a-z0-9._]{1,30}(?<!\.)$/;
 const normHandle = v => v.trim()
@@ -1246,22 +1268,26 @@ d.cities = cities;
 Object.assign(lead, d);
 sendLead("rsvp");
 track("rsvp_sent", { cities: cities.join(","), looking: looking.join(","), verify: verify.mode });
+const phoneInput = $("[name=phone]", f2);
+if (verify.mode === "photo" && !phoneInput.value && !d.email.includes("@")) phoneInput.value = d.email;
 const btn = $("button[type=submit]", f1);
 btn.textContent = "sealed \u2713";
 setTimeout(() => swap(f1, f2), reduced ? 0 : 450);
 });
 f2.addEventListener("submit", e => {
 e.preventDefault();
-if (!check(f2)) return;
+const phoneInput = $("[name=phone]", f2);
+if (!check(f2, () => PHONE.test(normPhone(phoneInput.value)) ? "" : (phoneInput.focus(), "That number doesn't look right. Outside the US? Start with your country code, like +44."))) return;
 const fd = new FormData(f2);
 Object.assign(lead, {
 age: fd.get("age"), meet: fd.get("meet"), price: fd.get("price"),
+phone: normPhone(phoneInput.value), reach_on: fd.get("reach_on"),
 consent: true,
 sensitive_consent: true,
 marketing_consent: fd.has("marketing_consent"),
 });
 sendLead("details");
-track("details_sent", { price: fd.get("price") });
+track("details_sent", { price: fd.get("price"), reach_on: fd.get("reach_on") });
 swap(f2, s3);
 renderPoll(0);
 });

@@ -128,10 +128,21 @@ or post. The copy says this explicitly, because handing a stranger your Instagra
 highest-friction moment on the page, and naming the limit removes more objection than
 silence does.
 
-> 🔴 **Open product gap, unresolved.** The Instagram path collects **no contact channel**.
-> The photo fallback collects one. If Instagram DMs are not the outreach method, every
-> Instagram-verified lead is currently unreachable. Do not paper over this in copy by
-> implying a contact method that does not exist. Fix it in the form or decide the channel.
+### Why a phone number, and why we ask which app
+
+As of 2026-09-23 step 2 asks everyone for a **phone number** (required, stored E.164) and
+**"text me on"**: iMessage, WhatsApp, or regular text. The number is the one key that
+reaches people on every channel. The app is their preference, because the people we
+want split by geography: the US lives in iMessage, most of the world lives in WhatsApp,
+and a mobile ICP may use both. Email was rejected: the follow-ups (your city opened, the
+logistics "details card", the date itself) are time-sensitive, and email is where a
+five-day plan goes to die.
+
+Copy promises: "We text when your city opens, and to set up your date. Nothing else."
+The privacy notice adds that the number is never shared with the match. Hold to both.
+
+Rows from before 2026-09-23 have no `phone`. Instagram-path leads from that period are
+still reachable only by DM.
 
 ### Why 50, and why free
 
@@ -448,6 +459,7 @@ q5_cared_for q6_not_done_yet q7_spoke_up_sooner
 sensitive_consent marketing_consent
 want_most could_skip
 want_ranking rank_chemistry rank_ease rank_play rank_ambition rank_building
+phone reach_on
 ```
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
@@ -519,7 +531,8 @@ fraction of visitors finish.
 
 ## 10. Open items
 
-- [ ] Instagram path collects no contact channel (see §3). Unresolved, and blocking.
+- [x] Instagram path collects no contact channel. Fixed 2026-09-23: phone + `reach_on` in step 2 (see §3).
+- [ ] Retention vs. waitlist: privacy notice deletes data 3 months after the cohort, but out-of-town RSVPs are promised "first to go" when their city opens. Ruby to decide.
 - [x] Privacy notice. Live at `/privacy` (`privacy.html`), linked from the footer and from
       the RSVP consent step. Controller, purposes, legal bases, recipients/processors,
       transfers, retention, rights, withdrawal and complaint rights are all in it.
