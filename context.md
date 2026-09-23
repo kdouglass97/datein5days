@@ -338,6 +338,13 @@ gone from the page. `adds_most`/`adds_also` are frozen, not deleted - old rows k
 data, the page just no longer writes to them. `want_most`/`could_skip` are unchanged by
 this second pivot (still the two column names, still one option key each). See §8.
 
+As of 2026-09-23 the **full ranking** is recorded too, not just its ends. The page sends
+`want_ranking` (all five keys, most wanted first). The sheet stores it as a comma-joined
+`want_ranking` cell plus one `rank_<option>` column per option (`rank_chemistry` ...
+`rank_building`, 1 = want most, 5 = could skip), so middle positions are sortable and
+averageable across the cohort. If an option is added or renamed, update `RANK_OPTIONS` and
+append its `rank_` column at the end of `COLUMNS` in the Apps Script.
+
 **Question 2 does hidden work.** "A good Wednesday" extracts life-shape without asking for
 it. Nobody performs on a Wednesday. The answers reveal whether someone's life has room in
 it, which is the thing the checkbox apps cannot see.
@@ -432,6 +439,7 @@ q1_relationship_adds q2_wednesday q3_friendships q4_sharing_life
 q5_cared_for q6_not_done_yet q7_spoke_up_sooner
 sensitive_consent marketing_consent
 want_most could_skip
+want_ranking rank_chemistry rank_ease rank_play rank_ambition rank_building
 ```
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email

@@ -42,7 +42,16 @@ const COLUMNS = [
   // for the same reason as sensitive_consent/marketing_consent - inserting mid-row would
   // misalign every existing row under the wrong headers.
   "want_most", "could_skip",
+  // Added 2026-09-23: the full drag-to-rank order for relationship_adds, not just its two ends.
+  // want_ranking is the whole list, most wanted first. rank_<option> is that option's
+  // position (1 = want most, 5 = could skip) so the cohort can be sorted/averaged per option.
+  // Appended at the end for the same header-alignment reason as above. Older rows stay blank.
+  "want_ranking",
+  "rank_chemistry", "rank_ease", "rank_play", "rank_ambition", "rank_building",
 ];
+
+/** option keys for the relationship_adds ranking, one rank_<key> column each */
+const RANK_OPTIONS = ["chemistry", "ease", "play", "ambition", "building"];
 
 /** question key (sent by the page) -> column name. Add a row here when you add a question. */
 const POLL_MAP = {
@@ -175,6 +184,13 @@ function buildRow_(d) {
   // this stays only so a stray older payload can't write into the wrong column.
   if (d.want_most) out.want_most = d.want_most;
   if (d.could_skip) out.could_skip = d.could_skip;
+  if (Array.isArray(d.want_ranking) && d.want_ranking.length) {
+    out.want_ranking = join_(d.want_ranking);
+    RANK_OPTIONS.forEach(function (k) {
+      const pos = d.want_ranking.indexOf(k);
+      if (pos > -1) out["rank_" + k] = pos + 1;
+    });
+  }
 
   // photo: base64 data URL -> Drive file, store the link only
   if (d.photo && String(d.photo).indexOf("data:image/") === 0) {
