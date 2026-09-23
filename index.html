@@ -66,10 +66,11 @@ h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;color:var(--ink)}
 background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var(--line) 67.7% 69.2%,var(--clay) 69.3%)}
 .topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
 .brand{font-family:var(--serif);font-size:24px;text-decoration:none;letter-spacing:-.02em}
+.topbar .brand{font-size:29px}
 .topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
 @media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
 .topbar a:not(.brand):focus-visible{text-decoration:underline}
-@media (max-width:420px){.topbar .xp{display:none}}
+@media (max-width:480px){.topbar .xp{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0}
 .flap{position:absolute;inset:34% 0 auto;height:10%;background:var(--kraft-deep);clip-path:polygon(0 100%,50% 0,100% 100%)}
 .env-back,.env-front{position:absolute;left:0;right:0;top:44%;bottom:0}
@@ -563,7 +564,7 @@ section{padding:56px 16px}
 </defs>
 </svg>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="xp">experiment </span>no. 01 &nbsp;/&nbsp; <a href="/involved" data-track="nav_involved">get involved</a></span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><a href="#"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; <a href="/involved" data-track="nav_involved">get involved</a></span></div>
 <div class="stage">
 <div class="flap" aria-hidden="true"></div>
 <div class="env-back" aria-hidden="true"></div>
