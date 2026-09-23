@@ -64,14 +64,17 @@ h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;color:var(--ink)}
 [hidden]{display:none!important}
 .hero{position:relative;overflow:hidden;padding:calc(22px + env(safe-area-inset-top)) 0 72px;
 background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var(--line) 67.7% 69.2%,var(--clay) 69.3%)}
-.topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
+.topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
+@media (max-width:360px){.topbar{font-size:12.5px}}
 .brand{font-family:var(--serif);font-size:24px;text-decoration:none;letter-spacing:-.02em}
-.topbar .brand{font-size:29px}
 .topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
 @media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
 .topbar a:not(.brand):focus-visible{text-decoration:underline}
 @media (max-width:480px){.topbar .xp{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0}
+@media (min-width:700px) and (min-aspect-ratio:1/1){:root{--w:min(540px,82vw,max(280px,calc((100svh - 330px)/1.2)))}.hero .cta-wrap{margin-top:30px}.hero .spots{margin-top:14px}.hero .ctas{gap:16px}}
 .flap{position:absolute;inset:34% 0 auto;height:10%;background:var(--kraft-deep);clip-path:polygon(0 100%,50% 0,100% 100%)}
 .env-back,.env-front{position:absolute;left:0;right:0;top:44%;bottom:0}
 .env-back{background:var(--kraft-deep);box-shadow:0 30px 50px -30px rgba(0,0,0,.6)}
@@ -102,6 +105,11 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .btn{display:inline-block;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 30px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
 @media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
 .btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
+.ctas{display:flex;flex-direction:column;align-items:center;gap:22px}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;font:15px/1.2 var(--type);color:var(--line);background:none;border:0;padding:10px 6px;margin:-10px -6px;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;transition:opacity .15s,transform .12s}
+.btn-ghost svg{width:16px;height:16px;flex:none}
+@media (hover:hover){.btn-ghost:hover{text-decoration-thickness:2px}}
+.btn-ghost:active{transform:translateY(2px)}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--tag)}
 .spots{color:var(--line);font-size:15px;margin:18px 0 0}
 .spots b{font-family:var(--serif);font-size:24px;font-weight:500;margin-left:4px}
@@ -582,7 +590,10 @@ section{padding:56px 16px}
 <svg class="clip" viewBox="0 0 30 92" aria-hidden="true"><path d="M20 30v40a8 8 0 0 1-16 0V16a12 12 0 0 1 24 0v50a4 4 0 0 1-8 0V26" fill="none" stroke="#4d4d4d" stroke-width="2.4" stroke-linecap="round"/></svg>
 </div>
 <div class="cta-wrap">
+<div class="ctas">
 <a class="btn" href="#rsvp" data-track="cta_hero">rsvp</a>
+<button type="button" class="btn-ghost" data-share><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3L3 10.5L10 13.5M21 3L14 21L10 13.5M21 3L10 13.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><span data-share-label aria-live="polite">send to a single friend</span></button>
+</div>
 <p class="spots"><b>you found us early.</b></p>
 <a class="scroll-cue" href="#problem-h" aria-label="Scroll to keep reading"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </div>
@@ -931,6 +942,8 @@ const CONFIG = {
 brand: "five days",
 cohort: "01",
 igAccount: "@datein5days",
+siteUrl: "https://datein5days.com",
+shareText: "You're single and I'm tired of hearing about the apps. Here:",
 cities: ["New York", "London", "Paris", "Tokyo", "Hong Kong", "Tbilisi"],
 cohortSize: 50,
 poll: [
@@ -1703,6 +1716,21 @@ wantA.addEventListener("pointerenter", () => focus("a"));
 wantB.addEventListener("pointerenter", () => focus("b"));
 wantsEl.addEventListener("pointerleave", unfocus);
 }
+(() => {
+const btn = $("[data-share]"), label = $("[data-share-label]"), idle = label.textContent;
+if (!btn) return;
+const say = msg => { label.textContent = msg; clearTimeout(say.t); say.t = setTimeout(() => label.textContent = idle, 3000); };
+btn.addEventListener("click", async () => {
+const url = CONFIG.siteUrl + "/?src=friend";
+track("share_click", { native: !!navigator.share });
+if (navigator.share) {
+try { await navigator.share({ text: CONFIG.shareText + "\n" + url }); track("share_sent"); return; }
+catch (e) { if (e.name === "AbortError") return; }
+}
+try { await navigator.clipboard.writeText(CONFIG.shareText + " " + url); say("copied. now paste it to them"); track("share_copied"); }
+catch { say(url); }
+});
+})();
 $$("[data-track]").forEach(el => el.addEventListener("click", () => track(el.dataset.track)));
 track("landing_viewed");
 if (new URLSearchParams(location.search).get("go") === "rsvp") {

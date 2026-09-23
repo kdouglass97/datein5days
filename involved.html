@@ -38,7 +38,10 @@ h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 
 .hero{position:relative;padding:calc(22px + env(safe-area-inset-top)) 0 30px;background:var(--grass)}
 .arc{display:block;width:100%;height:clamp(44px,7vw,84px);margin-top:-1px}
-.topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
+.topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
+@media (max-width:360px){.topbar{font-size:12.5px}}
 .brand{font-family:var(--serif);font-size:29px;text-decoration:none;letter-spacing:-.02em}
 .topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
 @media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
