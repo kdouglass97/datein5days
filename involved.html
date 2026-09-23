@@ -36,8 +36,8 @@ a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 :focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
 h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 
-.hero{position:relative;overflow:hidden;padding:calc(22px + env(safe-area-inset-top)) 0 64px;
-background:radial-gradient(ellipse 420% 100% at 0% -8%,var(--grass) 0 67.6%,var(--line) 67.7% 69%,var(--clay) 69.1%)}
+.hero{position:relative;padding:calc(22px + env(safe-area-inset-top)) 0 30px;background:var(--grass)}
+.arc{display:block;width:100%;height:clamp(44px,7vw,84px);margin-top:-1px}
 .topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
 .brand{font-family:var(--serif);font-size:29px;text-decoration:none;letter-spacing:-.02em}
 .topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
@@ -55,7 +55,8 @@ background:radial-gradient(ellipse 420% 100% at 0% -8%,var(--grass) 0 67.6%,var(
 
 .paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
 .tape::before{content:"";position:absolute;top:-14px;left:50%;width:110px;height:28px;transform:translateX(-50%) rotate(-3deg);background:rgba(223,214,190,.85);z-index:2}
-.note{max-width:470px;margin:clamp(44px,7vw,64px) auto 0;padding:40px 30px 28px;transform:rotate(-.8deg);text-align:center}
+.note{max-width:470px;margin:26px auto 0;padding:40px 30px 28px;transform:rotate(-.8deg);text-align:center}
+.note-wrap{padding:0 18px}
 .note h2{font-size:30px;letter-spacing:-.02em;line-height:1.05;margin:0 0 14px}
 .note ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .note li{display:flex;flex-direction:column;align-items:center}
@@ -90,23 +91,32 @@ background:radial-gradient(ellipse 420% 100% at 0% -8%,var(--grass) 0 67.6%,var(
 .js .draw.in .washes,.js .draw.in .dot{opacity:1}
 @keyframes ink{to{stroke-dashoffset:0}}
 
-.pin,.pencil,.heart{transform-box:view-box}
+.pin,.pencil,.heart,.rays,.aperture{transform-box:view-box}
+.aperture{transform-origin:70px 85px}
+.rays{transform-origin:110px 58px}
+.ping{fill:none;stroke:var(--clay);stroke-width:1.4;opacity:0;transform-box:fill-box;transform-origin:center}
 .pin{transform-origin:151px 56px}
 .pencil{transform-origin:136px 118px}
-.draw.in .pin{animation:pinDrop .7s 1.5s cubic-bezier(.3,1.5,.5,1) backwards,pinBob 2.6s 2.4s ease-in-out infinite}
+.draw.in .pin{animation:pinDrop .7s 1.5s cubic-bezier(.3,1.5,.5,1) backwards,pinBob 1.8s 2.2s cubic-bezier(.45,0,.55,1) infinite}
+.draw.in .ping{animation:ping 1.8s 2.2s ease-out infinite}
 .js .draw.in .wave{animation:ink 1.3s var(--dl) cubic-bezier(.5,.1,.3,1) forwards,wave 1.8s ease-in-out infinite}
 .js .draw.in .w1{animation-delay:.8s,2.1s}.js .draw.in .w2{animation-delay:.95s,2.3s}.js .draw.in .w3{animation-delay:1.1s,2.5s}
 .draw.in .heart{animation:heartUp 3.2s 2.4s ease-out infinite backwards}
-.draw.in .flash{animation:flash 3.4s 2.2s steps(1,end) infinite}
+.draw.in .flash{animation:flash 1.8s 2s steps(1,end) infinite}
+.draw.in .aperture{animation:iris 1.8s 2s ease-in-out infinite}
 .draw.in .pencil{animation:scribble 1.6s 2s ease-in-out infinite}
-.draw.in .rays{animation:flicker 2.8s 2s ease-in-out infinite}
+.draw.in .rays{animation:flicker 1.6s 2s ease-in-out infinite}
+.draw.in .glow{animation:glow 1.6s 2s ease-in-out infinite}
 @keyframes pinDrop{from{transform:translateY(-26px);opacity:0}}
-@keyframes pinBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pinBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes ping{0%{opacity:.9;transform:scale(.4)}45%{opacity:0;transform:scale(1.8)}100%{opacity:0}}
 @keyframes wave{0%,100%{opacity:.2}40%{opacity:1}}
 @keyframes heartUp{0%{opacity:0;transform:translateY(6px) scale(.7)}25%{opacity:1}100%{opacity:0;transform:translateY(-26px) scale(1.1)}}
-@keyframes flash{0%,82%{opacity:1}86%{opacity:0}90%{opacity:1}94%{opacity:0}}
+@keyframes flash{0%,55%{opacity:0}60%{opacity:1}68%{opacity:0}74%{opacity:1}86%{opacity:0}}
+@keyframes iris{0%,50%,100%{transform:scale(1)}58%{transform:scale(.55)}72%{transform:scale(1.08)}}
 @keyframes scribble{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-4deg)}75%{transform:rotate(3deg)}}
-@keyframes flicker{0%,100%{opacity:1}45%{opacity:.35}50%{opacity:1}55%{opacity:.5}60%{opacity:1}}
+@keyframes flicker{0%,100%{opacity:1;transform:scale(1.06)}40%{opacity:.25;transform:scale(.86)}48%{opacity:1}54%{opacity:.4}62%{opacity:1;transform:scale(1)}}
+@keyframes glow{0%,100%{opacity:.75}40%{opacity:.25}62%{opacity:.6}}
 
 footer{color:var(--line);text-align:center;padding:40px 20px 64px;font-size:14px}
 footer .brand{display:block;margin-bottom:6px;font-size:30px}
@@ -161,6 +171,9 @@ html:has(.sheet[open]){overflow:hidden}
 <h1>help us seat the right people together.</h1>
 <p class="draw" data-reveal>Five Days is two people and one hunch: matching interests isn't the same as matching lives. We're testing it one city at a time, and we'd <span class="mk">rather not do it alone.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
 </div>
+</header>
+<svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16C820 24 400 48 0 70Z" fill="#4F6B45"/><path d="M0 70C400 48 820 24 1200 16" fill="none" stroke="#EDEAE1" stroke-width="8" vector-effect="non-scaling-stroke"/></svg>
+<div class="note-wrap">
 <div class="paper note tape">
 <h2>say hi however you like</h2>
 <ul>
@@ -168,7 +181,7 @@ html:has(.sheet[open]){overflow:hidden}
 <li><span>email</span><a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a></li>
 </ul>
 </div>
-</header>
+</div>
 
 <main class="ways-wrap">
 <h2 class="section-head">or pick a door</h2>
@@ -193,6 +206,7 @@ html:has(.sheet[open]){overflow:hidden}
 <path class="ink" pathLength="1" style="--dl:1.2s" d="M151 56C145 48 142 44 142 39A9 9 0 1 1 160 39C160 44 157 48 151 56Z"/>
 <circle class="dot" cx="151" cy="39" r="3.2"/>
 </g>
+<ellipse class="ping" cx="151" cy="66" rx="10" ry="3"/>
 </svg>
 <h2>launch it in your city</h2>
 <p>You know the good bars, the quiet corners, and the people who'd actually show up. Help us run a cohort where you live.</p>
@@ -230,7 +244,7 @@ html:has(.sheet[open]){overflow:hidden}
 <path class="ink" pathLength="1" d="M34 62H106C110 62 112 64 112 68V102C112 106 110 108 106 108H34C30 108 28 106 28 102V68C28 64 30 62 34 62Z"/>
 <path class="ink thin" pathLength="1" style="--dl:.3s" d="M50 62L56 52H80L86 62"/>
 <circle class="ink" pathLength="1" style="--dl:.4s" cx="70" cy="85" r="15"/>
-<circle class="ink thin" pathLength="1" style="--dl:.6s" cx="70" cy="85" r="8"/>
+<g class="aperture"><circle class="ink thin" pathLength="1" style="--dl:.6s" cx="70" cy="85" r="8"/></g>
 <path class="ink thin" pathLength="1" style="--dl:.7s" d="M94 70H104V76H94Z"/>
 </g>
 <g class="flash"><path class="ink thin" pathLength="1" style="--dl:1s" d="M99 44V34M107 48L114 41M91 48L84 41"/></g>
@@ -245,7 +259,7 @@ html:has(.sheet[open]){overflow:hidden}
 <li class="paper way" style="--r:-.7deg">
 <svg class="sk draw" data-reveal viewBox="0 0 220 124" aria-hidden="true">
 <g class="washes" filter="url(#wash)">
-<circle cx="110" cy="58" r="34" style="fill:#F2C38F;opacity:.55"/>
+<circle class="glow" cx="110" cy="58" r="34" style="fill:#F2C38F;opacity:.55"/>
 </g>
 <g filter="url(#pen)">
 <path class="ink" pathLength="1" d="M98 76C86 68 84 42 110 38C136 42 134 68 122 76C119 79 119 84 119 88H101C101 84 101 79 98 76Z"/>
