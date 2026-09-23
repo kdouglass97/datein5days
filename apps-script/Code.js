@@ -48,7 +48,14 @@ const COLUMNS = [
   // Appended at the end for the same header-alignment reason as above. Older rows stay blank.
   "want_ranking",
   "rank_chemistry", "rank_ease", "rank_play", "rank_ambition", "rank_building",
+  // Added 2026-09-23: a contact channel for everyone, not just the photo path.
+  // phone is E.164 ("+12125550100"); reach_on is where they'd rather get it:
+  // imessage | whatsapp | sms. Appended at the end for the same header-alignment reason.
+  "phone", "reach_on",
 ];
+
+/** columns Sheets must keep as text: "+1212..." would otherwise be coerced to a number */
+const TEXT_COLUMNS = ["phone"];
 
 /** option keys for the relationship_adds ranking, one rank_<key> column each */
 const RANK_OPTIONS = ["chemistry", "ease", "play", "ambition", "building"];
@@ -182,6 +189,9 @@ function buildRow_(d) {
 
   // adds_most/adds_also are frozen (see COLUMNS comment) - the page stops sending them,
   // this stays only so a stray older payload can't write into the wrong column.
+  if (d.phone) out.phone = String(d.phone);
+  if (d.reach_on) out.reach_on = d.reach_on;
+
   if (d.want_most) out.want_most = d.want_most;
   if (d.could_skip) out.could_skip = d.could_skip;
   if (Array.isArray(d.want_ranking) && d.want_ranking.length) {
@@ -215,6 +225,12 @@ function buildRow_(d) {
   return out;
 }
 
+/** a leading apostrophe makes Sheets store the value as text instead of parsing it */
+function asText_(col, v) {
+  if (TEXT_COLUMNS.indexOf(col) === -1 || v === "" || v === undefined) return v;
+  return "'" + String(v).replace(/^'/, "");
+}
+
 function join_(v) {
   return Array.isArray(v) ? v.filter(String).join(", ") : String(v);
 }
@@ -237,14 +253,15 @@ function upsert_(sheet, row) {
     const merged = COLUMNS.map(function (col, i) {
       const incoming = row[col];
       // never blank out something we already have
-      if (incoming === undefined || incoming === "") return existing[i];
-      return incoming;
+      // existing values are re-written too, so text columns need re-protecting every time
+      if (incoming === undefined || incoming === "") return asText_(col, existing[i]);
+      return asText_(col, incoming);
     });
     sheet.getRange(target, 1, 1, width).setValues([merged]);
   } else {
     row.created = row.updated;
     const fresh = COLUMNS.map(function (col) {
-      return row[col] === undefined ? "" : row[col];
+      return row[col] === undefined ? "" : asText_(col, row[col]);
     });
     sheet.appendRow(fresh);
   }
