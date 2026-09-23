@@ -66,7 +66,9 @@ h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;color:var(--ink)}
 background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var(--line) 67.7% 69.2%,var(--clay) 69.3%)}
 .topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
 .brand{font-family:var(--serif);font-size:24px;text-decoration:none;letter-spacing:-.02em}
-.topbar a:not(.brand){text-underline-offset:3px}
+.topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
+@media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
+.topbar a:not(.brand):focus-visible{text-decoration:underline}
 @media (max-width:420px){.topbar .xp{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0}
 .flap{position:absolute;inset:34% 0 auto;height:10%;background:var(--kraft-deep);clip-path:polygon(0 100%,50% 0,100% 100%)}

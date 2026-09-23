@@ -39,13 +39,35 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,8vw,56px);lette
 h2{font-family:var(--serif);font-weight:400;font-size:23px;letter-spacing:-.01em;margin:0 0 6px;color:var(--ink)}
 p{margin:0 0 14px;max-width:60ch}
 .ways{list-style:none;margin:32px 0 0;padding:0;display:grid;gap:14px}
-.way{border:2px solid var(--tag);box-shadow:5px 5px 0 var(--tag);padding:20px 22px 18px;background:var(--paper)}
+.way{position:relative;border:2px solid var(--tag);box-shadow:5px 5px 0 var(--tag);padding:20px 22px 18px;background:var(--paper);transition:transform .12s,box-shadow .12s}
+@media (hover:hover){.way:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
+.way:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
+.way:has(.go:focus-visible){outline:3px solid #F2C94C;outline-offset:3px}
 .way p{margin:0 0 12px;font-size:15px}
-.way a{font-weight:700;font-size:15px;text-underline-offset:3px}
-.reach{margin-top:40px;padding-top:26px;border-top:1px dashed var(--rule)}
-.reach ul{list-style:none;margin:10px 0 0;padding:0}
-.reach li{margin:0 0 8px}
-.reach b{display:block;font-weight:400;opacity:.65;font-size:14px}
+.go{font-weight:700;font-size:15px;text-decoration:none}
+.go::after{content:"";position:absolute;inset:0}
+.go:focus-visible{outline:none}
+.btn{display:block;text-align:center;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 20px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
+@media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
+.btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
+html:has(.sheet[open]){overflow:hidden}
+.sheet{inset:auto 0 0 0;margin:0;width:100%;max-width:100%;max-height:calc(100% - 40px);border:0;padding:0;background:var(--paper);color:var(--ink);box-shadow:0 -20px 40px -20px rgba(0,0,0,.5)}
+.sheet::backdrop{background:rgba(31,40,26,.5)}
+.sheet[open]{animation:sheet-up .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes sheet-up{from{transform:translateY(100%)}}
+@keyframes sheet-in{from{opacity:0;transform:translateY(12px)}}
+.sheet-in{position:relative;padding:30px clamp(20px,6vw,32px) calc(26px + env(safe-area-inset-bottom))}
+.sheet .kicker{padding-right:44px}
+.sheet h2{font-size:30px;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
+.sheet p{font-size:15px}
+.picks{display:grid;gap:16px;margin:22px 0 18px}
+.x{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;background:none;font:400 30px/1 var(--serif);color:var(--ink);cursor:pointer}
+.copy{display:block;margin:0 auto;padding:8px;border:0;background:none;font:14px/1.4 var(--type);color:var(--ink);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+@media (min-width:640px){
+.sheet{inset:0;margin:auto;width:calc(100% - 48px);max-width:440px;height:fit-content;border:2px solid var(--tag);box-shadow:8px 8px 0 var(--tag)}
+.sheet[open]{animation:sheet-in .22s ease-out}
+}
+@media (prefers-reduced-motion:reduce){.sheet[open]{animation:none}}
 .back{display:inline-block;margin-top:36px;font-size:14px}
 </style>
 </head>
@@ -62,31 +84,67 @@ p{margin:0 0 14px;max-width:60ch}
 <li class="way">
 <h2>launch it in your city</h2>
 <p>You know the good bars, the quiet corners, and the people who'd actually show up. Help us run a cohort where you live.</p>
-<a href="mailto:datein5days@gmail.com?subject=Launch%20Five%20Days%20in%20my%20city">I want five days in my city&nbsp;&rarr;</a>
+<a class="go" href="mailto:datein5days@gmail.com?subject=Launch%20Five%20Days%20in%20my%20city">I want five days in my city&nbsp;&rarr;</a>
 </li>
 <li class="way">
 <h2>help us spread the word</h2>
 <p>Writers, posters, group-chat instigators, people with a following or just a very good friend list. Help us reach the right fifty.</p>
-<a href="mailto:datein5days@gmail.com?subject=Help%20market%20Five%20Days">I can help with marketing&nbsp;&rarr;</a>
+<a class="go" href="mailto:datein5days@gmail.com?subject=Help%20market%20Five%20Days">I can help with marketing&nbsp;&rarr;</a>
 </li>
 <li class="way">
 <h2>lend us a skill</h2>
 <p>Design, photo, code, venues, events, law, research. If you're good at something and this made you curious, we'd love to get in touch.</p>
-<a href="mailto:datein5days@gmail.com?subject=I%20have%20a%20skill%20for%20Five%20Days">Here's what I'm good at&nbsp;&rarr;</a>
+<a class="go" href="mailto:datein5days@gmail.com?subject=I%20have%20a%20skill%20for%20Five%20Days">Here's what I'm good at&nbsp;&rarr;</a>
+</li>
+<li class="way">
+<h2>something else</h2>
+<p>An intro, a venue, an idea we haven't had yet. It doesn't have to be one of the above.</p>
+<a class="go" href="mailto:datein5days@gmail.com?subject=Something%20else%20for%20Five%20Days">I have something else in mind&nbsp;&rarr;</a>
 </li>
 </ul>
-
-<section class="reach" aria-labelledby="reach-h">
-<h2 id="reach-h">or just reach out</h2>
-<p>Whichever is easiest. It's the two of us reading either way.</p>
-<ul>
-<li><b>instagram</b> <a href="https://instagram.com/datein5days" target="_blank" rel="noopener">DM @datein5days</a></li>
-<li><b>email</b> <a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a></li>
-</ul>
-</section>
 
 <a class="back" href="/">&larr; back to five days</a>
 </article>
 </main>
+
+<dialog class="sheet" id="reach" aria-labelledby="reach-h">
+<div class="sheet-in">
+<button type="button" class="x" data-close aria-label="Close">&times;</button>
+<p class="kicker" data-topic>get involved</p>
+<h2 id="reach-h">reach out, whatever's easiest</h2>
+<p>It's the two of us reading either way.</p>
+<div class="picks">
+<a class="btn" href="https://ig.me/m/datein5days" target="_blank" rel="noopener">DM us on Instagram</a>
+<a class="btn" href="mailto:datein5days@gmail.com" data-mail>Email us</a>
+</div>
+<button type="button" class="copy" data-copy>or copy datein5days@gmail.com</button>
+</div>
+</dialog>
+<script>
+(() => {
+const sheet = document.getElementById("reach");
+if (!sheet.showModal) return;
+const topic = sheet.querySelector("[data-topic]");
+const mail = sheet.querySelector("[data-mail]");
+const copy = sheet.querySelector("[data-copy]");
+const copyLabel = copy.textContent;
+document.querySelectorAll(".go").forEach(a => {
+a.setAttribute("aria-haspopup", "dialog");
+a.addEventListener("click", e => {
+e.preventDefault();
+topic.textContent = a.closest(".way").querySelector("h2").textContent;
+mail.href = a.href;
+copy.textContent = copyLabel;
+sheet.showModal();
+});
+});
+sheet.addEventListener("click", e => { if (e.target === sheet) sheet.close(); });
+sheet.querySelector("[data-close]").addEventListener("click", () => sheet.close());
+copy.addEventListener("click", async () => {
+try { await navigator.clipboard.writeText("datein5days@gmail.com"); copy.textContent = "copied"; }
+catch { copy.textContent = "datein5days@gmail.com"; }
+});
+})();
+</script>
 </body>
 </html>
