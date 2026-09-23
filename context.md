@@ -68,8 +68,12 @@ to hold in mind when writing copy. It means:
 ceiling by design. Copy should never apologize for the size or frame it as a limitation
 we are working to overcome.
 
-**Tbilisi is first on the city list on purpose.** Kai is there. Cohort 01 is small enough
-that founder presence in a city is an operational input, not a coincidence.
+**Launch is one city at a time, and New York is first** (decided 2026-09-23). Cohort 01
+is small enough that founder presence in a city is an operational input, not a
+coincidence: we plan every date ourselves, so we only open where we can. The page does
+**not** name the next cities. "Somewhere else? RSVP anyway" routes everyone else into the
+`other` city field, and those replies are the demand signal for which city opens next.
+Copy must never imply a date or a promise for any other city.
 
 ---
 
