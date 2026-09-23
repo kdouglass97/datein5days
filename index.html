@@ -102,6 +102,12 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .btn{display:inline-block;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 30px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
 @media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
 .btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
+.ctas{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px 18px}
+.btn-ghost{display:inline-flex;align-items:center;gap:9px;font:700 15px/1 var(--type);letter-spacing:.02em;color:var(--line);background:transparent;border:2px solid rgba(237,234,225,.75);padding:15px 20px;cursor:pointer;transition:background .15s,transform .12s}
+.btn-ghost svg{width:17px;height:17px;flex:none}
+@media (hover:hover){.btn-ghost:hover{background:rgba(237,234,225,.12)}}
+.btn-ghost:active{transform:translateY(2px)}
+.share-note{color:var(--line);font-size:14px;min-height:1.4em;margin:12px 0 -8px}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--tag)}
 .spots{color:var(--line);font-size:15px;margin:18px 0 0}
 .spots b{font-family:var(--serif);font-size:24px;font-weight:500;margin-left:4px}
@@ -580,7 +586,11 @@ section{padding:56px 16px}
 <svg class="clip" viewBox="0 0 30 92" aria-hidden="true"><path d="M20 30v40a8 8 0 0 1-16 0V16a12 12 0 0 1 24 0v50a4 4 0 0 1-8 0V26" fill="none" stroke="#4d4d4d" stroke-width="2.4" stroke-linecap="round"/></svg>
 </div>
 <div class="cta-wrap">
+<div class="ctas">
 <a class="btn" href="#rsvp" data-track="cta_hero">rsvp</a>
+<button type="button" class="btn-ghost" data-share><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3L3 10.5L10 13.5M21 3L14 21L10 13.5M21 3L10 13.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>send to a single friend</button>
+</div>
+<p class="share-note" data-share-note aria-live="polite"></p>
 <p class="spots"><b>you found us early.</b></p>
 <a class="scroll-cue" href="#problem-h" aria-label="Scroll to keep reading"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </div>
@@ -929,6 +939,7 @@ const CONFIG = {
 brand: "five days",
 cohort: "01",
 igAccount: "@datein5days",
+shareText: "Thought of you immediately. They hand-match you, plan the whole date, and all you do is show up.",
 cities: ["New York", "London", "Paris", "Tokyo", "Hong Kong", "Tbilisi"],
 cohortSize: 50,
 poll: [
@@ -1701,6 +1712,21 @@ wantA.addEventListener("pointerenter", () => focus("a"));
 wantB.addEventListener("pointerenter", () => focus("b"));
 wantsEl.addEventListener("pointerleave", unfocus);
 }
+(() => {
+const btn = $("[data-share]"), note = $("[data-share-note]");
+if (!btn) return;
+const say = msg => { note.textContent = msg; clearTimeout(say.t); say.t = setTimeout(() => note.textContent = "", 4000); };
+btn.addEventListener("click", async () => {
+const url = location.origin + "/?src=friend";
+track("share_click", { native: !!navigator.share });
+if (navigator.share) {
+try { await navigator.share({ title: CONFIG.brand, text: CONFIG.shareText, url }); track("share_sent"); return; }
+catch (e) { if (e.name === "AbortError") return; }
+}
+try { await navigator.clipboard.writeText(CONFIG.shareText + " " + url); say("Copied. Now paste it to them."); track("share_copied"); }
+catch { say(url); }
+});
+})();
 $$("[data-track]").forEach(el => el.addEventListener("click", () => track(el.dataset.track)));
 track("landing_viewed");
 if (new URLSearchParams(location.search).get("go") === "rsvp") {
