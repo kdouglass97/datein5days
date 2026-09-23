@@ -298,6 +298,11 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   lower (8 / 14) because it is only ever seen as a thumbnail. New serif text at heading
   size needs `--opsz:18`, and `!important` on the rule stays because font shorthands reset it.
 - `prefers-reduced-motion` is honored through a `reduced` flag that skips animation.
+- The **floating header** (`.fhead`, on `/c/01` and `/involved`, added 2026-09-23) is the
+  printed form: a paper strip that drops in once the hero's own topbar scrolls away, with a
+  "menu" card listing the page's parts. The hand is the pen underline under wherever you are
+  (live on the landing page, the current page on `/involved`). On touch screens it steps aside
+  while a text field has focus, so the questionnaire stays a clean writing surface.
 
 **Layout:** single column, mobile-first, `540px` measure. Most traffic is a phone scanning
 a printed QR code, standing up. Nothing should require two hands or a wide viewport.
@@ -424,6 +429,12 @@ destinations and `CONFIG.cohort`. The printed code keeps working.
 cohort, IG account, cities, cohort size, launch date, the poll array, the Apps Script
 endpoint, the paywall toggle, founder bios. Change the site by changing `CONFIG`, not by
 hunting through markup.
+
+**The header menu is hand-listed in two places.** Its targets are the section ids `#idea`
+`#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` links to the
+same ones as `/#faq` (the fragment survives the `/` redirect). Rename a section and update both
+menus. Anchor jumps land below the header through `html{scroll-padding-top}`, which is built
+from `--fh-top` and `--fh-h`: change the header's height there, not in the padding.
 
 ### ☠️ Landmines, each one already stepped on
 
