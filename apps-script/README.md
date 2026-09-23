@@ -12,7 +12,7 @@ The Google Apps Script bound to the `cohort1-data` Sheet. It receives RSVPs from
 ## Notes tab
 
 "leave us a note" (`note.js`, footer and FAQ on the site) posts `{ kind: "note", ... }` to the same
-web app. Each note is appended as its own row on the `notes` tab: `created, prompt, note, contact,
-page, src, note_id`. Notes starting with "test" go to `notes_test`. The tab is created on the first note.
+web app. Each note is appended as its own row on the `notes` tab: `created, note, contact, page, src,
+note_id`. Notes starting with "test" go to `notes_test`. The tab is created on the first note.
 Notes carry no `id`, so a script version from before this change rejects them rather than writing
 them into `leads`.

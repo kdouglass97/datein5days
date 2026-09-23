@@ -25,7 +25,7 @@ const PHOTO_FOLDER = "datein5days / verification photos";
 // Notes starting with "test" go to NOTES_TEST_SHEET, same QA convention as sign-ups.
 const NOTES_SHEET = "notes";
 const NOTES_TEST_SHEET = "notes_test";
-const NOTE_COLUMNS = ["created", "prompt", "note", "contact", "page", "src", "note_id"];
+const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
 
 const COLUMNS = [
   "id", "created", "updated", "stage", "src", "cohort",
@@ -152,7 +152,6 @@ function saveNote_(d) {
   }
   const row = {
     created: d.at || new Date().toISOString(),
-    prompt: String(d.prompt || "").slice(0, 200),
     note: note,
     contact: String(d.contact || "").slice(0, 200),
     page: String(d.page || "").slice(0, 100),
