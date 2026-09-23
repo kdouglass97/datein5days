@@ -45,6 +45,46 @@ h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 .topbar a:not(.brand):focus-visible{text-decoration:underline}
 @media (max-width:480px){.topbar .xp{display:none}}
 
+/* floating header: drops in once the hero's own topbar scrolls away */
+:root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
+.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:680px;margin:0 auto;
+transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.fhead.on{transform:none}
+.fbar{display:flex;align-items:center;gap:18px;height:var(--fh-h);padding:0 10px 0 16px;background:var(--paper);box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
+.fbar .brand{margin-right:auto;font-size:24px;line-height:1}
+.fbar > a:not(.brand,.btn),.fmenu-btn{font:14px/1 var(--type);color:var(--ink);text-decoration:none;text-underline-offset:3px;padding:18px 0;white-space:nowrap}
+.fmenu-btn{display:flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer}
+.fmenu-btn i{font:normal 20px/.6 var(--type);transition:transform .25s}
+.fmenu-btn[aria-expanded="true"] i{transform:rotate(45deg)}
+@media (hover:hover){.fbar > a:not(.brand,.btn,[aria-current]):hover,.fmenu-btn:hover span{text-decoration:underline}}
+.fbar > a:not(.brand,.btn,[aria-current]):focus-visible,.fmenu-btn:focus-visible span{text-decoration:underline}
+.fbar .here{position:relative}
+.fbar .here svg{position:absolute;left:-3%;bottom:-7px;width:106%;height:8px;overflow:visible;pointer-events:none}
+.fbar .here path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
+.fbar .btn{display:none;padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag)}
+@media (min-width:821px){.fbar .btn{display:inline-block}}
+@media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
+.fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
+padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
+box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18px rgba(0,0,0,.6)}
+.fmenu[hidden]{display:none}
+@media (max-width:640px){.fmenu{left:0;width:auto}.fhead.open::before{content:"";position:fixed;inset:0;z-index:-1;background:rgba(31,40,26,.4)}}
+.fmenu ol{list-style:none;margin:0;padding:0}
+.fmenu li{border-bottom:1px dashed rgba(70,85,58,.55)}
+.fmenu li a{display:block;padding:10px 0 11px;font:italic 400 24px/1.15 var(--serif);letter-spacing:-.01em;text-decoration:none}
+@media (hover:hover){.fmenu li a:hover{color:var(--tag)}}
+.fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
+.fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
+.fmenu-foot [aria-current]{font-weight:700}
+@media (prefers-reduced-motion:no-preference){
+.fmenu:not([hidden]){animation:menuDrop .3s cubic-bezier(.2,.8,.25,1.15)}
+@keyframes menuDrop{from{opacity:0;transform:translateY(-12px) rotate(-2.4deg)}}
+.fhead.open::before{animation:fadeIn .25s ease-out}
+@keyframes fadeIn{from{opacity:0}}
+.fbar .here path{stroke-dasharray:1;stroke-dashoffset:1}
+.fhead.on .here path{animation:ink .6s .35s cubic-bezier(.5,.1,.3,1) forwards}
+}
+
 .intro{max-width:620px;margin:0 auto;padding:clamp(44px,8vw,72px) 24px 0;text-align:center;color:var(--line)}
 .kicker{margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
 .intro h1{color:var(--line);font-size:clamp(44px,9vw,76px);line-height:.98;letter-spacing:-.04em;margin:0 0 22px}
@@ -163,6 +203,26 @@ html:has(.sheet[open]){overflow:hidden}
 </filter>
 </defs>
 </svg>
+
+<nav class="fhead" aria-label="Site" inert>
+<div class="fbar">
+<a class="brand" href="/">five days</a>
+<a href="/involved" aria-current="page"><span class="here">get involved<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></a>
+<button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
+<div class="fmenu" id="fmenu" hidden>
+<ol>
+<li><a href="/#idea"><span>the idea</span></a></li>
+<li><a href="/#how"><span>your next 5 days</span></a></li>
+<li><a href="/#experiment"><span>the experiment</span></a></li>
+<li><a href="/rsvp"><span>rsvp</span></a></li>
+<li><a href="/#faq"><span>questions</span></a></li>
+<li><a href="/#team"><span>who's setting you up</span></a></li>
+</ol>
+<p class="fmenu-foot"><a href="/involved" aria-current="page">get involved</a><a href="/privacy">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+</div>
+<a class="btn" href="/rsvp">rsvp</a>
+</div>
+</nav>
 
 <header class="hero">
 <div class="topbar"><a class="brand" href="/">five days</a><span><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; <a href="/involved" aria-current="page">get involved</a></span></div>
@@ -301,6 +361,24 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
 }), { threshold: .2 });
 document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
+
+const fhead = document.querySelector(".fhead"), fmenu = document.getElementById("fmenu"), fmenuBtn = fhead.querySelector(".fmenu-btn");
+const setMenu = open => {
+if (open === !fmenu.hidden) return;
+fmenu.hidden = !open;
+fhead.classList.toggle("open", open);
+fmenuBtn.setAttribute("aria-expanded", open);
+};
+fmenuBtn.addEventListener("click", () => setMenu(fmenu.hidden));
+fhead.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+addEventListener("keydown", e => { if (e.key === "Escape" && !fmenu.hidden) { setMenu(false); fmenuBtn.focus(); } });
+document.addEventListener("pointerdown", e => { if (e.target === fhead || !fhead.contains(e.target)) setMenu(false); });
+fhead.addEventListener("focusout", e => { if (e.relatedTarget && !fhead.contains(e.relatedTarget)) setMenu(false); });
+new IntersectionObserver(([e]) => {
+const on = !e.isIntersecting;
+fhead.classList.toggle("on", on); fhead.inert = !on;
+if (!on) setMenu(false);
+}).observe(document.querySelector(".topbar"));
 
 const sheet = document.getElementById("reach");
 if (!sheet.showModal) return;
