@@ -274,6 +274,7 @@ hand?** Elements that are neither will feel imported from another website.
 --rule:rgba(70,85,58,.2)
 --serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif   /* all display */
 --type:"Courier Prime","Courier New",Courier,monospace  /* labels, meta, small caps */
+--opsz:10             /* Bodoni optical size for text-size serif; headings 18, hero 24 */
 --w:min(540px,82vw)   /* single column measure */
 ```
 
@@ -290,6 +291,12 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   edge via `inset` box-shadow. Never square to the grid.
 - A `--noise` feTurbulence overlay gives the background its grain. Remove it and the whole
   page goes flat and digital.
+- Bodoni's optical size is pinned, never left on auto. Auto sets `opsz` to the pixel size,
+  which holds every hairline near 0.2px at any size: fine for a printing press, invisible
+  on a screen, and the letters change identity ("perfect" reads "pcrfcct"). Tiers are set
+  with `--opsz`: text 10 (`:root`), headings 18, the hero invitation 24. The OG card runs
+  lower (8 / 14) because it is only ever seen as a thumbnail. New serif text at heading
+  size needs `--opsz:18`, and `!important` on the rule stays because font shorthands reset it.
 - `prefers-reduced-motion` is honored through a `reduced` flag that skips animation.
 
 **Layout:** single column, mobile-first, `540px` measure. Most traffic is a phone scanning

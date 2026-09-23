@@ -16,11 +16,15 @@
 --rule:rgba(70,85,58,.2);
 --serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
 --type:"Courier Prime","Courier New",Courier,monospace;
+--opsz:10;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--kraft);color:var(--ink);font:17px/1.6 var(--type);-webkit-font-smoothing:antialiased}
 a{color:inherit}
 :focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
+/* bodoni's auto optical size keeps hairlines ~0.2px at every size: print-thin, invisible on screens. pin it per tier (!important: font shorthands reset it) */
+*{font-variation-settings:"opsz" var(--opsz)!important}
+h1{--opsz:18}
 header{padding:28px clamp(18px,4vw,40px);color:var(--paper);background:var(--grass)}
 .brand{font-family:var(--serif);font-size:24px;text-decoration:none;letter-spacing:-.02em}
 main{max-width:680px;margin:0 auto;padding:clamp(28px,6vw,56px) clamp(20px,6vw,32px) 80px}
