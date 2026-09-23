@@ -1431,7 +1431,7 @@ return a;
 function syncPoll(stage) {
 lead.poll = CONFIG.poll.map((p, k) => ({ key: p.key, q: p.q, a: answerText(p, answers[k]) }));
 const bw = CONFIG.poll.findIndex(p => p.type === "bestworst");
-if (bw > -1 && answers[bw]) { lead.want_most = answers[bw][0]; lead.could_skip = answers[bw][answers[bw].length - 1]; }
+if (bw > -1 && answers[bw]) { lead.want_ranking = [...answers[bw]]; lead.want_most = answers[bw][0]; lead.could_skip = answers[bw][answers[bw].length - 1]; }
 sendLead(stage);
 }
 function saveDraft(i) {
