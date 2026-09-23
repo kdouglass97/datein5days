@@ -74,6 +74,10 @@ coincidence: we plan every date ourselves, so we only open where we can. The pag
 **not** name the next cities. "Somewhere else? RSVP anyway" routes everyone else into the
 `other` city field, and those replies are the demand signal for which city opens next.
 Copy must never imply a date or a promise for any other city.
+The city chips still list major cities (New York, Los Angeles, London, Paris, Tokyo, Hong Kong
++ other), framed as "where you live or keep ties." Up to three. That's matching data, not a
+launch list: two people who don't share a base but share a second city are a good match for
+this ICP.
 The page frames this as a **private beta you found early**: no launch date anywhere, since a
 printed date goes stale the day after it passes. Out-of-town RSVPs are told the RSVPs decide
 which city opens next and that the people who asked first go first. That second line is a
@@ -131,7 +135,8 @@ silence does.
 ### Why a phone number, and why we ask which app
 
 As of 2026-09-23 step 2 asks everyone for a **phone number** (required, stored E.164) and
-**"text me on"**: iMessage, WhatsApp, or regular text. The number is the one key that
+**"text me on"**: iMessage, WhatsApp, or regular text. The number field has a country-code picker
+(all regions, dial codes from libphonenumber, default guessed from the browser locale). The number is the one key that
 reaches people on every channel. The app is their preference, because the people we
 want split by geography: the US lives in iMessage, most of the world lives in WhatsApp,
 and a mobile ICP may use both. Email was rejected: the follow-ups (your city opened, the
