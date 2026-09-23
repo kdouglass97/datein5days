@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01 launches **Sep 21, 2026** · Last updated 2026-09-19
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-23
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -74,6 +74,10 @@ coincidence: we plan every date ourselves, so we only open where we can. The pag
 **not** name the next cities. "Somewhere else? RSVP anyway" routes everyone else into the
 `other` city field, and those replies are the demand signal for which city opens next.
 Copy must never imply a date or a promise for any other city.
+The page frames this as a **private beta you found early**: no launch date anywhere, since a
+printed date goes stale the day after it passes. Out-of-town RSVPs are told the RSVPs decide
+which city opens next and that the people who asked first go first. That second line is a
+real commitment: honor it by `created` order when a city opens.
 
 ---
 
