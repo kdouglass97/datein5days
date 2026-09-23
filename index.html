@@ -4,8 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#4F6B45">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="five days">
 <meta property="og:title" content="five days">
 <meta property="og:description" content="We handle the admin, you go on the date. An experiment in slower, better dating.">
+<meta property="og:url" content="https://dateinfivedays.com/c/01">
+<meta property="og:image" content="https://dateinfivedays.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="An envelope that reads: you're invited to a date in 5 days.">
+<meta name="twitter:card" content="summary_large_image">
 <title>five days: dating, but planned</title>
 <meta name="description" content="We handle the admin, you go on the date. A small experiment in slower, better dating.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,6 +66,8 @@ h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;color:var(--ink)}
 background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var(--line) 67.7% 69.2%,var(--clay) 69.3%)}
 .topbar{display:flex;justify-content:space-between;align-items:baseline;padding:0 clamp(18px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
 .brand{font-family:var(--serif);font-size:24px;text-decoration:none;letter-spacing:-.02em}
+.topbar a:not(.brand){text-underline-offset:3px}
+@media (max-width:420px){.topbar .xp{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0}
 .flap{position:absolute;inset:34% 0 auto;height:10%;background:var(--kraft-deep);clip-path:polygon(0 100%,50% 0,100% 100%)}
 .env-back,.env-front{position:absolute;left:0;right:0;top:44%;bottom:0}
@@ -534,7 +544,7 @@ section{padding:56px 16px}
 </defs>
 </svg>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span>experiment no. 01</span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="xp">experiment </span>no. 01 &nbsp;/&nbsp; <a href="/involved" data-track="nav_involved">get involved</a></span></div>
 <div class="stage">
 <div class="flap" aria-hidden="true"></div>
 <div class="env-back" aria-hidden="true"></div>
@@ -872,7 +882,7 @@ section{padding:56px 16px}
 </svg>
 <a class="brand" href="#" data-brand>five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
-<p><a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
+<p><a href="/involved">get involved</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
 </footer>
 <div class="dock" inert>
 <p><b class="lc" data-launch>Sep 21</b><br>first cohort launches</p>

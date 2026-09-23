@@ -1,0 +1,59 @@
+<!doctype html>
+<!-- Source for /og.jpg, the link-preview card. Regenerate with: node share/render.js -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--kraft-deep:#B5AB93;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
+--serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+--type:"Courier Prime","Courier New",Courier,monospace;
+--w:430px;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{position:relative;color:var(--line);font:22px/1.5 var(--type);-webkit-font-smoothing:antialiased;
+background:radial-gradient(ellipse 260% 150% at 0% -52%,var(--grass) 0 67.6%,var(--line) 67.7% 68.6%,var(--clay) 68.7%)}
+body::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:var(--noise);opacity:.2;mix-blend-mode:multiply;z-index:50}
+.top{position:absolute;left:44px;right:44px;top:30px;display:flex;justify-content:space-between;align-items:baseline;font-size:18px;z-index:8}
+.brand{font-family:var(--serif);font-size:32px;letter-spacing:-.02em}
+.stage{position:absolute;width:var(--w);height:calc(var(--w)*1.2);left:calc(50% - var(--w)/2);top:74px}
+.flap{position:absolute;inset:34% 0 auto;height:10%;background:var(--kraft-deep);clip-path:polygon(0 100%,50% 0,100% 100%)}
+.env-back,.env-front{position:absolute;left:0;right:0;top:44%;bottom:0}
+.env-back{background:var(--kraft-deep);box-shadow:0 30px 50px -30px rgba(0,0,0,.6)}
+.letter{position:absolute;left:6%;right:6%;top:11%;bottom:20%;z-index:2;background:var(--paper);transform:rotate(-1.2deg);box-shadow:0 12px 30px -16px rgba(0,0,0,.4);text-align:center;padding-top:calc(var(--w)*.075);color:var(--ink)}
+.kicker{margin:0;text-transform:uppercase;letter-spacing:.05em;font-size:calc(var(--w)*.036)}
+.env-front{z-index:3;background-color:var(--kraft);clip-path:polygon(0 0,50% 40%,100% 0,100% 100%,0 100%);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 12% 10%;text-transform:uppercase;letter-spacing:.03em;font-size:calc(var(--w)*.038);line-height:1.3;color:var(--ink)}
+.env-front p{margin:0 0 1em}
+.stage h1{position:absolute;inset:21% 0 auto;margin:0;font-family:var(--serif);z-index:6;font-weight:500;text-align:center;text-transform:uppercase;font-size:calc(var(--w)*.18);line-height:.92;letter-spacing:-.05em;color:var(--ink)}
+.stage h1 span{display:block}
+.pol{position:absolute;z-index:5;margin:0;background:#F4F3EF;padding:5% 5% 17%;box-shadow:0 14px 26px -12px rgba(0,0,0,.55);transform:rotate(var(--r,0deg))}
+.pol .ph{aspect-ratio:3/4;position:relative}
+.pol .ph::after{content:"";position:absolute;inset:0;background-image:var(--noise);opacity:.55;mix-blend-mode:overlay}
+.pol figcaption{position:absolute;left:0;right:0;bottom:5%;text-align:center;font-size:calc(var(--w)*.03);color:var(--ink)}
+.p1{width:34%;left:-26%;top:-9%;--r:14deg}
+.p1 .ph{background:linear-gradient(165deg,#EDC08E,#B8674B 55%,#4A2A22)}
+.p2{width:34%;right:-24%;top:41%;--r:-8deg;outline:3px solid var(--tag)}
+.p2 .ph{background:radial-gradient(circle at 32% 28%,#F6DFA9,#C98A52 38%,#3C3230 88%)}
+.p3{width:30%;left:-17%;bottom:-7%;--r:9deg}
+.p3 .ph{background:linear-gradient(205deg,#A7BCC9,#DCC9A9 58%,#8B6F57)}
+.badge{position:absolute;top:-3px;right:-3px;background:var(--tag);color:var(--line);font-size:calc(var(--w)*.03);padding:.35em .7em;border-radius:0 0 0 10px}
+</style>
+</head>
+<body>
+<div class="top"><span class="brand">five days</span><span>experiment no. 01</span></div>
+<div class="stage">
+<div class="flap"></div>
+<div class="env-back"></div>
+<div class="letter"><p class="kicker">You're invited to a</p></div>
+<h1><span>Date in</span><span>5 days</span></h1>
+<div class="env-front"><p>We handle the admin,<br>you go on the date</p><p>Founding cohort<br>Any City</p></div>
+<figure class="pol p1"><div class="ph"></div><figcaption>thu, 8pm</figcaption></figure>
+<figure class="pol p2"><div class="ph"></div><span class="badge">no. 01</span><figcaption>sat, late</figcaption></figure>
+<figure class="pol p3"><div class="ph"></div><figcaption>sun, slow</figcaption></figure>
+</div>
+</body>
+</html>
