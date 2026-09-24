@@ -6,6 +6,18 @@
 (() => {
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU/exec";
 
+const PIGEON = `<svg class="nt-sk" viewBox="0 0 130 80" aria-hidden="true"><g filter="url(#pen)">
+<path pathLength="1" class="ink" d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path pathLength="1" class="ink thin" style="--d:.3s" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
+<path pathLength="1" class="ink thin" style="--d:.55s" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>
+<g class="nt-head">
+<path pathLength="1" class="ink" style="--d:.15s" d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
+<path pathLength="1" class="ink thin" style="--d:.4s" d="M88 32C92 35 97 35 100 32"/>
+<path pathLength="1" class="ink thin" style="--d:.45s" d="M101 22L107 25L101 27"/>
+<circle class="nt-eye" cx="95" cy="21" r="1.5"/>
+<path pathLength="1" class="ink" style="--d:.7s" d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/>
+</g>
+</g></svg>`;
 const css = `
 .nt{inset:auto 0 0 0;margin:0;width:100%;max-width:100%;max-height:calc(100% - 24px);border:0;padding:0;background:var(--paper);color:var(--ink);box-shadow:0 -20px 40px -20px rgba(0,0,0,.5);font:16px/1.5 var(--type);overflow:auto}
 .nt::backdrop{background:rgba(31,40,26,.5)}
@@ -26,11 +38,22 @@ html:has(.nt[open]){overflow:hidden}
 .nt-send{display:block;width:100%;margin-top:22px;font:700 16px/1 var(--type);letter-spacing:.02em;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 20px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
 .nt-send:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
 .nt-send:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--tag)}
-.nt-done{text-align:center;padding:24px 0 8px}
+.nt-sk{display:block;width:112px;height:auto;margin:-4px 0 6px -6px;overflow:visible}
+.nt-done .nt-sk{margin:0 auto 10px;width:128px}
+.nt-sk path{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nt-sk .thin{stroke-width:1.2}
+.nt-eye{fill:var(--ink)}
+.nt-sk .ink{stroke-dasharray:1;stroke-dashoffset:1}
+.nt-sk.go .ink{animation:nt-ink 1s var(--d,0s) cubic-bezier(.5,.1,.3,1) forwards}
+.nt-sk .nt-head{transform-box:view-box;transform-origin:92px 31px}
+.nt-sk.go .nt-head{animation:nt-bob 2.6s 1.4s ease-in-out infinite}
+@keyframes nt-ink{to{stroke-dashoffset:0}}
+@keyframes nt-bob{0%,60%,100%{transform:rotate(0)}68%{transform:rotate(-7deg) translateY(1px)}76%{transform:rotate(3deg)}84%{transform:rotate(0)}}
+.nt-done{text-align:center;padding:16px 0 8px}
 .nt-done h2{margin:0 0 8px}
 @media (hover:hover){.nt-send:not(:disabled):hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
 @media (min-width:640px){.nt{inset:0;margin:auto;width:calc(100% - 48px);max-width:520px;height:fit-content;border:2px solid var(--tag);box-shadow:8px 8px 0 var(--tag)}.nt[open]{animation:nt-in .22s ease-out}}
-@media (prefers-reduced-motion:reduce){.nt[open]{animation:none}}
+@media (prefers-reduced-motion:reduce){.nt[open],.nt-sk.go .ink,.nt-sk.go .nt-head{animation:none}.nt-sk .ink{stroke-dashoffset:0}}
 `;
 
 let dlg, form, text, contact, send;
@@ -46,6 +69,7 @@ dlg.setAttribute("aria-labelledby", "nt-h");
 dlg.innerHTML = `<div class="nt-in">
 <button type="button" class="nt-x" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
 <form novalidate>
+${PIGEON}
 <h2 id="nt-h">leave us a note</h2>
 <p>Anything at all: a question, an idea, the thing that made you hesitate. It's the two of us reading.</p>
 <label for="nt-text">your note</label>
@@ -88,9 +112,10 @@ track("note_sent", { has_contact: !!payload.contact, page: payload.page });
 form.hidden = true;
 const done = document.createElement("div");
 done.className = "nt-done";
-done.innerHTML = `<h2>got it. thank you.</h2><p>${payload.contact ? "We'll write back." : "We read every one."}</p><button type="button" class="nt-send">close</button>`;
+done.innerHTML = `${PIGEON}<h2>you're a gem.</h2><p>${payload.contact ? "We'll read it tonight, probably twice, and write back soon." : "We'll read it tonight, probably twice."}</p><button type="button" class="nt-send">back to the page</button>`;
 done.querySelector("button").addEventListener("click", () => dlg.close());
 form.after(done);
+requestAnimationFrame(() => done.querySelector(".nt-sk").classList.add("go"));
 done.querySelector("button").focus();
 }
 
@@ -103,6 +128,9 @@ send.disabled = true;
 send.textContent = "send note";
 if (!dlg.showModal) { location.href = "mailto:datein5days@gmail.com"; return; }
 dlg.showModal();
+const sk = form.querySelector(".nt-sk");
+sk.classList.remove("go");
+requestAnimationFrame(() => sk.classList.add("go"));
 track("note_open", { page: location.pathname });
 }
 
