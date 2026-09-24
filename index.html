@@ -123,8 +123,6 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 @media (max-width:640px){
 .hero{padding-bottom:0}
 .cta-wrap{margin-top:34px}
-.problem .cups{margin-top:-18px}
-.problem{padding-top:0}
 .scroll-cue{display:grid;place-items:center;width:34px;height:34px;margin:20px auto 0;color:var(--line);text-decoration:none;animation:bob 1.8s ease-in-out infinite}
 .scroll-cue svg{width:18px;height:18px}
 }
@@ -133,10 +131,6 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 section{padding:64px 20px}
 .paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
 .kraft{background-color:var(--kraft)}
-.tape::before{content:"";position:absolute;top:-14px;left:50%;width:110px;height:28px;transform:translateX(-50%) rotate(-3deg);background:rgba(223,214,190,.85)}
-.note{max-width:560px;margin:0 auto;padding:46px 36px 36px;transform:rotate(.7deg)}
-.note h2{font-size:clamp(34px,6vw,48px);line-height:1.02;letter-spacing:-.03em;margin-bottom:18px}
-.note p{margin:0;max-width:44ch}
 .section-head{color:var(--line);text-align:center;font-size:clamp(38px,6vw,56px);letter-spacing:-.03em;line-height:1;margin:0 0 12px}
 .section-sub{color:var(--line);text-align:center;margin:0 auto 36px;max-width:40ch}
 .week-wrap{max-width:980px;margin:0 auto}
@@ -359,7 +353,6 @@ footer p{margin:4px 0}
 .clink{position:absolute;z-index:3;right:8%;top:-128px;width:150px;height:130px;transform:rotate(4deg)}
 .clink .gl{transform-box:fill-box;transform-origin:50% 100%}
 .table-sketch{display:block;width:min(300px,78vw);height:auto;margin:0 auto 6px}
-.problem{padding-top:8px}
 .paper-match{padding-top:24px}
 .paper-match .section-head{margin-bottom:28px}
 .match{max-width:620px;margin:0 auto}
@@ -398,7 +391,6 @@ footer p{margin:4px 0}
 .want{padding:20px 12px 10px}
 .want li{font-size:17px}
 }
-.cups{display:block;width:min(270px,70vw);height:auto;margin:0 auto 22px;transform:translateX(16%)}
 .flask{display:block;width:74px;height:auto;margin:22px 0 0 4px}
 @media (min-width:760px){.flask{position:absolute;right:34px;top:236px;width:84px;margin:0}.thesis{padding-right:110px}}
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;align-items:center;justify-content:space-between;gap:12px;
@@ -474,7 +466,6 @@ footer{padding-bottom:120px}
 @media (max-width:640px){
 body{font-size:16px}
 section{padding:56px 16px}
-.note{padding:42px 26px 30px}
 .memo h2{max-width:100%}
 .log div{grid-template-columns:1fr}
 .log dt{padding-top:0}
@@ -574,12 +565,8 @@ section{padding:56px 16px}
 .js .draw.in .clink .gl-r,.js .draw.in.clink .gl-r{animation-name:clinkR}
 .js .draw.in .clink .zap,.js .draw.in.clink .zap{animation-name:zap}
 .js .clink.cheers .gl,.js .clink.cheers .zap{animation-duration:.8s}
-@keyframes drift{0%{opacity:0;transform:translateY(4px)}30%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
-@keyframes snooze{0%,100%{opacity:.25}50%{opacity:1}}
 @keyframes bubble{0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(-34px)}}
 @keyframes heartUp{0%{opacity:0;transform:translateY(0) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-78px) scale(1.1)}}
-.cups.in .steam{animation:drift 3.2s 2.4s ease-in-out infinite backwards}
-.cups.in .zzz{animation:snooze 3s 2.4s ease-in-out infinite}
 .flask .bubbles *{transform-box:fill-box;transform-origin:center;opacity:0}
 .flask.in .b1{animation:bubble 2.6s 1.4s ease-in infinite}
 .flask.in .b2{animation:bubble 2.6s 2.2s ease-in infinite}
@@ -659,37 +646,11 @@ section{padding:56px 16px}
 <button type="button" class="btn-ghost" data-share><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3L3 10.5L10 13.5M21 3L14 21L10 13.5M21 3L10 13.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><span data-share-label aria-live="polite">send to a single friend</span></button>
 </div>
 <p class="spots"><b>you found us early.</b></p>
-<a class="scroll-cue" href="#problem-h" aria-label="Scroll to keep reading"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<a class="scroll-cue" href="#paper-h" aria-label="Scroll to keep reading"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 </div>
 </header>
 <main>
-<section id="idea" aria-labelledby="problem-h" class="problem">
-<svg class="sk cream cups draw" data-reveal viewBox="0 0 260 130" aria-hidden="true">
-<g class="washes" filter="url(#wash)">
-<ellipse cx="74" cy="104" rx="52" ry="15" style="fill:#A9B89A;opacity:.35"/>
-</g>
-<g class="washes">
-<path d="M45 104L55 94H106L97 104Z" style="fill:#1E1410;opacity:.3"/>
-<ellipse cx="186" cy="100" rx="56" ry="20" style="fill:#E7B48C;opacity:.45"/>
-</g>
-<g filter="url(#pen)">
-<path class="ink thin" pathLength="1" d="M14 114C80 111 180 116 248 112"/>
-<path class="ink" pathLength="1" d="M38 108C35 108 34 106 36 104L50 91C51 90 52 89 54 89H110C113 89 114 91 112 93L101 106C100 107 99 108 97 108Z"/>
-<path class="ink thin" pathLength="1" style="--dl:.3s" d="M36 104V107C36 109 37 111 39 111H97C99 111 100 110 101 108V106"/>
-<path class="ink thin" pathLength="1" style="--dl:.4s" d="M45 104L55 94H106L97 104ZM76 91.6H87"/>
-<path class="ink thin" pathLength="1" style="--dl:.7s" d="M75 96.5A3.6 3.6 0 1 0 79.5 101.5A2.8 2.8 0 1 1 75 96.5Z"/>
-<g class="zzz"><path class="ink thin" pathLength="1" style="--dl:.9s" d="M58 82H64L58 88H64M70 70H78L70 78H78M84 56H94L84 66H94"/></g>
-<path class="ink" pathLength="1" style="--dl:.3s" d="M140 110C140 106 190 106 190 110C190 113 140 113 140 110ZM150 108L148 88H182L180 108C174 111 156 111 150 108ZM148 88C148 85 182 85 182 88C182 91 148 91 148 88ZM182 94C192 93 192 103 180 102"/>
-<path class="ink" pathLength="1" style="--dl:.5s" d="M196 108C196 105 236 105 236 108C236 111 196 111 196 108ZM204 106L203 92H229L228 106C223 108 209 108 204 106ZM203 92C203 90 229 90 229 92C229 94 203 94 203 92ZM229 96C236 96 236 103 228 102"/>
-<g class="steam"><path class="ink thin" pathLength="1" style="--dl:1s" d="M160 80C156 74 164 70 160 64M172 80C168 74 176 70 172 62M214 86C211 81 217 78 214 72"/></g>
-</g>
-</svg>
-<div class="paper note tape draw" data-reveal>
-<h2 id="problem-h">the apps turned dating into homework.</h2>
-<p>Swipe, match, "hey," disappear, repeat. We think one good date beats <span class="mk circle">forty okay chats<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" d="M26 8C80-4 180 0 194 24C206 46 150 58 96 57C40 56 2 48 5 30C8 14 50 5 120 5"/></svg></span>, so we're trying <span class="mk under" style="--dl:.9s">something slower<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span>.</p>
-</div>
-</section>
-<section aria-labelledby="paper-h" class="paper-match">
+<section id="idea" aria-labelledby="paper-h" class="paper-match">
 <h2 class="section-head" id="paper-h">on paper, they're perfect.</h2>
 <div class="match">
 <div class="paper match-sheet" data-reveal>
@@ -728,7 +689,7 @@ section{padding:56px 16px}
 </section>
 <section id="how" aria-labelledby="how-h">
 <h2 class="section-head" id="how-h">your next 5 days</h2>
-<p class="section-sub on-clay draw" data-reveal>Slower than swiping. <span class="mk under" style="--dl:.4s">Much better.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
+<p class="section-sub on-clay draw" data-reveal>One good date, not <span class="mk circle" style="--dl:.4s">forty<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" d="M26 8C80-4 180 0 194 24C206 46 150 58 96 57C40 56 2 48 5 30C8 14 50 5 120 5"/></svg></span>&nbsp;okay&nbsp;chats.</p>
 <div class="week-wrap" data-reveal>
 <div class="paper week">
 <div class="week-grid">
