@@ -336,6 +336,8 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .faq summary::after{content:"+";position:absolute;right:4px;top:15px;font:24px/1 var(--type);transition:transform .25s}
 .faq details[open] summary::after{transform:rotate(45deg)}
 .faq p{margin:0 0 20px;max-width:58ch}
+.faq-more{margin:18px 0 8px;padding-top:16px;border-top:1px dashed rgba(70,85,58,.55);font-size:15px}
+.faq-more a{font-weight:700;text-underline-offset:3px}
 footer{color:var(--line);text-align:center;padding:24px 20px 60px;font-size:14px}
 footer .brand{display:block;margin-bottom:6px;font-size:30px}
 footer p{margin:4px 0}
@@ -618,7 +620,7 @@ section{padding:56px 16px}
 <li><a href="#faq"><span>questions</span></a></li>
 <li><a href="#team"><span>who's setting you up</span></a></li>
 </ol>
-<p class="fmenu-foot"><a href="/involved">get involved</a><a href="/privacy">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
+<p class="fmenu-foot"><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
 <svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true" data-here><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg>
 </div>
 <a class="btn" href="#rsvp" data-track="cta_float">rsvp</a>
@@ -926,6 +928,7 @@ section{padding:56px 16px}
 <details><summary>which cities?</summary><p>New York first. More soon, in order of RSVPs, and whoever asked first goes first. Somewhere else? RSVP anyway.</p></details>
 <details><summary>why my number?</summary><p>To tell you when your city opens, and to set up the date. Nothing else, and your match never sees it.</p></details>
 </div>
+<p class="faq-more">Didn't see your question, or something made you hesitate? <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>Leave us a note.</a></p>
 </div>
 </section>
 <section id="team" aria-labelledby="team-h">
@@ -956,7 +959,7 @@ section{padding:56px 16px}
 </svg>
 <a class="brand" href="#" data-brand>five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
-<p><a href="/involved">get involved</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
+<p><a href="/involved">get involved</a> &nbsp;/&nbsp; <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
 </footer>
 <div class="dock" inert>
 <p><b>new york</b><br>private beta</p>
@@ -1811,5 +1814,6 @@ if (new URLSearchParams(location.search).get("go") === "rsvp") {
 addEventListener("load", () => $("#rsvp").scrollIntoView({ block: "start" }));
 }
 </script>
+<script src="/note.js" defer></script>
 </body>
 </html>
