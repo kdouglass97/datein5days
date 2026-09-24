@@ -298,6 +298,13 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   lower (8 / 14) because it is only ever seen as a thumbnail. New serif text at heading
   size needs `--opsz:18`, and `!important` on the rule stays because font shorthands reset it.
 - `prefers-reduced-motion` is honored through a `reduced` flag that skips animation.
+- **The hero opens in two beats, about 3s, CSS only.** The sealed envelope floats down out of
+  focus onto the table (`.env`, `.env-tilt`), then the flap swings open as it lands and the
+  letter follows it out; the polaroids and the clip come last. Every piece animates *from* a
+  start state, so reduced motion or no JS simply renders the final frame. The envelope is a
+  small 3D scene: its pieces sit sub-pixel distances apart in z (the stage has perspective,
+  so bigger offsets visibly scale them), and their z-indexes repeat the same order for the
+  moments the scene is flattened. Keep both orders in sync if you add a piece.
 - The **floating header** (`.fhead`, on `/c/01` and `/involved`, added 2026-09-23) is the
   printed form: a paper strip that drops in once the hero's own topbar scrolls away, with a
   "menu" card listing the page's parts. The hand is the pen underline under wherever you are
