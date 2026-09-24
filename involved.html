@@ -183,7 +183,8 @@ html:has(.sheet[open]){overflow:hidden}
 .sheet h2{font-size:30px;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
 .sheet p{font-size:15px;margin:0}
 .picks{display:grid;gap:16px;margin:22px 0 18px}
-.x{position:absolute;top:12px;right:12px;width:44px;height:44px;border:0;background:none;font:400 30px/1 var(--serif);color:var(--ink);cursor:pointer}
+.x{position:absolute;top:12px;right:12px;width:44px;height:44px;display:grid;place-items:center;border:0;background:none;color:var(--tag);cursor:pointer}
+.x svg{width:22px;height:22px}
 .copy{display:block;margin:0 auto;padding:8px;border:0;background:none;font:14px/1.4 var(--type);color:var(--ink);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 @media (min-width:640px){
 .sheet{inset:0;margin:auto;width:calc(100% - 48px);max-width:440px;height:fit-content;border:2px solid var(--tag);box-shadow:8px 8px 0 var(--tag)}
@@ -225,7 +226,7 @@ html:has(.sheet[open]){overflow:hidden}
 <li><a href="/#faq"><span>questions</span></a></li>
 <li><a href="/#team"><span>who's setting you up</span></a></li>
 </ol>
-<p class="fmenu-foot"><a href="/involved" aria-current="page">get involved</a><a href="/privacy">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+<p class="fmenu-foot"><a href="/involved" aria-current="page">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
 </div>
 <a class="btn" href="/rsvp">rsvp</a>
 </div>
@@ -346,12 +347,12 @@ html:has(.sheet[open]){overflow:hidden}
 <footer>
 <a class="brand" href="/">five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
-<p><a href="/">experiment no. 01</a> &nbsp;/&nbsp; <a href="/involved" aria-current="page">get involved</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+<p><a href="/">experiment no. 01</a> &nbsp;/&nbsp; <a href="/involved" aria-current="page">get involved</a> &nbsp;/&nbsp; <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
 </footer>
 
 <dialog class="sheet" id="reach" aria-labelledby="reach-h">
 <div class="sheet-in">
-<button type="button" class="x" data-close aria-label="Close">&times;</button>
+<button type="button" class="x" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
 <p class="kicker" data-topic>get involved</p>
 <h2 id="reach-h">reach out, whatever's easiest</h2>
 <p>It's the two of us reading either way.</p>
@@ -411,5 +412,6 @@ catch { copy.textContent = "datein5days@gmail.com"; }
 });
 })();
 </script>
+<script src="/note.js" defer></script>
 </body>
 </html>

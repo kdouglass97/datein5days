@@ -21,6 +21,12 @@ const SHEET = "leads";
 const TEST_SHEET = "test";
 const PHOTO_FOLDER = "datein5days / verification photos";
 
+// "leave us a note" submissions ({ kind: "note" }) go to their own tab, one row per note.
+// Notes starting with "test" go to NOTES_TEST_SHEET, same QA convention as sign-ups.
+const NOTES_SHEET = "notes";
+const NOTES_TEST_SHEET = "notes_test";
+const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
+
 const COLUMNS = [
   "id", "created", "updated", "stage", "src", "cohort",
   "name", "email", "cities", "looking",
@@ -89,6 +95,7 @@ function doPost(e) {
     if (!body) return json_({ ok: false, error: "empty" });
 
     const data = JSON.parse(body);
+    if (data.kind === "note") return json_(saveNote_(data));
     if (!data.id) return json_({ ok: false, error: "no id" });
 
     const sheet = getSheet_(targetSheetName_(data));
@@ -127,6 +134,33 @@ function getSheet_(name) {
     sheet.setFrozenRows(1);
   }
   return sheet;
+}
+
+/** append one "leave us a note" submission to the notes tab */
+function saveNote_(d) {
+  const note = String(d.note || "").trim().slice(0, 4000);
+  if (!note) return { ok: false, error: "empty note" };
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const name = /^test\b/i.test(note) ? NOTES_TEST_SHEET : NOTES_SHEET;
+  let sheet = ss.getSheetByName(name);
+  if (!sheet) sheet = ss.insertSheet(name);
+  const width = NOTE_COLUMNS.length;
+  const header = sheet.getRange(1, 1, 1, width).getValues()[0];
+  if (!NOTE_COLUMNS.every(function (c, i) { return header[i] === c; })) {
+    sheet.getRange(1, 1, 1, width).setValues([NOTE_COLUMNS]).setFontWeight("bold");
+    sheet.setFrozenRows(1);
+  }
+  const row = {
+    created: d.at || new Date().toISOString(),
+    note: note,
+    contact: String(d.contact || "").slice(0, 200),
+    page: String(d.page || "").slice(0, 100),
+    src: String(d.src || "").slice(0, 100),
+    note_id: String(d.note_id || ""),
+  };
+  // free text from strangers: a leading = + - @ would otherwise run as a formula
+  sheet.appendRow(NOTE_COLUMNS.map(function (c) { return /^[=+\-@]/.test(row[c]) ? "'" + row[c] : row[c]; }));
+  return { ok: true, kind: "note" };
 }
 
 /** true when the submitted first name marks this as test traffic, e.g. "test" or "testing test" */
