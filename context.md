@@ -311,6 +311,10 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   "menu" card listing the page's parts. The hand is the pen underline under wherever you are
   (live on the landing page, the current page on `/involved`). On touch screens it steps aside
   while a text field has focus, so the questionnaire stays a clean writing surface.
+  Its one button is **rsvp, at every width**; on the landing page it fades while the form
+  itself is on screen. On phones (≤640px) get involved lives only in the menu. The strip
+  replaced a phone-only bottom dock on 2026-09-24: with rsvp in the strip, a second sticky
+  rsvp was one too many, so don't bring the dock back.
 
 **Layout:** single column, mobile-first, `540px` measure. Most traffic is a phone scanning
 a printed QR code, standing up. Nothing should require two hands or a wide viewport.
