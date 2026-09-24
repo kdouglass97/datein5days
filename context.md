@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-23
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-24
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -36,6 +36,14 @@ Everything should ladder back to it.
 **Where it's dramatized:** the `.paper-match` section, "on paper, they're perfect." A 96%
 match score with an ink stroke struck through it, then the same two people's actual wants
 forking apart on two separate cards. Same checklist, different relationship.
+
+It opens the page, directly after the hero, and carries the `#idea` anchor. A grievance
+card used to sit in front of it ("the apps turned dating into homework."), cut 2026-09-24:
+app fatigue is the whole category's stock opener, and calling effort the enemy argues
+against the seven questions, which are homework by design (§3). The complaint is the
+wrong effort, volume instead of depth, not effort itself. Don't put a grievance back in
+front of the thesis. The card's one keeper, "One good date, not forty okay chats.", is
+now the subline under *your next 5 days*.
 
 ---
 
