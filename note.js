@@ -6,18 +6,29 @@
 (() => {
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU/exec";
 
-const PIGEON = `<svg class="nt-sk" viewBox="0 0 130 80" aria-hidden="true"><g filter="url(#pen)">
-<path pathLength="1" class="ink" d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
-<path pathLength="1" class="ink thin" style="--d:.3s" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
-<path pathLength="1" class="ink thin" style="--d:.55s" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>
+// One pigeon, three moods: "draw" inks itself in (the panel), "walk" carries the letter
+// across while the note sends, "happy" is back without it (delivered) and hops.
+const pigeon = mood => {
+const ink = mood === "draw" ? ' pathLength="1" class="ink' : ' class="';
+const legs = mood === "walk"
+? `<g class="nt-leg nt-l1"><path${ink} thin" style="--d:.55s" d="M65 64L64 72M61 72H68"/></g><g class="nt-leg nt-l2"><path${ink} thin" style="--d:.55s" d="M75 63L76 72M73 72H80"/></g>`
+: `<path${ink} thin" style="--d:.55s" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>`;
+const letter = mood === "happy" ? "" : `<path${ink}" style="--d:.7s" d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/>`;
+const hearts = mood === "happy" ? `<g class="nt-hearts">${[[98, 12], [112, 4], [84, 6]].map(([x, y], i) => `<path class="nt-heart" style="--i:${i}" d="M${x} ${y}c0-3 4-3 4 0c0-3 4-3 4 0c0 3-4 5-4 7c0-2-4-4-4-7z"/>`).join("")}</g>` : "";
+return `<svg class="nt-sk nt-${mood}" viewBox="0 0 130 80" aria-hidden="true">${hearts}<g class="nt-bod" filter="url(#pen)">
+<path${ink}" d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path${ink} thin" style="--d:.3s" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
+${legs}
 <g class="nt-head">
-<path pathLength="1" class="ink" style="--d:.15s" d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
-<path pathLength="1" class="ink thin" style="--d:.4s" d="M88 32C92 35 97 35 100 32"/>
-<path pathLength="1" class="ink thin" style="--d:.45s" d="M101 22L107 25L101 27"/>
+<path${ink}" style="--d:.15s" d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
+<path${ink} thin" style="--d:.4s" d="M88 32C92 35 97 35 100 32"/>
+<path${ink} thin" style="--d:.45s" d="M101 22L107 25L101 27"/>
 <circle class="nt-eye" cx="95" cy="21" r="1.5"/>
-<path pathLength="1" class="ink" style="--d:.7s" d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/>
+${letter}
 </g>
 </g></svg>`;
+};
+const PIGEON = pigeon("draw");
 const css = `
 .nt{inset:auto 0 0 0;margin:0;width:100%;max-width:100%;max-height:calc(100% - 24px);border:0;padding:0;background:var(--paper);color:var(--ink);box-shadow:0 -20px 40px -20px rgba(0,0,0,.5);font:16px/1.5 var(--type);overflow:auto}
 .nt::backdrop{background:rgba(31,40,26,.5)}
@@ -50,10 +61,27 @@ html:has(.nt[open]){overflow:hidden}
 @keyframes nt-ink{to{stroke-dashoffset:0}}
 @keyframes nt-bob{0%,60%,100%{transform:rotate(0)}68%{transform:rotate(-7deg) translateY(1px)}76%{transform:rotate(3deg)}84%{transform:rotate(0)}}
 .nt-done{text-align:center;padding:16px 0 8px}
+.nt-walk{position:relative;height:124px;overflow:hidden;margin:6px 0 0}
+.nt-walk::after{content:"";position:absolute;left:0;right:0;bottom:30px;border-top:1.5px dashed rgba(70,85,58,.45)}
+.nt-walk p{position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:14px!important;opacity:.75}
+.nt-walk .nt-sk{position:absolute;bottom:23px;left:-130px;width:120px;height:74px;margin:0;animation:nt-cross 2s linear forwards}
+.nt-sk .nt-bod,.nt-sk .nt-leg{transform-box:view-box}
+.nt-walk .nt-bod{transform-origin:70px 72px;animation:nt-waddle .32s ease-in-out infinite alternate}
+.nt-walk .nt-head{animation:nt-peck .32s ease-in-out infinite alternate}
+.nt-l1{transform-origin:65px 63px;animation:nt-step .32s ease-in-out infinite alternate}
+.nt-l2{transform-origin:75px 63px;animation:nt-step .32s ease-in-out infinite alternate-reverse}
+.nt-happy{animation:nt-hop 1.3s .15s cubic-bezier(.3,.7,.4,1) 2 both}
+.nt-sk .nt-heart{fill:#C0563E;stroke:none;opacity:0;transform-box:fill-box;transform-origin:center;animation:nt-float 2.2s calc(.5s + var(--i) * .35s) ease-out infinite}
+@keyframes nt-cross{to{left:calc(100% + 10px)}}
+@keyframes nt-waddle{from{transform:rotate(-4deg)}to{transform:rotate(4deg) translateY(-2px)}}
+@keyframes nt-peck{from{transform:translateX(-2px)}to{transform:translateX(3px)}}
+@keyframes nt-step{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+@keyframes nt-hop{0%,45%,100%{transform:translateY(0)}12%{transform:translateY(-14px) rotate(-4deg)}24%{transform:translateY(0)}32%{transform:translateY(-7px) rotate(2deg)}}
+@keyframes nt-float{0%{opacity:0;transform:translateY(10px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-14px) scale(1.1)}}
 .nt-done h2{margin:0 0 8px}
 @media (hover:hover){.nt-send:not(:disabled):hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
 @media (min-width:640px){.nt{inset:0;margin:auto;width:calc(100% - 48px);max-width:520px;height:fit-content;border:2px solid var(--tag);box-shadow:8px 8px 0 var(--tag)}.nt[open]{animation:nt-in .22s ease-out}}
-@media (prefers-reduced-motion:reduce){.nt[open],.nt-sk.go .ink,.nt-sk.go .nt-head{animation:none}.nt-sk .ink{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.nt[open],.nt-sk.go .ink,.nt-sk.go .nt-head,.nt-happy,.nt-heart{animation:none}.nt-sk .ink{stroke-dashoffset:0}.nt-sk .nt-heart{opacity:1}}
 `;
 
 let dlg, form, text, contact, send;
@@ -104,24 +132,29 @@ page: location.pathname,
 src: new URLSearchParams(location.search).get("src") || "direct",
 };
 send.disabled = true;
-send.textContent = "sending…";
-try {
-await fetch(ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload), keepalive: true });
-} catch (err) { console.warn("Note not sent", err); }
-track("note_sent", { has_contact: !!payload.contact, page: payload.page });
 form.hidden = true;
+const walk = document.createElement("div");
+walk.className = "nt-walk";
+walk.setAttribute("role", "status");
+walk.innerHTML = `${pigeon("walk")}<p>delivering your note…</p>`;
+form.after(walk);
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const post = fetch(ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload), keepalive: true })
+.catch(err => console.warn("Note not sent", err));
+await Promise.all([post, new Promise(r => setTimeout(r, still ? 300 : 2000))]);
+track("note_sent", { has_contact: !!payload.contact, page: payload.page });
+walk.remove();
 const done = document.createElement("div");
 done.className = "nt-done";
-done.innerHTML = `${PIGEON}<h2>you're a gem.</h2><p>${payload.contact ? "We'll read it tonight, probably twice, and write back soon." : "We'll read it tonight, probably twice."}</p><button type="button" class="nt-send">back to the page</button>`;
+done.innerHTML = `${pigeon("happy")}<h2>you're a gem.</h2><p>${payload.contact ? "We'll read it tonight, probably twice, and write back soon." : "We'll read it tonight, probably twice."}</p><button type="button" class="nt-send">back to the page</button>`;
 done.querySelector("button").addEventListener("click", () => dlg.close());
 form.after(done);
-requestAnimationFrame(() => done.querySelector(".nt-sk").classList.add("go"));
 done.querySelector("button").focus();
 }
 
 function open() {
 if (!dlg) build();
-dlg.querySelector(".nt-done")?.remove();
+dlg.querySelectorAll(".nt-done,.nt-walk").forEach(el => el.remove());
 form.hidden = false;
 form.reset();
 send.disabled = true;
