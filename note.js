@@ -15,7 +15,7 @@ const legs = mood === "walk"
 : `<path${ink} thin" style="--d:.55s" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>`;
 const letter = mood === "happy" ? "" : `<path${ink}" style="--d:.7s" d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/>`;
 const hearts = mood === "happy" ? `<g class="nt-hearts">${[[98, 12], [112, 4], [84, 6]].map(([x, y], i) => `<path class="nt-heart" style="--i:${i}" d="M${x} ${y}c0-3 4-3 4 0c0-3 4-3 4 0c0 3-4 5-4 7c0-2-4-4-4-7z"/>`).join("")}</g>` : "";
-return `<svg class="nt-sk nt-${mood}" viewBox="0 0 130 80" aria-hidden="true">${hearts}<g class="nt-bod" filter="url(#pen)">
+return `<svg class="nt-sk nt-p-${mood}" viewBox="0 0 130 80" aria-hidden="true">${hearts}<g class="nt-bod" filter="url(#pen)">
 <path${ink}" d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
 <path${ink} thin" style="--d:.3s" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
 ${legs}
@@ -29,6 +29,20 @@ ${letter}
 </g></svg>`;
 };
 const PIGEON = pigeon("draw");
+
+// The walk is stop-and-go, not a glide: 8 steps of STEP ms, each one pushes off and settles
+// (per-segment easing), with a PAUSE after step 4 where it stops and cocks its head at you.
+// Body bob, legs and head thrust all run on the same STEP clock so every footfall lands together.
+const STEP = 400, PAUSE = 700, STEPS = 8, WALK_MS = STEPS * STEP + PAUSE;
+const crossKeys = (() => {
+const at = k => (k * STEP + (k > STEPS / 2 ? PAUSE : 0)) / WALK_MS * 100;
+const frames = [];
+for (let k = 0; k <= STEPS; k++) {
+frames.push(`${at(k).toFixed(2)}%{left:calc(${k / STEPS} * (100% + 40px) - 120px);animation-timing-function:cubic-bezier(.45,0,.2,1)}`);
+if (k === STEPS / 2) frames.push(`${((k * STEP + PAUSE) / WALK_MS * 100).toFixed(2)}%{left:calc(${k / STEPS} * (100% + 40px) - 120px);animation-timing-function:cubic-bezier(.45,0,.2,1)}`);
+}
+return `@keyframes nt-cross{${frames.join("")}}`;
+})();
 const css = `
 .nt{inset:auto 0 0 0;margin:0;width:100%;max-width:100%;max-height:calc(100% - 24px);border:0;padding:0;background:var(--paper);color:var(--ink);box-shadow:0 -20px 40px -20px rgba(0,0,0,.5);font:16px/1.5 var(--type);overflow:auto}
 .nt::backdrop{background:rgba(31,40,26,.5)}
@@ -64,24 +78,27 @@ html:has(.nt[open]){overflow:hidden}
 .nt-walk{position:relative;height:124px;overflow:hidden;margin:6px 0 0}
 .nt-walk::after{content:"";position:absolute;left:0;right:0;bottom:30px;border-top:1.5px dashed rgba(70,85,58,.45)}
 .nt-walk p{position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:14px!important;opacity:.75}
-.nt-walk .nt-sk{position:absolute;bottom:23px;left:-130px;width:120px;height:74px;margin:0;animation:nt-cross 2s linear forwards}
+.nt-walk .nt-sk{position:absolute;bottom:23px;left:-120px;width:120px;height:74px;margin:0;animation:nt-cross ${WALK_MS}ms linear forwards}
 .nt-sk .nt-bod,.nt-sk .nt-leg{transform-box:view-box}
-.nt-walk .nt-bod{transform-origin:70px 72px;animation:nt-waddle .32s ease-in-out infinite alternate}
-.nt-walk .nt-head{animation:nt-peck .32s ease-in-out infinite alternate}
-.nt-l1{transform-origin:65px 63px;animation:nt-step .32s ease-in-out infinite alternate}
-.nt-l2{transform-origin:75px 63px;animation:nt-step .32s ease-in-out infinite alternate-reverse}
-.nt-happy{animation:nt-hop 1.3s .15s cubic-bezier(.3,.7,.4,1) 2 both}
+.nt-walk .nt-bod{transform-origin:70px 72px;animation:nt-waddle ${STEP}ms ease-in-out infinite alternate}
+.nt-walk .nt-head{transform-origin:92px 31px;animation:nt-thrust ${STEP}ms infinite}
+.nt-l1{transform-origin:65px 63px;animation:nt-step ${STEP}ms ease-in-out infinite alternate}
+.nt-l2{transform-origin:75px 63px;animation:nt-step ${STEP}ms ease-in-out infinite alternate-reverse}
+.nt-walk.rest .nt-bod,.nt-walk.rest .nt-leg{animation-play-state:paused}
+.nt-walk.rest .nt-head{animation:nt-look ${PAUSE}ms ease-in-out}
+.nt-p-happy{animation:nt-hop 1.3s .15s cubic-bezier(.3,.7,.4,1) 2 both}
 .nt-sk .nt-heart{fill:#C0563E;stroke:none;opacity:0;transform-box:fill-box;transform-origin:center;animation:nt-float 2.2s calc(.5s + var(--i) * .35s) ease-out infinite}
-@keyframes nt-cross{to{left:calc(100% + 10px)}}
-@keyframes nt-waddle{from{transform:rotate(-4deg)}to{transform:rotate(4deg) translateY(-2px)}}
-@keyframes nt-peck{from{transform:translateX(-2px)}to{transform:translateX(3px)}}
-@keyframes nt-step{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+${crossKeys}
+@keyframes nt-waddle{0%{transform:translateY(2px) rotate(-6deg) scaleY(.95)}50%{transform:translateY(-4px) rotate(0) scaleY(1.03)}100%{transform:translateY(2px) rotate(6deg) scaleY(.95)}}
+@keyframes nt-thrust{0%{transform:translateX(-4px);animation-timing-function:cubic-bezier(.2,.9,.3,1)}22%{transform:translateX(5px);animation-timing-function:linear}100%{transform:translateX(-4px)}}
+@keyframes nt-look{0%,100%{transform:rotate(0)}25%,70%{transform:rotate(-16deg) translate(-1px,-2px)}82%{transform:rotate(4deg)}}
+@keyframes nt-step{from{transform:rotate(-24deg)}to{transform:rotate(24deg)}}
 @keyframes nt-hop{0%,45%,100%{transform:translateY(0)}12%{transform:translateY(-14px) rotate(-4deg)}24%{transform:translateY(0)}32%{transform:translateY(-7px) rotate(2deg)}}
 @keyframes nt-float{0%{opacity:0;transform:translateY(10px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-14px) scale(1.1)}}
 .nt-done h2{margin:0 0 8px}
 @media (hover:hover){.nt-send:not(:disabled):hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
 @media (min-width:640px){.nt{inset:0;margin:auto;width:calc(100% - 48px);max-width:520px;height:fit-content;border:2px solid var(--tag);box-shadow:8px 8px 0 var(--tag)}.nt[open]{animation:nt-in .22s ease-out}}
-@media (prefers-reduced-motion:reduce){.nt[open],.nt-sk.go .ink,.nt-sk.go .nt-head,.nt-happy,.nt-heart{animation:none}.nt-sk .ink{stroke-dashoffset:0}.nt-sk .nt-heart{opacity:1}}
+@media (prefers-reduced-motion:reduce){.nt[open],.nt-sk.go .ink,.nt-sk.go .nt-head,.nt-p-happy,.nt-heart{animation:none}.nt-sk .ink{stroke-dashoffset:0}.nt-sk .nt-heart{opacity:1}}
 `;
 
 let dlg, form, text, contact, send;
@@ -141,7 +158,11 @@ form.after(walk);
 const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const post = fetch(ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload), keepalive: true })
 .catch(err => console.warn("Note not sent", err));
-await Promise.all([post, new Promise(r => setTimeout(r, still ? 300 : 2000))]);
+if (!still) {
+setTimeout(() => walk.classList.add("rest"), STEPS / 2 * STEP);
+setTimeout(() => walk.classList.remove("rest"), STEPS / 2 * STEP + PAUSE);
+}
+await Promise.all([post, new Promise(r => setTimeout(r, still ? 300 : WALK_MS))]);
 track("note_sent", { has_contact: !!payload.contact, page: payload.page });
 walk.remove();
 const done = document.createElement("div");
