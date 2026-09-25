@@ -318,6 +318,11 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   "menu" card listing the page's parts. The hand is the pen underline under wherever you are
   (live on the landing page, the current page on `/involved` and `/privacy`). On touch screens it steps aside
   while a text field has focus, so the questionnaire stays a clean writing surface.
+  Its one button is **rsvp, at every width**; on the landing page it fades while the form
+  itself is on screen. On phones (≤640px) the strip's text link (get involved; privacy on
+  `/privacy`) lives only in the menu. The strip
+  replaced a phone-only bottom dock on 2026-09-24: with rsvp in the strip, a second sticky
+  rsvp was one too many, so don't bring the dock back.
 - **`/privacy` wears the `/involved` frame** (grass hero, arc, grain, footer; added 2026-09-25),
   with a sealed envelope sketch whose wax seal presses on last. The notice sits on a *square*
   sheet with a letterhead band, the one deliberate exception to "never square": a long legal
