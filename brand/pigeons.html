@@ -1,0 +1,404 @@
+<!doctype html>
+<!-- The pigeon kit: one bird, a few moods. Source for brand/pigeon/*.png and *.svg. Regenerate with: node brand/render.js -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>five days: the pigeon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
+--serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+--type:"Courier Prime","Courier New",Courier,monospace;
+--opsz:10;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{position:relative;margin:0;background:var(--kraft);color:var(--ink);font:16px/1.6 var(--type);-webkit-font-smoothing:antialiased}
+body::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:var(--noise);opacity:.2;mix-blend-mode:multiply;z-index:50}
+/* bodoni's auto optical size keeps hairlines ~0.2px at every size: pin it per tier (!important: font shorthands reset it) */
+*{font-variation-settings:"opsz" var(--opsz)!important}
+h1,h2{font-family:var(--serif);font-weight:400;margin:0;--opsz:18}
+.wrap{max-width:1180px;margin:0 auto}
+.top{padding:44px 24px 0}
+.brand{font-family:var(--serif);font-size:26px;letter-spacing:-.02em;text-decoration:none;color:inherit}
+h1{font-style:italic;font-size:clamp(60px,11vw,112px);line-height:.9;letter-spacing:-.04em;margin:26px 0 16px;--opsz:24}
+.lede{max-width:44ch;margin:0;font-size:17px}
+.kit{list-style:none;padding:48px 24px 64px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:44px 30px}
+.card{background:var(--paper);padding:34px 26px 22px;transform:rotate(var(--r,0deg));box-shadow:inset 0 6px 0 var(--band,var(--tag)),0 18px 36px -20px rgba(0,0,0,.6)}
+.pose{display:block;width:100%;height:150px;margin:0 0 22px;overflow:visible}
+.card h2{font-size:30px;letter-spacing:-.02em;line-height:1;margin:0 0 6px}
+.card p{margin:0 0 12px;font-size:14px;line-height:1.45}
+.card code{font:12px/1.3 var(--type);opacity:.6;overflow-wrap:anywhere}
+.band{padding:52px 24px 60px;color:var(--line)}
+.band h2{font-size:36px;letter-spacing:-.02em;line-height:1;color:inherit}
+.band p{margin:8px 0 34px;font-size:15px;max-width:52ch}
+.grass{background:var(--grass)}
+.clay{background:var(--clay)}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:30px 26px;align-items:center}
+.row svg{display:block;width:100%;height:104px}
+footer{padding:36px 24px 56px;font-size:14px}
+footer p{margin:0 0 6px;max-width:64ch}
+</style>
+</head>
+<body>
+
+<header class="top wrap">
+<a class="brand" href="/">five days</a>
+<h1>the pigeon</h1>
+<p class="lede">One bird, a few moods. On the site he carries your notes. Here he gets a life of his own, so he can turn up anywhere five days does.</p>
+</header>
+
+<ul class="kit wrap">
+
+<li class="card" style="--r:-1.2deg;--band:var(--tag)">
+<!-- the letter: the pigeon exactly as it lives in "leave us a note" (note.js) -->
+<svg class="pose" data-pose="letter" viewBox="8 8 118 70">
+<path d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path class="t" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
+<path class="t" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>
+<path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
+<path class="t" d="M88 32C92 35 97 35 100 32"/>
+<path class="t" d="M101 22L107 25L101 27"/>
+<circle class="f" cx="95" cy="21" r="1.5"/>
+<path d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/>
+</svg>
+<h2>the letter</h2>
+<p>Straight from leave us a note. The one the kit grew from.</p>
+<code>pigeon-letter-*</code>
+</li>
+
+<li class="card" style="--r:.9deg;--band:var(--clay)">
+<!-- delivered: back without the letter (note.js "happy") -->
+<svg class="pose" data-pose="delivered" viewBox="8 0 118 78">
+<path class="h" data-heart="98 12"/><path class="h" data-heart="112 4"/><path class="h" data-heart="84 6"/>
+<path d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path class="t" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
+<path class="t" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>
+<path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
+<path class="t" d="M88 32C92 35 97 35 100 32"/>
+<path class="t" d="M101 22L107 25L101 27"/>
+<circle class="f" cx="95" cy="21" r="1.5"/>
+</svg>
+<h2>delivered</h2>
+<p>Thank-yous, sent notes, anything that landed.</p>
+<code>pigeon-delivered-*</code>
+</li>
+
+<li class="card" style="--r:-.6deg;--band:var(--tag)">
+<!-- homing: in flight, letter in beak, the dashed route home behind it -->
+<svg class="pose" data-pose="flight" viewBox="-40 -6 180 84">
+<g class="layer">
+<path class="t nf" data-dash="2.4 2.4" d="M-36 76C-24 80 -12 78 -6 70C0 62 -8 54 -14 58C-20 62 -16 72 -6 72C4 72 6 62 10 57"/>
+</g>
+<g class="layer">
+<path d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C51 61 43 61 35 62L13 69C9 63 9 55 11 48L34 51C40 47 46 45 53 42C67 38 80 35 86 29"/>
+<path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
+<path class="t" d="M88 32C92 35 97 35 100 32"/>
+<path class="t" d="M101 22L107 25L101 27"/>
+<circle class="f" cx="95" cy="21" r="1.5"/>
+<path d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/>
+</g>
+<g class="layer">
+<path d="M78 39C80 26 77 16 70 10C65 6 58 3 50 2C46 4 45 7 47 10C43 12 43 16 46 18C43 21 43 25 47 27C44 30 45 34 49 35C48 38 50 42 54 44"/>
+<path class="t" d="M74 25C68 21 60 19 53 19M62 9L56 6M59 14L52 11.5"/>
+</g>
+</svg>
+<h2>homing</h2>
+<p>On its way to someone: invites, reminders, news.</p>
+<code>pigeon-flight-*</code>
+</li>
+
+<li class="card" style="--r:1.1deg;--band:var(--clay)">
+<!-- puffed up: the courtship strut, chest out, tail dragged -->
+<svg class="pose" data-pose="puff" viewBox="10 0 106 92">
+<path d="M85 24C97 29 104 42 102 55C100 68 88 78 72 79C62 80 54 77 48 72L20 84C19 81 18 78 19 75L42 60C44 50 52 38 62 31C66 28 69 26 72 23"/>
+<path d="M72 23C69 15 74 9 80 9C85 9 88 13 87 19C87 21 86 23 85 24"/>
+<path class="t" d="M73 28C78 32 85 32 89 28"/>
+<path class="t" d="M87 16L93 19L87 21"/>
+<circle class="f" cx="81" cy="15" r="1.5"/>
+<path class="t" d="M48 52C60 46 76 50 84 60C74 67 58 66 46 60M58 54L66 60M66 52L74 58"/>
+<path class="t" d="M66 79L65 86M62 86H69M77 78L78 86M75 86H82"/>
+<path class="t nf" d="M101 28C103 30 104 32 105 34M108 40C110 44 110 48 109 52M107 60C107 63 106 66 104 68"/>
+</svg>
+<h2>puffed up</h2>
+<p>Announcements, launches, a little swagger.</p>
+<code>pigeon-puff-*</code>
+</li>
+
+<li class="card" style="--r:-.9deg;--band:var(--tag)">
+<!-- the stretch: both wings up, a big yawn -->
+<svg class="pose" data-pose="stretch" viewBox="0 -8 130 90">
+<g class="layer">
+<path d="M70 36C71 24 68 12 62 4C60 1 57 -1 54 0C51 1 50 4 52 6C48 7 47 11 50 13C46 15 45 19 48 21C45 24 45 28 48 30C46 33 47 37 50 41"/>
+</g>
+<g class="layer">
+<path d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path class="t" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>
+<path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
+<path class="t" d="M88 32C92 35 97 35 100 32"/>
+<path class="t" d="M101 22L107 21.5L101.5 24.5L106 28.5L101 27"/>
+<path class="t nf" d="M93 20.5C94 22 96 22 97 20.5"/>
+</g>
+<g class="layer">
+<path d="M81 38C83 26 82 14 76 4C74 1 71 0 68 1C65 2 64 5 66 7C62 8 61 12 64 14C60 16 59 20 62 22C58 25 58 29 61 31C58 34 58 38 60 43"/>
+<path class="t" d="M77 24C73 21 68 19 63 19M72 8L67 5M70 13L64 10.5"/>
+</g>
+</svg>
+<h2>the stretch</h2>
+<p>Mornings, slow starts, day one of five.</p>
+<code>pigeon-stretch-*</code>
+</li>
+
+<li class="card" style="--r:.7deg;--band:var(--clay)">
+<!-- two of us: nestled on a ledge, one heart between them -->
+<svg class="pose" data-pose="pair" viewBox="0 -4 160 80">
+<g class="layer">
+<path class="t nf" d="M4 72H156"/>
+<path class="h" data-heart="74 2 1.1"/>
+<path d="M75 32C81 38 83 48 80 57C78 64 72 70 64 72L38 72C32 72 27 70 23 68L8 66L11 60L22 58C30 51 42 44 52 40C57 38 60 35 62 31"/>
+<path d="M62 31C59 23 64 17 70 17C75 17 78 21 77 27C77 29 76 31 75 32"/>
+<path class="t" d="M64 34C68 37 73 37 76 34"/>
+<path class="t" d="M77 24L83 27L77 29"/>
+<path class="t nf" d="M68.5 22.5C69.5 24 71.5 24 72.5 22.5"/>
+<path class="t" d="M36 54C48 48 62 50 70 58C62 64 48 64 34 60M44 55L52 61M51 53L59 59"/>
+</g>
+<g class="layer" transform="translate(158 5.76) scale(-.92 .92)">
+<path d="M75 32C81 38 83 48 80 57C78 64 72 70 64 72L38 72C32 72 27 70 23 68L8 66L11 60L22 58C30 51 42 44 52 40C57 38 60 35 62 31"/>
+<path d="M62 31C59 23 64 17 70 17C75 17 78 21 77 27C77 29 76 31 75 32"/>
+<path class="t" d="M64 34C68 37 73 37 76 34"/>
+<path class="t" d="M77 24L83 27L77 29"/>
+<path class="t nf" d="M68.5 22.5C69.5 24 71.5 24 72.5 22.5"/>
+<path class="t" d="M36 54C48 48 62 50 70 58C62 64 48 64 34 60M44 55L52 61M51 53L59 59"/>
+</g>
+</svg>
+<h2>two of us</h2>
+<p>Matches, couples, a table for two.</p>
+<code>pigeon-pair-*</code>
+</li>
+
+<li class="card" style="--r:-1deg;--band:var(--tag)">
+<!-- lost: head cocked, still holding the letter, footsteps going in circles -->
+<svg class="pose" data-pose="lost" viewBox="-34 -22 164 106">
+<path class="t nf" data-dash="2.4 2.4" d="M-32 70C-22 66 -10 68 -6 76C-2 84 -14 88 -18 80C-22 72 -8 66 4 72C12 76 10 84 4 84C-2 84 0 76 8 74C22 70 40 76 58 74"/>
+<path d="M98.4 28C105 36 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 85.7 31"/>
+<path class="t" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
+<path class="t" d="M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>
+<g transform="rotate(-18 92 31)">
+<path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/>
+<path class="t" d="M88 32C92 35 97 35 100 32"/>
+<path class="t" d="M101 22L107 25L101 27"/>
+<circle class="f" cx="95" cy="21" r="1.5"/>
+<path d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/>
+</g>
+<path class="nf" d="M84 -8C84 -14 88 -17 92 -17C96 -17 99 -14 99 -10C99 -6 94 -5 93 -1L93 2"/>
+<circle class="f" cx="93" cy="7" r="1.6"/>
+</svg>
+<h2>wrong table.</h2>
+<p>404s, dead links, anything that went sideways.</p>
+<code>pigeon-lost-*</code>
+</li>
+
+</ul>
+
+<section class="band grass">
+<div class="wrap">
+<h2>light</h2>
+<p>For the grass, the clay, anything dark. Same lines, in the page's cream.</p>
+<div class="row" data-cut="light"></div>
+</div>
+</section>
+
+<section class="band clay">
+<div class="wrap">
+<h2>filled</h2>
+<p>He brings his own paper, a fill and a thin edge, so he sits on photos and busy color without getting lost in them.</p>
+<div class="row" data-cut="filled"></div>
+</div>
+</section>
+
+<footer class="wrap">
+<p>Every pose ships in three cuts, ink, light and filled, as PNG and SVG in brand/pigeon/.</p>
+<p>To add or change a pose, draw it in brand/pigeons.html as clean paths, then run node brand/render.js.</p>
+</footer>
+
+<script>
+// Bakes the nib into the drawings. Every stroke is sampled, pushed through a smooth noise field
+// (the same idea as the site's #pen filter: fractal noise at .035, about a unit of wobble) and
+// written back as plain curves. Plain curves stay crisp at any size and open cleanly in Figma,
+// where SVG filters don't survive. Author the poses above as clean paths; never pre-wobble them.
+//   class t   thin stroke (1.2), otherwise 1.8, same as note.js
+//   class f   filled in the line color (eyes, dots)
+//   class h   a heart, filled in the heart color; data-heart="x y [scale]" draws it
+//   class nf  stroke only: never part of the body (trails, marks, question marks)
+//   data-dash="dash gap"   hand-inked dashes
+//   <g class="layer">      back to front; each layer hides the lines of the layers behind it
+// A path's body is its implied fill, so outlines that meet (body + head) add up to the bird.
+window.pigeons = (() => {
+const NS = "http://www.w3.org/2000/svg";
+const COLOR = {
+  ink: { line: "#46553A", heart: "#C0563E" },
+  light: { line: "#EDEAE1", heart: "#F2C38F" },
+  filled: { line: "#46553A", heart: "#C0563E", body: "#FBFAF5" },
+};
+
+function rng(a) {
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function perlin(seed) {
+  const r = rng(seed), p = new Uint8Array(512), q = [...Array(256).keys()];
+  for (let i = 255; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [q[i], q[j]] = [q[j], q[i]]; }
+  for (let i = 0; i < 512; i++) p[i] = q[i & 255];
+  const fade = t => t * t * t * (t * (t * 6 - 15) + 10), mix = (a, b, t) => a + t * (b - a);
+  const g = (h, x, y) => [x + y, -x + y, x - y, -x - y, x, -x, y, -y][h & 7];
+  return (x, y) => {
+    const X = Math.floor(x), Y = Math.floor(y), xi = X & 255, yi = Y & 255;
+    x -= X; y -= Y;
+    const u = fade(x), v = fade(y);
+    return mix(mix(g(p[p[xi] + yi], x, y), g(p[p[xi + 1] + yi], x - 1, y), u),
+      mix(g(p[p[xi] + yi + 1], x, y - 1), g(p[p[xi + 1] + yi + 1], x - 1, y - 1), u), v);
+  };
+}
+function nib(seed) {
+  const nx = perlin(seed), ny = perlin(seed + 7), F = .035, A = 1.1;
+  const fbm = (n, x, y) => n(x * F, y * F) + .5 * n(x * F * 2 + 3.1, y * F * 2 + 7.7) + .25 * n(x * F * 4 + 1.7, y * F * 4 + 4.3);
+  return ([x, y]) => [x + A * fbm(nx, x, y), y + A * fbm(ny, x, y)];
+}
+
+const fmt = p => p.map(v => +v.toFixed(2)).join(" ");
+const apply = (m, x, y) => [m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f];
+const at = (P, x) => {
+  const i = Math.min(Math.floor(x), P.length - 2), t = x - i;
+  return [P[i][0] + (P[i + 1][0] - P[i][0]) * t, P[i][1] + (P[i + 1][1] - P[i][1]) * t];
+};
+const turn = (a, b, c) => {
+  const ux = b[0] - a[0], uy = b[1] - a[1], vx = c[0] - b[0], vy = c[1] - b[1];
+  if (Math.hypot(ux, uy) < 1e-6 || Math.hypot(vx, vy) < 1e-6) return 0;
+  return Math.abs(Math.atan2(ux * vy - uy * vx, ux * vx + uy * vy));
+};
+// Catmull-Rom through the points, as cubic beziers
+const curve = R => {
+  let s = "";
+  for (let i = 0; i < R.length - 1; i++) {
+    const p0 = R[i - 1] || R[i], p1 = R[i], p2 = R[i + 1], p3 = R[i + 2] || R[i + 1];
+    s += "C" + fmt([p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6]) + " " +
+      fmt([p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6]) + " " + fmt(p2);
+  }
+  return s;
+};
+const heart = (x, y, s = 1) => {
+  const X = v => +(x + v * s).toFixed(2), Y = v => +(y + v * s).toFixed(2);
+  return `M${X(0)} ${Y(0)}C${X(0)} ${Y(-3)} ${X(4)} ${Y(-3)} ${X(4)} ${Y(0)}C${X(4)} ${Y(-3)} ${X(8)} ${Y(-3)} ${X(8)} ${Y(0)}` +
+    `C${X(8)} ${Y(3)} ${X(4)} ${Y(5)} ${X(4)} ${Y(7)}C${X(4)} ${Y(5)} ${X(0)} ${Y(3)} ${X(0)} ${Y(0)}Z`;
+};
+
+// one path element -> its subpaths, sampled in the pose's own units, wobbled, rewritten
+function bakePath(el, m, warp, dash) {
+  const d0 = el.getAttribute("d"), out = [];
+  for (const sub of d0.trim().split(/(?=M)/)) {
+    el.setAttribute("d", sub);
+    const L = el.getTotalLength(), n = Math.max(2, Math.ceil(L / .1)), P = [];
+    for (let i = 0; i <= n; i++) { const p = el.getPointAtLength(L * i / n); P.push(apply(m, p.x, p.y)); }
+    const run = (a, b) => {
+      const segs = Math.max(1, Math.round((b - a) / n * L / .7)), R = [];
+      for (let j = 0; j <= segs; j++) R.push(warp(at(P, a + (b - a) * j / segs)));
+      return R;
+    };
+    if (dash) {
+      const [dl, gl] = dash.split(/\s+/).map(Number), r = rng(Math.round(L * 97));
+      for (let s = gl * .5; s < L - .4;) {
+        const e = Math.min(L, s + dl * (.8 + .4 * r())), R = run(s / L * n, e / L * n);
+        out.push("M" + fmt(R[0]) + curve(R));
+        s = e + gl * (.8 + .4 * r());
+      }
+      continue;
+    }
+    // split at corners so they stay sharp; everything between them is one smooth run
+    const cuts = [0];
+    for (let i = 1; i < n; i++) if (turn(P[i - 1], P[i], P[i + 1]) > .35) cuts.push(i);
+    cuts.push(n);
+    let s = "";
+    for (let k = 0; k < cuts.length - 1; k++) {
+      const R = run(cuts[k], cuts[k + 1]);
+      if (!s) s = "M" + fmt(R[0]);
+      s += curve(R);
+    }
+    out.push(s + (/z\s*$/i.test(sub) ? "Z" : ""));
+  }
+  el.setAttribute("d", d0);
+  return out;
+}
+
+function bake(svg) {
+  const warp = nib(+svg.dataset.seed || 4);
+  const toRoot = svg.getScreenCTM().inverse();
+  const groups = [...svg.children].filter(g => g.matches("g.layer"));
+  const layers = (groups.length ? groups : [svg]).map(layer => {
+    const L = { strokes: [], dots: [], fills: [], body: [] };
+    for (const el of layer.querySelectorAll("path,circle")) {
+      const m = toRoot.multiply(el.getScreenCTM()), c = el.classList;
+      if (el.tagName === "circle") {
+        const [cx, cy] = warp(apply(m, +el.getAttribute("cx"), +el.getAttribute("cy")));
+        L.dots.push({ cx, cy, r: +el.getAttribute("r") * Math.hypot(m.a, m.b) });
+        continue;
+      }
+      if (el.dataset.heart) el.setAttribute("d", heart(...el.dataset.heart.trim().split(/\s+/).map(Number)));
+      const subs = bakePath(el, m, warp, el.dataset.dash), d = subs.join("");
+      if (c.contains("h") || c.contains("f")) L.fills.push({ d, heart: c.contains("h") });
+      else L.strokes.push({ d, w: c.contains("t") ? 1.2 : 1.8 });
+      if (!c.contains("nf") && !el.dataset.dash) L.body.push(...subs);
+    }
+    return L;
+  });
+  // crop to the ink, with the same margin on every pose so the kit lines up
+  const probe = document.createElementNS(NS, "g");
+  probe.innerHTML = layers.map(L => L.strokes.map(s => `<path d="${s.d}"/>`).join("") + L.fills.map(f => `<path d="${f.d}"/>`).join("") +
+    L.dots.map(c => `<circle cx="${c.cx}" cy="${c.cy}" r="${c.r}"/>`).join("")).join("");
+  svg.append(probe);
+  const b = probe.getBBox(), pad = 4;
+  probe.remove();
+  const x = Math.floor(b.x - pad), y = Math.floor(b.y - pad);
+  return { layers, box: [x, y, Math.ceil(b.x + b.width + pad) - x, Math.ceil(b.y + b.height + pad) - y] };
+}
+
+const baked = {};
+const shut = d => /Z$/.test(d) ? d : d + "Z";
+function svg(pose, variant = "ink", scale = 1, prefix = "") {
+  const { layers, box: [x, y, w, h] } = baked[pose], col = COLOR[variant];
+  const r = `x="${x - 8}" y="${y - 8}" width="${w + 16}" height="${h + 16}"`;
+  let defs = "", body = "";
+  layers.forEach((L, i) => {
+    const front = layers.slice(i + 1).flatMap(l => l.body);
+    let mask = "";
+    if (front.length) {
+      defs += `<mask id="${prefix}${pose}-k${i}" maskUnits="userSpaceOnUse" ${r}><rect ${r} fill="#fff"/><g stroke="#000" stroke-width=".6">${front.map(d => `<path d="${shut(d)}"/>`).join("")}</g></mask>`;
+      mask = ` mask="url(#${prefix}${pose}-k${i})"`;
+    }
+    body += `<g${mask}>`;
+    if (col.body) {
+      body += `<g fill="${col.body}" stroke="${col.body}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${L.body.map(d => `<path d="${shut(d)}"/>`).join("")}` +
+        L.fills.map(f => `<path d="${f.d}"/>`).join("") + L.dots.map(c => `<circle cx="${+c.cx.toFixed(2)}" cy="${+c.cy.toFixed(2)}" r="${+c.r.toFixed(2)}"/>`).join("") + "</g>";
+      body += `<g fill="none" stroke="${col.body}" stroke-linecap="round" stroke-linejoin="round">${L.strokes.map(x => `<path d="${x.d}" stroke-width="${x.w + 2.4}"/>`).join("")}</g>`;
+    }
+    body += `<g fill="none" stroke="${col.line}" stroke-linecap="round" stroke-linejoin="round">${L.strokes.map(s => `<path d="${s.d}" stroke-width="${s.w}"/>`).join("")}</g>`;
+    body += L.dots.map(c => `<circle cx="${+c.cx.toFixed(2)}" cy="${+c.cy.toFixed(2)}" r="${+c.r.toFixed(2)}" fill="${col.line}"/>`).join("");
+    body += L.fills.map(f => `<path d="${f.d}" fill="${f.heart ? col.heart : col.line}"/>`).join("");
+    body += "</g>";
+  });
+  return `<svg xmlns="${NS}" viewBox="${x} ${y} ${w} ${h}" width="${w * scale}" height="${h * scale}">${defs && `<defs>${defs}</defs>`}${body}</svg>`;
+}
+
+const sources = [...document.querySelectorAll("svg.pose")], poses = sources.map(el => el.dataset.pose);
+for (const el of sources) baked[el.dataset.pose] = bake(el);
+for (const el of sources) el.outerHTML = svg(el.dataset.pose, "ink", 1, "ink-").replace("<svg ", `<svg class="pose" data-pose="${el.dataset.pose}" `);
+for (const row of document.querySelectorAll("[data-cut]")) row.innerHTML = poses.map(p => svg(p, row.dataset.cut, 1, row.dataset.cut + "-")).join("");
+return { poses, svg, ready: true };
+})();
+</script>
+</body>
+</html>

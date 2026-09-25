@@ -330,6 +330,17 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   promises, "do not sell" and "no later than 7 days". The notice's words are legal text:
   restyle them, never reword them (headings are lowercased, nothing else changed).
 
+- **The pigeon** (`brand/`, added 2026-09-25) is the hand's mascot: the bird from "leave us a
+  note" (`note.js`), grown into a kit of poses the way Penguin's Playful Penguins grew out of
+  its logo. One construction everywhere (round head, dot eye, open-triangle beak, collar arc,
+  almond wing with two ticks, stick legs on flat feet, 1.8 / 1.2 strokes in `--ink`), many
+  moods: the letter, delivered, homing, puffed up, the stretch, two of us, wrong table. Poses
+  are drawn as clean paths in `brand/pigeons.html` (also the kit's contact sheet);
+  `node brand/render.js` bakes the pen wobble into the geometry and writes each pose to
+  `brand/pigeon/` as PNG and SVG in three cuts: ink (paper), light (grass, clay, anything dark),
+  filled (its own paper fill and edge, for photos). New poses start from the note's pigeon in
+  the same units, and are never drawn pre-wobbled.
+
 **Layout:** single column, mobile-first, `540px` measure. Most traffic is a phone scanning
 a printed QR code, standing up. Nothing should require two hands or a wide viewport.
 
@@ -432,7 +443,7 @@ Sheet. No build step, no framework, nothing external except the PostHog snippet 
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
 **Repo, flat at root:** `index.html`, `privacy.html`, `ruby.jpg`, `404.html`, `vercel.json`,
-`context.md`
+`context.md`, plus `brand/` (the pigeon kit, not linked from the site)
 
 ### URL structure, and why
 
