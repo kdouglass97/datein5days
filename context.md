@@ -336,9 +336,9 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   almond wing with two ticks, stick legs on flat feet, 1.8 / 1.2 strokes in `--ink`), many
   moods: the letter, delivered, homing, puffed up, the stretch, two of us, wrong table. Poses
   are drawn as clean paths in `brand/pigeons.html` (also the kit's contact sheet);
-  `node brand/render.js` bakes the pen wobble into the geometry and writes each pose to
-  `brand/pigeon/` as PNG and SVG in three cuts: ink (paper), light (grass, clay, anything dark),
-  filled (its own paper fill and edge, for photos). New poses start from the note's pigeon in
+  `node brand/render.js` bakes the pen wobble into the geometry and writes each pose in three
+  cuts, a folder each with `png/` and `svg/` inside (`brand/pigeon/<cut>/<png|svg>/`): ink
+  (paper), light (grass, clay, anything dark), filled (its own paper fill and edge, for photos). New poses start from the note's pigeon in
   the same units, and are never drawn pre-wobbled.
 
 **Layout:** single column, mobile-first, `540px` measure. Most traffic is a phone scanning
