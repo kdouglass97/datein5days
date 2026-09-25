@@ -1,6 +1,6 @@
 // Where someone came from, recorded two ways, because no single signal can say it all.
-//   src  which of our links they used: /ig, /tt, /qr, /kai, /@maya ... (see vercel.json).
-//        We know it only because we minted the link. No tag reads "direct".
+//   src  which of our links they used: /ig, /tt, /qr, /@maya (see vercel.json). We know it
+//        only because we minted the link. The bare link reads "direct".
 //   via  which app or site the click came from, read off the in-app browser or the referrer.
 //        iMessage, WhatsApp on an iPhone, QR scans and typed addresses all arrive carrying
 //        nothing, so they read "none". That blind spot is why the links carry src.

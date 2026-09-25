@@ -446,7 +446,7 @@ The QR code is printed. Its target can never change.
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
 
-/qr/<spot> /ig /tt /kai /ruby /@<name>   307 →  /c/01?src=…   the link book, §9
+/ig /tt /@<name>   307 →  /c/01?src=…   the link book, §9
 ```
 
 Redirects are **307 (temporary)** on purpose. A 301 is cached by browsers indefinitely and
@@ -519,7 +519,7 @@ via
   `via` was appended 2026-09-25; older rows stay blank, same never-backfill rule as below.
 - Two more tabs sit beside `leads`: **`visits`**, one anonymous row per arrival (day, src,
   via, page), and **`sources`**, formulas that total visits, rsvps and finished
-  questionnaires per link and per app. Visits tagged `test…`/`claude-test` go to `visits_test`.
+  questionnaires per link, per link and app (`@maya · tiktok`), and per app. Visits tagged `test…`/`claude-test` go to `visits_test`.
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.
@@ -601,16 +601,20 @@ and the page reads it back (`attr.js`, on every page). Every lead gets two field
 
 | link | src | for |
 |---|---|---|
-| `/qr` | `qr` | the printed code |
-| `/qr/<spot>` | `qr-<spot>` | each further printed piece, e.g. `/qr/soho-cafe`. No deploy needed |
 | `/ig`, `/tt` | `ig`, `tt` | our own Instagram and TikTok: bios, stories, DMs |
-| `/kai`, `/ruby` | `kai`, `ruby` | a link one of us texts or DMs to a person |
-| `/@<name>` | `@<name>` | a creator, or a friend with an audience, e.g. `/@maya`. No deploy needed |
+| `/@<name>` | `@<name>` | a creator, e.g. `/@maya`. Works the moment you say it: no deploy |
+| `/qr` | `qr` | the printed code |
 | share button | `friend` | "send to a single friend" |
-| no tag | `direct` | |
+| the bare link | `direct` | mostly us, texting people. No per-founder links, by choice (2026-09-25) |
 
-A creator needs **one** link for every platform: `via` tells their Instagram from their
-TikTok. `?src=` works on any URL too, and `utm_source` is read when there's no `src`.
+**A creator gets one link for every platform.** Maya pastes `/@maya` in her Instagram bio,
+her stories and her TikTok, and `via` says which one each click came from: the `sources` tab
+lists `@maya · instagram` and `@maya · tiktok` as separate rows, next to Maya's total.
+Don't hand out per-platform links: the app is detected more reliably than a creator pastes
+the right link in the right place. For a placement where the app can't be seen (a
+newsletter, a podcast), mint a variant on the spot: `/@maya-podcast`.
+`?src=` works on any URL too, and `utm_source` is read when there's no `src`. Location-specific
+QR codes (`/qr/<spot>`) were considered and dropped for now.
 
 **The rules**, all in `attr.js`:
 

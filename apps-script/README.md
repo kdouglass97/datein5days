@@ -24,6 +24,6 @@ appends a row to the `visits` tab: `day, src, via, page`. There's no id and no t
 visit can't be tied to a person. Visits skip the script lock, so a burst of them never makes a
 sign-up wait. Visits whose `src` starts with `test` or `claude-test` go to `visits_test`.
 
-The first visit also builds the `sources` tab: two self-updating tables, per link (`src`) and per
-app (`via`), counting visits, rsvps and finished questionnaires. It's formulas only. Delete it and
-the next visit rebuilds it.
+The first visit also builds the `sources` tab: three self-updating tables counting visits, rsvps and
+finished questionnaires per link (`src`), per link and app (`@maya` on `tiktok` and on `instagram`
+as two rows), and per app (`via`). It's formulas only. Delete it and the next visit rebuilds it.

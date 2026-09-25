@@ -223,31 +223,47 @@ function tab_(ss, name, columns) {
 }
 
 /**
- * The `sources` tab: two self-updating tables, per link (src) and per app (via), each counting
- * arrivals from `visits`, and rsvps and finished questionnaires from `leads`. Formulas and
- * totals only, never a name or an answer. Delete the tab and the next visit rebuilds it.
+ * The `sources` tab: three self-updating tables, each counting arrivals from `visits`, and
+ * rsvps and finished questionnaires from `leads`, most rsvps first.
+ *   A:D  per link (src), all platforms together
+ *   F:J  per link and app (src + via): @maya on tiktok and @maya on instagram as two rows.
+ *        Sign-ups from before `via` existed have none, so they only count in A:D.
+ *   L:O  per app (via)
+ * Formulas and totals only, never a name or an answer. Delete the tab and the next visit
+ * rebuilds it.
  */
 function buildSources_(ss) {
   tab_(ss, VISITS_SHEET, VISIT_COLUMNS);
   const sheet = ss.insertSheet(SOURCES_SHEET);
-  const range = function (tab, n) { return tab + "!" + colLetter_(n) + "2:" + colLetter_(n); };
-  const stage = range(SHEET, COLUMNS.indexOf("stage") + 1);
-  const table = function (key) {
-    const v = range(VISITS_SHEET, VISIT_COLUMNS.indexOf(key) + 1);
-    const l = range(SHEET, COLUMNS.indexOf(key) + 1);
-    return "=IFERROR(LET(k, UNIQUE(FILTER(VSTACK(" + v + ", " + l + "), LEN(VSTACK(" + v + ", " + l + ")))), " +
-      "SORT(HSTACK(k, MAP(k, LAMBDA(x, COUNTIF(" + v + ", x))), MAP(k, LAMBDA(x, COUNTIF(" + l + ", x))), " +
-      "MAP(k, LAMBDA(x, COUNTIFS(" + l + ", x, " + stage + ", \"poll_done\")))), 3, FALSE, 2, FALSE)), \"\")";
+  const col = function (tab, columns, name) { const c = colLetter_(columns.indexOf(name) + 1); return tab + "!" + c + "2:" + c; };
+  const vs = col(VISITS_SHEET, VISIT_COLUMNS, "src"), vv = col(VISITS_SHEET, VISIT_COLUMNS, "via");
+  const ls = col(SHEET, COLUMNS, "src"), lv = col(SHEET, COLUMNS, "via"), stage = col(SHEET, COLUMNS, "stage");
+  const finished = stage + ", \"poll_done\"";
+  // one key column: each distinct value, then its visits, rsvps and finished
+  const byOne = function (v, l) {
+    return "=IFERROR(LET(keys, UNIQUE(FILTER(VSTACK(" + v + ", " + l + "), LEN(VSTACK(" + v + ", " + l + ")))), " +
+      "SORT(HSTACK(keys, MAP(keys, LAMBDA(key, COUNTIF(" + v + ", key))), MAP(keys, LAMBDA(key, COUNTIF(" + l + ", key))), " +
+      "MAP(keys, LAMBDA(key, COUNTIFS(" + l + ", key, " + finished + ")))), 3, FALSE, 2, FALSE)), \"\")";
   };
+  // two key columns: each distinct (src, via) pair
+  const byPair = "=IFERROR(LET(pairs, UNIQUE(FILTER(VSTACK(HSTACK(" + vs + ", " + vv + "), HSTACK(" + ls + ", " + lv + ")), " +
+    "LEN(VSTACK(" + vs + ", " + ls + ")) * LEN(VSTACK(" + vv + ", " + lv + ")))), " +
+    "links, CHOOSECOLS(pairs, 1), apps, CHOOSECOLS(pairs, 2), " +
+    "SORT(HSTACK(pairs, MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + vs + ", link, " + vv + ", app))), " +
+    "MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + ls + ", link, " + lv + ", app))), " +
+    "MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + ls + ", link, " + lv + ", app, " + finished + ")))), 4, FALSE, 3, FALSE)), \"\")";
   sheet.getRange("A1:D1").setValues([["src", "visits", "rsvps", "finished"]]);
-  sheet.getRange("F1:I1").setValues([["via", "visits", "rsvps", "finished"]]);
-  sheet.getRange("A1:I1").setFontWeight("bold");
+  sheet.getRange("F1:J1").setValues([["src", "via", "visits", "rsvps", "finished"]]);
+  sheet.getRange("L1:O1").setValues([["via", "visits", "rsvps", "finished"]]);
+  sheet.getRange("A1:O1").setFontWeight("bold");
   sheet.setFrozenRows(1);
-  sheet.getRange("A2").setFormula(table("src"));
-  sheet.getRange("F2").setFormula(table("via"));
-  sheet.getRange("A1").setNote("src: which of our links they used (/ig, /qr, /@maya ...). direct = no tag.\n" +
-    "via: the app or site the click came from. none = a text, a QR scan or a typed address.\n" +
-    "visits counts arrivals. rsvps counts leads; finished, the ones who answered all seven.");
+  sheet.getRange("A2").setFormula(byOne(vs, ls));
+  sheet.getRange("F2").setFormula(byPair);
+  sheet.getRange("L2").setFormula(byOne(vv, lv));
+  sheet.getRange("A1").setNote("src: which of our links they used (/ig, /tt, /qr, /@maya). direct = the bare link.\n" +
+    "via: the app the click came from. none = a text, a QR scan or a typed address.\n" +
+    "A:D per link. F:J per link and app, so @maya on tiktok and on instagram. L:O per app.\n" +
+    "visits counts arrivals, rsvps sign-ups, finished the ones who answered all seven.");
 }
 
 /** 1 -> A, 27 -> AA */
