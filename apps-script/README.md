@@ -16,3 +16,14 @@ web app. Each note is appended as its own row on the `notes` tab: `created, note
 note_id`. Notes starting with "test" go to `notes_test`. The tab is created on the first note.
 Notes carry no `id`, so a script version from before this change rejects them rather than writing
 them into `leads`.
+
+## Visits and sources tabs
+
+Every arrival on the live site (`attr.js`) posts `{ kind: "visit", src, via, page }`. Each one
+appends a row to the `visits` tab: `day, src, via, page`. There's no id and no time of day, so a
+visit can't be tied to a person. Visits skip the script lock, so a burst of them never makes a
+sign-up wait. Visits whose `src` starts with `test` or `claude-test` go to `visits_test`.
+
+The first visit also builds the `sources` tab: two self-updating tables, per link (`src`) and per
+app (`via`), counting visits, rsvps and finished questionnaires. It's formulas only. Delete it and
+the next visit rebuilds it.
