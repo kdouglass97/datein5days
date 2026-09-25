@@ -5,57 +5,227 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#4F6B45">
 <meta name="robots" content="noindex">
-<title>privacy notice — five days</title>
+<title>five days: privacy notice</title>
 <meta name="description" content="How Five Days collects, uses and protects the information you share with us.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="five days">
+<meta property="og:title" content="five days: privacy notice">
+<meta property="og:description" content="How Five Days collects, uses and protects the information you share with us.">
+<meta property="og:url" content="https://datein5days.com/privacy">
+<meta property="og:image" content="https://datein5days.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="An envelope that reads: you're invited to a date in 5 days.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
 <style>
 :root{
---grass:#4F6B45;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;--line:#EDEAE1;
---rule:rgba(70,85,58,.2);
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
 --serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
 --type:"Courier Prime","Courier New",Courier,monospace;
 --opsz:10;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--kraft);color:var(--ink);font:17px/1.6 var(--type);-webkit-font-smoothing:antialiased}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--clay);color:var(--ink);font:17px/1.6 var(--type);-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:var(--noise);opacity:.2;mix-blend-mode:multiply;z-index:50}
 a{color:inherit}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 :focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
+h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 /* bodoni's auto optical size keeps hairlines ~0.2px at every size: print-thin, invisible on screens. pin it per tier (!important: font shorthands reset it) */
 *{font-variation-settings:"opsz" var(--opsz)!important}
-h1{--opsz:18}
-header{padding:28px clamp(18px,4vw,40px);color:var(--paper);background:var(--grass)}
-.brand{font-family:var(--serif);font-size:24px;text-decoration:none;letter-spacing:-.02em}
-main{max-width:680px;margin:0 auto;padding:clamp(28px,6vw,56px) clamp(20px,6vw,32px) 80px}
-.doc{background:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);padding:clamp(28px,6vw,48px)}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6vw,48px);letter-spacing:-.03em;line-height:1.02;margin:0 0 6px}
-.updated{font-size:13px;opacity:.65;margin:0 0 28px}
-h2{font-family:var(--serif);font-weight:400;font-size:23px;letter-spacing:-.01em;margin:34px 0 10px;color:var(--ink)}
-h2:first-of-type{margin-top:0}
-p{margin:0 0 14px;max-width:60ch}
-ul{margin:0 0 14px;padding-left:20px}
-li{margin:0 0 6px;max-width:56ch}
-a{text-decoration:underline;text-underline-offset:2px}
-.back{display:inline-block;margin-top:36px;font-size:14px}
+.intro h1,.doc h2{--opsz:18}
+
+.hero{position:relative;padding:calc(22px + env(safe-area-inset-top)) 0 30px;background:var(--grass)}
+.arc{display:block;width:100%;height:clamp(44px,7vw,84px);margin-top:-1px}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
+.topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
+@media (max-width:360px){.topbar{font-size:12.5px}}
+.brand{font-family:var(--serif);font-size:29px;text-decoration:none;letter-spacing:-.02em}
+.topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
+@media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
+.topbar a:not(.brand):focus-visible{text-decoration:underline}
+@media (max-width:480px){.topbar .xp{display:none}}
+
+/* floating header: drops in once the hero's own topbar scrolls away */
+:root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
+.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:680px;margin:0 auto;
+transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.fhead.on{transform:none}
+.fbar{display:flex;align-items:center;gap:18px;height:var(--fh-h);padding:0 10px 0 16px;background:var(--paper);box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
+.fbar .brand{margin-right:auto;font-size:24px;line-height:1}
+.fbar > a:not(.brand,.btn),.fmenu-btn{font:14px/1 var(--type);color:var(--ink);text-decoration:none;text-underline-offset:3px;padding:18px 0;white-space:nowrap}
+.fmenu-btn{display:flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer}
+.fmenu-btn i{font:normal 20px/.6 var(--type);transition:transform .25s}
+.fmenu-btn[aria-expanded="true"] i{transform:rotate(45deg)}
+@media (hover:hover){.fbar > a:not(.brand,.btn,[aria-current]):hover,.fmenu-btn:hover span{text-decoration:underline}}
+.fbar > a:not(.brand,.btn,[aria-current]):focus-visible,.fmenu-btn:focus-visible span{text-decoration:underline}
+.fbar .here{position:relative}
+.fbar .here svg{position:absolute;left:-3%;bottom:-7px;width:106%;height:8px;overflow:visible;pointer-events:none}
+.fbar .here path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
+.fbar .btn{display:none;padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag)}
+@media (min-width:821px){.fbar .btn{display:inline-block}}
+@media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
+.fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
+padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
+box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18px rgba(0,0,0,.6)}
+.fmenu[hidden]{display:none}
+@media (max-width:640px){.fmenu{left:0;width:auto}.fhead.open::before{content:"";position:fixed;inset:0;z-index:-1;background:rgba(31,40,26,.4)}}
+.fmenu ol{list-style:none;margin:0;padding:0}
+.fmenu li{border-bottom:1px dashed rgba(70,85,58,.55)}
+.fmenu li a{display:block;padding:10px 0 11px;font:italic 400 24px/1.15 var(--serif);letter-spacing:-.01em;text-decoration:none}
+@media (hover:hover){.fmenu li a:hover{color:var(--tag)}}
+.fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
+.fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
+.fmenu-foot [aria-current]{font-weight:700}
+@media (prefers-reduced-motion:no-preference){
+.fmenu:not([hidden]){animation:menuDrop .3s cubic-bezier(.2,.8,.25,1.15)}
+@keyframes menuDrop{from{opacity:0;transform:translateY(-12px) rotate(-2.4deg)}}
+.fhead.open::before{animation:fadeIn .25s ease-out}
+@keyframes fadeIn{from{opacity:0}}
+.fbar .here path{stroke-dasharray:1;stroke-dashoffset:1}
+.fhead.on .here path{animation:ink .6s .35s cubic-bezier(.5,.1,.3,1) forwards}
+}
+
+.intro{max-width:620px;margin:0 auto;padding:clamp(36px,7vw,60px) 24px 0;text-align:center;color:var(--line)}
+.kicker{margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+.intro h1{color:var(--line);font-size:clamp(44px,9vw,76px);line-height:.98;letter-spacing:-.04em;margin:0 0 12px;text-wrap:balance}
+
+/* the envelope, sealed: the ink draws on, then the wax seal is pressed */
+.sk{overflow:visible;pointer-events:none}
+.sk path{fill:none;stroke:var(--line);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sk .thin{stroke-width:1.1}
+.sealed{display:block;width:clamp(130px,30vw,180px);height:auto;margin:0 auto 18px}
+.sealed .wax{fill:var(--clay)}
+.sealed .ring{fill:none;stroke:var(--line);stroke-width:.8;opacity:.45}
+.sealed text{fill:var(--line);font:italic 400 11px var(--serif);--opsz:18}
+.stamp{transform-box:fill-box;transform-origin:center}
+.js .draw .ink{stroke-dasharray:1;stroke-dashoffset:1}
+.js .draw.in .ink{animation:ink 1.3s var(--dl,.2s) cubic-bezier(.5,.1,.3,1) forwards}
+.js .draw .washes{opacity:0;transition:opacity 1.2s .9s}
+.js .draw.in .washes{opacity:1}
+.js .draw .stamp{opacity:0}
+.js .draw.in .stamp{opacity:1;animation:stamp .5s 1.35s cubic-bezier(.3,1.5,.5,1) backwards}
+@keyframes ink{to{stroke-dashoffset:0}}
+@keyframes stamp{from{opacity:0;transform:scale(1.8) rotate(-12deg)}}
+
+.paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
+.tape::before{content:"";position:absolute;top:-14px;left:50%;width:110px;height:28px;transform:translateX(-50%) rotate(-3deg);background:rgba(223,214,190,.85);z-index:2}
+
+/* the notice is the printed form, set square so a long read stays level; the page under it takes the tilt.
+   it's a short strip, not a full sheet: a full-height sheet would stick out further the taller the notice gets */
+.doc-wrap{max-width:760px;margin:0 auto;padding:26px 14px 18px;isolation:isolate}
+.doc{padding:clamp(38px,7vw,58px) clamp(22px,6vw,56px) clamp(30px,6vw,46px);
+box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 18px 36px -20px rgba(0,0,0,.6)}
+.doc::after{content:"";position:absolute;left:5px;right:5px;bottom:-9px;height:160px;z-index:-1;background:#EEE8D8;transform:rotate(-.9deg);box-shadow:0 18px 36px -20px rgba(0,0,0,.6)}
+.updated{font-size:13px;letter-spacing:.02em;opacity:.65;margin:0 0 26px}
+.doc h2{font-size:clamp(25px,5vw,30px);letter-spacing:-.015em;line-height:1.1;margin:36px 0 12px;padding-top:28px;border-top:1px dashed rgba(70,85,58,.45)}
+.doc p{margin:0 0 14px;max-width:62ch}
+.doc ul{margin:0 0 16px;padding-left:22px}
+.doc li{margin:0 0 7px;padding-left:4px;max-width:58ch}
+.doc li::marker{color:var(--clay)}
+.doc a{text-decoration:underline;text-underline-offset:3px}
+.back{display:inline-block;margin-top:24px;font-size:14px}
+@media (max-width:640px){.doc{font-size:16px}}
+
+/* the hand, marking the promises worth finding twice */
+.mk{position:relative;white-space:nowrap}
+.mk svg{position:absolute;left:-2%;bottom:-6px;width:104%;height:9px;overflow:visible;pointer-events:none}
+.mk path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
+
+footer{color:var(--line);text-align:center;padding:48px 20px 64px;font-size:14px}
+footer .brand{display:block;margin-bottom:6px;font-size:30px}
+footer p{margin:4px 0}
+
+.btn{display:block;text-align:center;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 20px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
+@media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
+.btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
+@media (prefers-reduced-motion:reduce){
+*{animation:none!important;transition:none!important}
+.js .draw .ink{stroke-dashoffset:0}
+.js .draw .washes,.js .draw .stamp{opacity:1}
+}
 </style>
 </head>
 <body>
-<header><a class="brand" href="/">five days</a></header>
-<main>
-<article class="doc">
-<h1>Privacy Notice</h1>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<filter id="pen" x="-10%" y="-10%" width="120%" height="120%">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/>
+<feDisplacementMap in="SourceGraphic" scale="2.4"/>
+</filter>
+<filter id="wash" x="-30%" y="-30%" width="160%" height="160%">
+<feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="3" seed="9"/>
+<feDisplacementMap in="SourceGraphic" scale="18"/>
+<feGaussianBlur stdDeviation="3"/>
+</filter>
+</defs>
+</svg>
+
+<nav class="fhead" aria-label="Site" inert>
+<div class="fbar">
+<a class="brand" href="/">five days</a>
+<a href="/privacy" aria-current="page"><span class="here">privacy<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></a>
+<button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
+<div class="fmenu" id="fmenu" hidden>
+<ol>
+<li><a href="/#idea"><span>the idea</span></a></li>
+<li><a href="/#how"><span>your next 5 days</span></a></li>
+<li><a href="/#experiment"><span>the experiment</span></a></li>
+<li><a href="/rsvp"><span>rsvp</span></a></li>
+<li><a href="/#faq"><span>questions</span></a></li>
+<li><a href="/#team"><span>who's setting you up</span></a></li>
+</ol>
+<p class="fmenu-foot"><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy" aria-current="page">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+</div>
+<a class="btn" href="/rsvp">rsvp</a>
+</div>
+</nav>
+
+<header class="hero">
+<div class="topbar"><a class="brand" href="/">five days</a><span><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; <a href="/privacy" aria-current="page">privacy</a></span></div>
+<div class="intro">
+<svg class="sk sealed draw" data-reveal viewBox="0 0 180 124" aria-hidden="true">
+<g class="washes" filter="url(#wash)">
+<ellipse cx="86" cy="80" rx="62" ry="30" style="fill:#A9B89A;opacity:.35"/>
+<circle cx="90" cy="70" r="24" style="fill:#F2C38F;opacity:.4"/>
+</g>
+<g filter="url(#pen)">
+<path class="ink" pathLength="1" d="M31 27C64 25 116 26 150 25C151 52 150 80 151 104C114 106 66 104 29 105C30 80 30 52 31 27Z"/>
+<path class="ink" pathLength="1" style="--dl:.45s" d="M31 28L90 70L150 26"/>
+<path class="ink thin" pathLength="1" style="--dl:.7s" d="M30 104L77 67M150 103L103 67"/>
+</g>
+<g class="stamp">
+<circle class="wax" cx="90" cy="70" r="11.5"/>
+<circle class="ring" cx="90" cy="70" r="8.5"/>
+<text x="90" y="74" text-anchor="middle">5</text>
+</g>
+</svg>
+<p class="kicker">privacy notice</p>
+<h1>what you tell us, and what we do with it.</h1>
+</div>
+</header>
+<svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16C820 24 400 48 0 70Z" fill="#4F6B45"/><path d="M0 70C400 48 820 24 1200 16" fill="none" stroke="#EDEAE1" stroke-width="8" vector-effect="non-scaling-stroke"/></svg>
+
+<main class="doc-wrap">
+<article class="paper doc tape">
 <p class="updated">Last updated: 23 September 2026</p>
 
 <p>Five Days is a dating experiment run by Kai Douglass and Ruby Lau. We're the "controller" responsible for how the information you share with Five Days is used.</p>
 <p>If you have any questions about your data, email <a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a>.</p>
 
-<h2>What we collect</h2>
+<h2>what we collect</h2>
 <p>When you sign up, we may collect information such as your name, age confirmation, contact details (including your phone number and which messaging app you prefer), the cities where you live or have ties, Instagram handle or verification photo, dating preferences, answers to matching questions, availability and feedback.</p>
 <p>Some of your dating preferences may reveal sensitive information, including your sexual orientation.</p>
 <p>We ask for your phone number so we can reach you. We use it to tell you when Five Days opens in your city and to arrange your date, by iMessage, WhatsApp or regular text, whichever you choose. We don't use it to market to you unless you've opted in, and we never share it with your match.</p>
 
-<h2>What we use it for</h2>
+<h2>what we use it for</h2>
 <p>We use your information to:</p>
 <ul>
 <li>verify that participants are real</li>
@@ -67,7 +237,7 @@ a{text-decoration:underline;text-underline-offset:2px}
 <li>tell you about future Five Days experiments, launches and updates, but only if you've opted in to hear about them</li>
 </ul>
 
-<h2>Our legal bases</h2>
+<h2>our legal bases</h2>
 <ul>
 <li><b>Contract, or steps to enter one:</b> for verifying you, understanding who you might be compatible with, finding potential matches, and contacting you to arrange dates. This is the information needed to provide the matchmaking experience you sign up for. You don't have to give it to us, but we won't be able to match you without it.</li>
 <li><b>Explicit consent:</b> for using any answer that reveals sensitive information, such as sexual orientation, to find and arrange matches. You give this consent separately when you RSVP, and can withdraw it at any time (see below).</li>
@@ -75,20 +245,20 @@ a{text-decoration:underline;text-underline-offset:2px}
 <li><b>Legitimate interests:</b> for keeping the experiment safe, preventing misuse, and improving how Five Days works, balanced against your right to privacy.</li>
 </ul>
 
-<h2>Who we share it with</h2>
-<p>We do not sell your personal information.</p>
+<h2>who we share it with</h2>
+<p class="draw" data-reveal>We <span class="mk">do not sell<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.3s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span> your personal information.</p>
 <p>Our website is hosted on Vercel, and we may use other service providers ("processors") to help us store information, communicate with participants or process payments.</p>
 <p>When we message you, it goes through the app you chose: iMessage (Apple), WhatsApp (Meta) or your mobile carrier for regular texts. Those providers handle the messages under their own privacy terms.</p>
 <p>We may also share limited information with your potential match where needed to arrange your date. That never includes your phone number.</p>
 
-<h2>International transfers</h2>
+<h2>international transfers</h2>
 <p>Some of these providers may process information outside the UK or EEA. Where data-protection law requires it, we use appropriate safeguards, such as the UK and EU Standard Contractual Clauses or an adequacy decision.</p>
 
-<h2>How long we keep it</h2>
-<p>Verification photos are deleted after verification and no later than 7 days after they are submitted.</p>
+<h2>how long we keep it</h2>
+<p class="draw" data-reveal>Verification photos are deleted after verification and <span class="mk">no later than 7 days<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.3s" d="M2 5C44 7 92 3 136 6S182 4 198 5"/></svg></span> after they are submitted.</p>
 <p>Matchmaking information is deleted or anonymised within 3 months after the relevant Five Days cohort, unless we need to keep limited information longer for legal or safety reasons.</p>
 
-<h2>Your rights</h2>
+<h2>your rights</h2>
 <p>Depending on where you live, you can ask us to:</p>
 <ul>
 <li>give you access to the personal information we hold about you</li>
@@ -100,14 +270,48 @@ a{text-decoration:underline;text-underline-offset:2px}
 </ul>
 <p>To do any of this, email <a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a>. We'll respond as quickly as we can.</p>
 
-<h2>Withdrawing your consent</h2>
+<h2>withdrawing your consent</h2>
 <p>You can withdraw your consent to any of the above at any time by emailing <a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a>. Withdrawing doesn't affect anything we did with your information before you withdrew it, and doesn't affect anything we do based on a different legal basis, such as arranging a date you've already agreed to.</p>
 
-<h2>Complaints</h2>
+<h2>complaints</h2>
 <p>If you're unhappy with how we've handled your information, we'd like the chance to put it right first: email <a href="mailto:datein5days@gmail.com">datein5days@gmail.com</a>. You also have the right to lodge a complaint with your local data protection authority. In the UK, that's the <a href="https://ico.org.uk" target="_blank" rel="noopener">Information Commissioner's Office</a>.</p>
 
 <a class="back" href="/">&larr; back to five days</a>
 </article>
 </main>
+
+<footer>
+<a class="brand" href="/">five days</a>
+<p>A table for two, somewhere good. An experiment in slower, better dating.</p>
+<p><a href="/">experiment no. 01</a> &nbsp;/&nbsp; <a href="/involved">get involved</a> &nbsp;/&nbsp; <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a> &nbsp;/&nbsp; <a href="/privacy" aria-current="page">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+</footer>
+
+<script>
+(() => {
+const io = new IntersectionObserver(es => es.forEach(e => {
+if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}), { threshold: .2 });
+document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
+
+const fhead = document.querySelector(".fhead"), fmenu = document.getElementById("fmenu"), fmenuBtn = fhead.querySelector(".fmenu-btn");
+const setMenu = open => {
+if (open === !fmenu.hidden) return;
+fmenu.hidden = !open;
+fhead.classList.toggle("open", open);
+fmenuBtn.setAttribute("aria-expanded", open);
+};
+fmenuBtn.addEventListener("click", () => setMenu(fmenu.hidden));
+fhead.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+addEventListener("keydown", e => { if (e.key === "Escape" && !fmenu.hidden) { setMenu(false); fmenuBtn.focus(); } });
+document.addEventListener("pointerdown", e => { if (e.target === fhead || !fhead.contains(e.target)) setMenu(false); });
+fhead.addEventListener("focusout", e => { if (e.relatedTarget && !fhead.contains(e.relatedTarget)) setMenu(false); });
+new IntersectionObserver(([e]) => {
+const on = !e.isIntersecting;
+fhead.classList.toggle("on", on); fhead.inert = !on;
+if (!on) setMenu(false);
+}).observe(document.querySelector(".topbar"));
+})();
+</script>
+<script src="/note.js" defer></script>
 </body>
 </html>

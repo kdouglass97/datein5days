@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-24
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-25
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -313,15 +313,22 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   small 3D scene: its pieces sit sub-pixel distances apart in z (the stage has perspective,
   so bigger offsets visibly scale them), and their z-indexes repeat the same order for the
   moments the scene is flattened. Keep both orders in sync if you add a piece.
-- The **floating header** (`.fhead`, on `/c/01` and `/involved`, added 2026-09-23) is the
+- The **floating header** (`.fhead`, on `/c/01`, `/involved` and `/privacy`, added 2026-09-23) is the
   printed form: a paper strip that drops in once the hero's own topbar scrolls away, with a
   "menu" card listing the page's parts. The hand is the pen underline under wherever you are
-  (live on the landing page, the current page on `/involved`). On touch screens it steps aside
+  (live on the landing page, the current page on `/involved` and `/privacy`). On touch screens it steps aside
   while a text field has focus, so the questionnaire stays a clean writing surface.
   Its one button is **rsvp, at every width**; on the landing page it fades while the form
-  itself is on screen. On phones (≤640px) get involved lives only in the menu. The strip
+  itself is on screen. On phones (≤640px) the strip's text link (get involved; privacy on
+  `/privacy`) lives only in the menu. The strip
   replaced a phone-only bottom dock on 2026-09-24: with rsvp in the strip, a second sticky
   rsvp was one too many, so don't bring the dock back.
+- **`/privacy` wears the `/involved` frame** (grass hero, arc, grain, footer; added 2026-09-25),
+  with a sealed envelope sketch whose wax seal presses on last. The notice sits on a *square*
+  sheet with a letterhead band, the one deliberate exception to "never square": a long legal
+  read stays level, and the page peeking out beneath it takes the tilt. The pen marks only two
+  promises, "do not sell" and "no later than 7 days". The notice's words are legal text:
+  restyle them, never reword them (headings are lowercased, nothing else changed).
 
 **Layout:** single column, mobile-first, `540px` measure. Most traffic is a phone scanning
 a printed QR code, standing up. Nothing should require two hands or a wide viewport.
@@ -449,11 +456,12 @@ cohort, IG account, cities, cohort size, launch date, the poll array, the Apps S
 endpoint, the paywall toggle, founder bios. Change the site by changing `CONFIG`, not by
 hunting through markup.
 
-**The header menu is hand-listed in two places.** Its targets are the section ids `#idea`
-`#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` links to the
-same ones as `/#faq` (the fragment survives the `/` redirect). Rename a section and update both
-menus. Anchor jumps land below the header through `html{scroll-padding-top}`, which is built
-from `--fh-top` and `--fh-h`: change the header's height there, not in the padding.
+**The header menu is hand-listed in three places.** Its targets are the section ids `#idea`
+`#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
+`privacy.html` link to the same ones as `/#faq` (the fragment survives the `/` redirect).
+Rename a section and update all three menus. Anchor jumps land below the header through
+`html{scroll-padding-top}`, which is built from `--fh-top` and `--fh-h`: change the header's
+height there, not in the padding.
 
 ### ☠️ Landmines, each one already stepped on
 
