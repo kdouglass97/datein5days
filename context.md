@@ -313,6 +313,13 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   small 3D scene: its pieces sit sub-pixel distances apart in z (the stage has perspective,
   so bigger offsets visibly scale them), and their z-indexes repeat the same order for the
   moments the scene is flattened. Keep both orders in sync if you add a piece.
+- **Polaroids never cover type.** On phones and tablets (≤820px) they land on the letter, so
+  each is placed to clear the words: the top-left one stays off the D of "DATE" and rises only
+  30px above the stage (which sits 40px under the top bar, so the wordmark stays clear), the
+  right one drops below the S of "DAYS", the bottom-left one clears "WE HANDLE THE ADMIN". The
+  stage scales with `--w`, so a placement holds across its breakpoint, but anything that widens
+  the headline (size, tracking, `opsz`) or resizes a polaroid needs a re-check at 320, 375,
+  393, 430 and 768. Until 2026-09-26 the top-left one covered the D on phones and tablets.
 - The **floating header** (`.fhead`, on `/c/01`, `/involved` and `/privacy`, added 2026-09-23) is the
   printed form: a paper strip that drops in once the hero's own topbar scrolls away, with a
   "menu" card listing the page's parts. The hand is the pen underline under wherever you are
@@ -673,6 +680,7 @@ not in `rsvps`.
 - [ ] Delete the `Sheet1` tab (empty decoy) and the test photo from Drive
 - [ ] Share Sheet and Drive folder with Ruby; invite Ruby to PostHog
 - [ ] Rename the PostHog project from "Default project" and fix its app URL
+- [ ] Two polaroid collisions left (§5): iPad Pro in portrait (821–1050px, desktop placement) slides the top-left polaroid under the "five days" wordmark, and landscape phones 700–820px wide put the bottom-left one on "WE HANDLE THE ADMIN".
 
 ---
 
