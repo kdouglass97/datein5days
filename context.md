@@ -446,7 +446,7 @@ The QR code is printed. Its target can never change.
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
 
-/ig /tt /@<name>   307 →  /c/01?src=…   the link book, §9
+/ig /tt /invite /@<name>   307 →  /c/01?src=…   the link book, §9
 ```
 
 Redirects are **307 (temporary)** on purpose. A 301 is cached by browsers indefinitely and
@@ -602,10 +602,11 @@ and the page reads it back (`attr.js`, on every page). Every lead gets two field
 | link | src | for |
 |---|---|---|
 | `/ig`, `/tt` | `ig`, `tt` | our own Instagram and TikTok: bios, stories, DMs |
+| `/invite` | `invite` | a link either of us texts or sends to a person |
 | `/@<name>` | `@<name>` | a creator, e.g. `/@maya`. Any name works, no deploy (below) |
 | `/qr` | `qr` | the printed code |
 | share button | `friend` | "send to a single friend" |
-| the bare link | `direct` | mostly us, texting people. No per-founder links, by choice (2026-09-25) |
+| the bare link | `direct` | they found us on their own (see below). No per-founder links, by choice |
 
 **A creator gets one link for every platform.** Maya pastes `/@maya` in her Instagram bio,
 her stories and her TikTok, and `via` says which one each click came from: the `sources` tab
@@ -620,8 +621,18 @@ is signed. The flip side: a typo (`/@mayaa`) becomes its own label. Copy the lin
 retype it. Anyone could type `/@whatever` themselves, but that only labels their own
 sign-up, which we check by hand anyway.
 
-`?src=` works on any URL too, and `utm_source` is read when there's no `src`. Location-specific
-QR codes (`/qr/<spot>`) were considered and dropped for now.
+**Did they find us on their own?** That's `direct`, and `via` says how:
+
+- `direct` + `google`, `bing`, `duckduckgo`, `chatgpt`, `perplexity` … : a search or an AI
+  assistant.
+- `direct` + a site's name (`reddit`, or the bare host of anything else): a link on another
+  website.
+- `direct` + `none`: typed the address, or a bookmark. This only means "found us" as long as
+  our own texts use `/invite`: a texted bare link looks exactly like a typed one.
+
+`?src=` works on any URL too. Other people's tags (`utm_source`, `ref`; ChatGPT adds
+`utm_source` to every link it hands out) count as `via`, never `src`: `src` only ever names
+one of our links. Location-specific QR codes (`/qr/<spot>`) were considered and dropped for now.
 
 **The rules**, all in `attr.js`:
 

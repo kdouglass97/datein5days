@@ -215,7 +215,7 @@ function buildSources_(ss) {
   sheet.getRange("A2").setFormula(byOne(src));
   sheet.getRange("E2").setFormula(byPair);
   sheet.getRange("J2").setFormula(byOne(via));
-  sheet.getRange("A1").setNote("src: which of our links they used (/ig, /tt, /qr, /@maya). direct = the bare link.\n" +
+  sheet.getRange("A1").setNote("src: which of our links they used (/ig, /tt, /qr, /invite, /@maya). direct = found us on their own.\n" +
     "via: the app the click came from. none = a text, a QR scan or a typed address.\n" +
     "A:C per link. E:H per link and app, so @maya on tiktok and on instagram. J:L per app.\n" +
     "rsvps counts sign-ups, finished the ones who answered all seven. Visits live in PostHog.");

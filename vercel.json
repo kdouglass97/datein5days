@@ -7,6 +7,7 @@
     { "source": "/qr", "destination": "/c/01?src=qr", "permanent": false },
     { "source": "/ig", "destination": "/c/01?src=ig", "permanent": false },
     { "source": "/tt", "destination": "/c/01?src=tt", "permanent": false },
+    { "source": "/invite", "destination": "/c/01?src=invite", "permanent": false },
     { "source": "/@:who", "destination": "/c/01?src=@:who", "permanent": false }
   ],
   "rewrites": [

@@ -1,6 +1,6 @@
 // Where someone came from, recorded two ways, because no single signal can say it all.
-//   src  which of our links they used: /ig, /tt, /qr, /@maya (see vercel.json). We know it
-//        only because we minted the link. The bare link reads "direct".
+//   src  which of our links they used: /ig, /tt, /qr, /invite, /@maya (see vercel.json). We
+//        know it only because we minted the link. The bare link reads "direct".
 //   via  which app or site the click came from, read off the in-app browser or the referrer.
 //        iMessage, WhatsApp on an iPhone, QR scans and typed addresses all arrive carrying
 //        nothing, so they read "none". That blind spot is why the links carry src.
@@ -20,7 +20,8 @@ const APPS = [["instagram", /Instagram/], ["threads", /Barcelona/], ["facebook",
 ["snapchat", /Snapchat/], ["linkedin", /LinkedInApp/], ["pinterest", /Pinterest/], ["wechat", /MicroMessenger/], ["line", / Line\//], ["telegram", /Telegram/], ["x", /Twitter/]];
 const SITES = [["instagram", /(^|\.)instagram\.com$/], ["threads", /(^|\.)threads\.(net|com)$/], ["facebook", /(^|\.)(facebook\.com|fb\.me|messenger\.com)$/],
 ["tiktok", /(^|\.)tiktok\.com$/], ["x", /^t\.co$|(^|\.)(twitter|x)\.com$/], ["linkedin", /(^|\.)linkedin\.com$|^lnkd\.in$/], ["youtube", /(^|\.)youtube\.com$|^youtu\.be$/],
-["reddit", /(^|\.)reddit\.com$/], ["google", /(^|\.)google\.[a-z.]+$/]];
+["reddit", /(^|\.)reddit\.com$/], ["google", /(^|\.)google\.[a-z.]+$/], ["bing", /(^|\.)bing\.com$/], ["duckduckgo", /(^|\.)duckduckgo\.com$/],
+["yahoo", /(^|\.)yahoo\.[a-z.]+$/], ["ecosia", /(^|\.)ecosia\.org$/], ["brave", /^search\.brave\.com$/], ["chatgpt", /(^|\.)chatgpt\.com$/], ["perplexity", /(^|\.)perplexity\.ai$/]];
 // Android tells Chrome which app opened the link (android-app://<package>/), so on Android
 // a text or a WhatsApp message is visible even without a tag.
 const ANDROID = { "com.whatsapp": "whatsapp", "com.whatsapp.w4b": "whatsapp", "com.google.android.apps.messaging": "sms", "com.samsung.android.messaging": "sms",
@@ -43,7 +44,9 @@ if (ref.protocol === "android-app:") return ANDROID[ref.hostname.toLowerCase()] 
 const h = bare(ref.hostname);
 return (SITES.find(([, re]) => re.test(h)) || [])[0] || tag(h);
 };
-const here = { src: tag(q.get("src") || q.get("ref") || q.get("utm_source")) || "direct", via: app || carried || fromRef() || "none" };
+// src only ever names one of our links. Other people's tags (ChatGPT adds utm_source to every
+// link it gives out) say where the click came from, so they count as via.
+const here = { src: tag(q.get("src")) || "direct", via: app || carried || fromRef() || tag(q.get("utm_source") || q.get("ref")) || "none" };
 if (app && q.get("via") !== app) {
 q.set("via", app);
 history.replaceState(history.state, "", location.pathname + "?" + q + location.hash);
