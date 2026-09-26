@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-25
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-26
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -322,7 +322,22 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   itself is on screen. On phones (≤640px) the strip's text link (get involved; privacy on
   `/privacy`) lives only in the menu. The strip
   replaced a phone-only bottom dock on 2026-09-24: with rsvp in the strip, a second sticky
-  rsvp was one too many, so don't bring the dock back.
+  rsvp was one too many, so don't bring the dock back. The strip carries **no social glyphs**
+  either: it follows the reader through the questionnaire, and a standing way off the page
+  beside rsvp competes with the one thing the strip is for. They wait in the menu card's foot.
+- **Instagram and TikTok glyphs** (added 2026-09-26) are the printed form: monoline outlines at
+  the typewriter's stroke weight, one `<symbol>` each (`#i-ig`, `#i-tt`) in every page's hidden
+  defs, never the brands' colors. The hand is the pen loop (`#i-ring`) that circles one on
+  hover. Each placement has its own job:
+  - **the hero topbar is for being seen.** Someone who just scanned a QR code checks that real
+    people with a public history are behind this before handing over their own Instagram. The
+    glyphs sit static, small and cream in the top corner, which is the hardest spot to reach
+    one-handed, so they read as proof without pulling taps from rsvp. When the topbar runs out
+    of room the cohort number goes first (`.xp` at 560px, then `.no` at 440px; 480/380 on
+    `/privacy`, whose topbar is shorter), never the glyphs.
+  - **the footer is for being clicked.** Larger glyphs plus the handle: the follow is the
+    second-best outcome for someone who read to the end and isn't ready to rsvp.
+  - **the menu card** holds them for anyone who goes looking.
 - **`/privacy` wears the `/involved` frame** (grass hero, arc, grain, footer; added 2026-09-25),
   with a sealed envelope sketch whose wax seal presses on last. The notice sits on a *square*
   sheet with a letterhead band, the one deliberate exception to "never square": a long legal
@@ -454,14 +469,16 @@ would weld a printed QR code to cohort 01 forever. To ship cohort 02: change the
 destinations and `CONFIG.cohort`. The printed code keeps working.
 
 **Configuration lives in one `CONFIG` object** at the top of the script block: brand,
-cohort, IG account, cities, cohort size, launch date, the poll array, the Apps Script
+cohort, IG and TikTok accounts, cities, cohort size, launch date, the poll array, the Apps Script
 endpoint, the paywall toggle, founder bios. Change the site by changing `CONFIG`, not by
 hunting through markup.
 
 **The header menu is hand-listed in three places.** Its targets are the section ids `#idea`
 `#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
 `privacy.html` link to the same ones as `/#faq` (the fragment survives the `/` redirect).
-Rename a section and update all three menus. Anchor jumps land below the header through
+Rename a section and update all three menus. The social glyphs are hand-copied the same way
+(topbar, menu card, footer on each of the three pages); `CONFIG` only rewrites `index.html`'s,
+so a handle change is a find-and-replace across all three files. Anchor jumps land below the header through
 `html{scroll-padding-top}`, which is built from `--fh-top` and `--fh-h`: change the header's
 height there, not in the padding.
 
@@ -580,6 +597,11 @@ console logs. `src=claude-test` is test traffic and every dashboard insight filt
 
 Events: `rsvp_sent`, `question_answered` (with `q`), `questions_done`, `poll_resume`,
 `verify_mode`. Dashboard **2107266**, "datein5days: cohort 01 launch."
+
+Outbound social clicks: `social_ig_top` / `social_tt_top` (hero topbar) and `social_ig_foot` /
+`social_tt_foot` (footer); the menu card's arrive as `nav_menu_go` with the URL. Once capture
+is on for real visitors, check the hero pair against `rsvp_sent`: if people leave through the
+glyphs before rsvping, the topbar ones go and the footer keeps its pair.
 
 **Read the dashboard with §3 in mind.** Drop-off through the questions is the filter
 working. The number that matters is how many people finish *with real answers*, not what
