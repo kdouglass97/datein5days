@@ -6,10 +6,9 @@
 //        nothing, so they read "none". That blind spot is why the links carry src.
 // A sign-up is credited to this browser's first tagged visit in the last 30 days
 // (window.d5dAttr), so someone who scans the QR code and comes back two days later by typing
-// the address still counts for the QR code. Every arrival on the live site is also tallied,
-// anonymously, on the sheet's `visits` tab: no id, no time of day, nothing about the person.
+// the address still counts for the QR code. Counting visits is PostHog's job, not the sheet's:
+// every event there carries src and via (track() in index.html).
 (() => {
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU/exec";
 const KEY = "d5d_attr", DAYS = 30;
 const q = new URLSearchParams(location.search);
 // lowercase letters, digits, . _ - and one leading @: nothing a spreadsheet would try to run
@@ -59,13 +58,4 @@ first = { ...here, t: Date.now() };
 try { localStorage.setItem(KEY, JSON.stringify(first)); } catch {}
 }
 window.d5dAttr = { src: tag(first.src) || "direct", via: tag(first.via) || "none" };
-
-// The tally counts arrivals, not page loads: moving between our own pages, reloading, going
-// back, or reopening in the browser from an app (already counted) don't add a row.
-const nav = performance.getEntriesByType?.("navigation")[0]?.type;
-const landing = !internal && nav !== "reload" && nav !== "back_forward" && !carried;
-if (landing && /(^|\.)datein5days\.com$/.test(location.hostname) && !navigator.webdriver && !/bot|crawl|spider|headless|lighthouse/i.test(ua)) {
-fetch(ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ kind: "visit", ...here, page: location.pathname }), keepalive: true })
-.catch(() => {});
-}
 })();

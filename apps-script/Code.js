@@ -13,8 +13,8 @@
  * Sign-ups whose first name starts with "test" write to the `test` tab instead of
  * `leads`, so QA runs never mix into real sign-up data. See targetSheetName_().
  *
- * Every arrival on the live site also posts { kind: "visit" } (see /attr.js), one anonymous
- * row on the `visits` tab. The `sources` tab adds them up against sign-ups per link and app.
+ * The `sources` tab totals sign-ups per link (src) and app (via). See buildSources_().
+ * Visits are counted in PostHog, never here.
  */
 
 const SHEET_ID = "1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw";
@@ -30,12 +30,7 @@ const NOTES_SHEET = "notes";
 const NOTES_TEST_SHEET = "notes_test";
 const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
 
-// One row per arrival: which link (src), which app (via), which page. No id and no time of
-// day, so a visit can't be tied back to a person. src starting with "test" or "claude-test"
-// goes to VISITS_TEST_SHEET. SOURCES_SHEET is formulas only, totals per link and per app.
-const VISITS_SHEET = "visits";
-const VISITS_TEST_SHEET = "visits_test";
-const VISIT_COLUMNS = ["day", "src", "via", "page"];
+// Formulas only: sign-ups totalled per link and per app. See buildSources_().
 const SOURCES_SHEET = "sources";
 
 const COLUMNS = [
@@ -99,11 +94,6 @@ function doGet() {
 }
 
 function doPost(e) {
-  // Visits skip the lock: they only ever append a row, and a burst of them (a story going up)
-  // must never make a sign-up wait behind it, or time out.
-  const visit = parseVisit_(e);
-  if (visit) return json_(saveVisit_(visit));
-
   const lock = LockService.getScriptLock();
   try {
     lock.waitLock(30000);
@@ -121,6 +111,7 @@ function doPost(e) {
     const sheet = getSheet_(targetSheetName_(data));
     const row = buildRow_(data);
     upsert_(sheet, row);
+    if (sheet.getName() === SHEET) ensureSources_(sheet.getParent());
 
     return json_({ ok: true, id: data.id, stage: row.stage || "" });
   } catch (err) {
@@ -183,87 +174,51 @@ function saveNote_(d) {
   return { ok: true, kind: "note" };
 }
 
-/** the body as a visit, or null for anything else (sign-ups and notes take the locked path) */
-function parseVisit_(e) {
+/** builds the `sources` tab when it's missing, without ever letting it fail a sign-up */
+function ensureSources_(ss) {
   try {
-    const data = JSON.parse(e.postData.contents);
-    return data && data.kind === "visit" ? data : null;
+    if (!ss.getSheetByName(SOURCES_SHEET)) buildSources_(ss);
   } catch (err) {
-    return null;
+    console.error("sources tab: " + err);
   }
-}
-
-/** append one anonymous arrival to the visits tab */
-function saveVisit_(d) {
-  try {
-    const src = cleanTag_(d.src) || "direct";
-    const via = cleanTag_(d.via) || "none";
-    const page = String(d.page || "").replace(/[^\w\/.-]/g, "").slice(0, 60);
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const test = /^(claude-)?test/.test(src);
-    const sheet = tab_(ss, test ? VISITS_TEST_SHEET : VISITS_SHEET, VISIT_COLUMNS);
-    const day = Utilities.formatDate(new Date(), ss.getSpreadsheetTimeZone(), "yyyy-MM-dd");
-    sheet.appendRow([day, src, via, page]);
-    if (!test && !ss.getSheetByName(SOURCES_SHEET)) buildSources_(ss);
-    return { ok: true, kind: "visit" };
-  } catch (err) {
-    return { ok: false, error: String(err) };
-  }
-}
-
-/** a tab with the given header row, created on first use */
-function tab_(ss, name, columns) {
-  const sheet = ss.getSheetByName(name) || ss.insertSheet(name);
-  const header = sheet.getRange(1, 1, 1, columns.length).getValues()[0];
-  if (!columns.every(function (c, i) { return header[i] === c; })) {
-    sheet.getRange(1, 1, 1, columns.length).setValues([columns]).setFontWeight("bold");
-    sheet.setFrozenRows(1);
-  }
-  return sheet;
 }
 
 /**
- * The `sources` tab: three self-updating tables, each counting arrivals from `visits`, and
- * rsvps and finished questionnaires from `leads`, most rsvps first.
- *   A:D  per link (src), all platforms together
- *   F:J  per link and app (src + via): @maya on tiktok and @maya on instagram as two rows.
- *        Sign-ups from before `via` existed have none, so they only count in A:D.
- *   L:O  per app (via)
- * Formulas and totals only, never a name or an answer. Delete the tab and the next visit
+ * The `sources` tab: sign-ups totalled three ways, most rsvps first.
+ *   A:C  per link (src), all platforms together
+ *   E:H  per link and app (src + via): @maya on tiktok and @maya on instagram as two rows.
+ *        Sign-ups from before `via` existed have none, so they only count in A:C.
+ *   J:L  per app (via)
+ * Formulas and totals only, never a name or an answer. Delete the tab and the next sign-up
  * rebuilds it.
  */
 function buildSources_(ss) {
-  tab_(ss, VISITS_SHEET, VISIT_COLUMNS);
   const sheet = ss.insertSheet(SOURCES_SHEET);
-  const col = function (tab, columns, name) { const c = colLetter_(columns.indexOf(name) + 1); return tab + "!" + c + "2:" + c; };
-  const vs = col(VISITS_SHEET, VISIT_COLUMNS, "src"), vv = col(VISITS_SHEET, VISIT_COLUMNS, "via");
-  const ls = col(SHEET, COLUMNS, "src"), lv = col(SHEET, COLUMNS, "via"), stage = col(SHEET, COLUMNS, "stage");
-  const finished = stage + ", \"poll_done\"";
-  // one key column: each distinct value, then its visits, rsvps and finished
-  const byOne = function (v, l) {
-    return "=IFERROR(LET(keys, UNIQUE(FILTER(VSTACK(" + v + ", " + l + "), LEN(VSTACK(" + v + ", " + l + ")))), " +
-      "SORT(HSTACK(keys, MAP(keys, LAMBDA(key, COUNTIF(" + v + ", key))), MAP(keys, LAMBDA(key, COUNTIF(" + l + ", key))), " +
-      "MAP(keys, LAMBDA(key, COUNTIFS(" + l + ", key, " + finished + ")))), 3, FALSE, 2, FALSE)), \"\")";
+  const col = function (name) { const c = colLetter_(COLUMNS.indexOf(name) + 1); return SHEET + "!" + c + "2:" + c; };
+  const src = col("src"), via = col("via"), finished = col("stage") + ", \"poll_done\"";
+  // one key column: each distinct value, then its rsvps and finished
+  const byOne = function (r) {
+    return "=IFERROR(LET(keys, UNIQUE(FILTER(" + r + ", LEN(" + r + "))), " +
+      "SORT(HSTACK(keys, MAP(keys, LAMBDA(key, COUNTIF(" + r + ", key))), " +
+      "MAP(keys, LAMBDA(key, COUNTIFS(" + r + ", key, " + finished + ")))), 2, FALSE, 3, FALSE)), \"\")";
   };
   // two key columns: each distinct (src, via) pair
-  const byPair = "=IFERROR(LET(pairs, UNIQUE(FILTER(VSTACK(HSTACK(" + vs + ", " + vv + "), HSTACK(" + ls + ", " + lv + ")), " +
-    "LEN(VSTACK(" + vs + ", " + ls + ")) * LEN(VSTACK(" + vv + ", " + lv + ")))), " +
+  const byPair = "=IFERROR(LET(pairs, UNIQUE(FILTER(HSTACK(" + src + ", " + via + "), LEN(" + src + ") * LEN(" + via + "))), " +
     "links, CHOOSECOLS(pairs, 1), apps, CHOOSECOLS(pairs, 2), " +
-    "SORT(HSTACK(pairs, MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + vs + ", link, " + vv + ", app))), " +
-    "MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + ls + ", link, " + lv + ", app))), " +
-    "MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + ls + ", link, " + lv + ", app, " + finished + ")))), 4, FALSE, 3, FALSE)), \"\")";
-  sheet.getRange("A1:D1").setValues([["src", "visits", "rsvps", "finished"]]);
-  sheet.getRange("F1:J1").setValues([["src", "via", "visits", "rsvps", "finished"]]);
-  sheet.getRange("L1:O1").setValues([["via", "visits", "rsvps", "finished"]]);
-  sheet.getRange("A1:O1").setFontWeight("bold");
+    "SORT(HSTACK(pairs, MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + src + ", link, " + via + ", app))), " +
+    "MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + src + ", link, " + via + ", app, " + finished + ")))), 3, FALSE, 4, FALSE)), \"\")";
+  sheet.getRange("A1:C1").setValues([["src", "rsvps", "finished"]]);
+  sheet.getRange("E1:H1").setValues([["src", "via", "rsvps", "finished"]]);
+  sheet.getRange("J1:L1").setValues([["via", "rsvps", "finished"]]);
+  sheet.getRange("A1:L1").setFontWeight("bold");
   sheet.setFrozenRows(1);
-  sheet.getRange("A2").setFormula(byOne(vs, ls));
-  sheet.getRange("F2").setFormula(byPair);
-  sheet.getRange("L2").setFormula(byOne(vv, lv));
+  sheet.getRange("A2").setFormula(byOne(src));
+  sheet.getRange("E2").setFormula(byPair);
+  sheet.getRange("J2").setFormula(byOne(via));
   sheet.getRange("A1").setNote("src: which of our links they used (/ig, /tt, /qr, /@maya). direct = the bare link.\n" +
     "via: the app the click came from. none = a text, a QR scan or a typed address.\n" +
-    "A:D per link. F:J per link and app, so @maya on tiktok and on instagram. L:O per app.\n" +
-    "visits counts arrivals, rsvps sign-ups, finished the ones who answered all seven.");
+    "A:C per link. E:H per link and app, so @maya on tiktok and on instagram. J:L per app.\n" +
+    "rsvps counts sign-ups, finished the ones who answered all seven. Visits live in PostHog.");
 }
 
 /** 1 -> A, 27 -> AA */
@@ -441,9 +396,8 @@ function savePhoto_(dataUrl, name, id) {
 function setup() {
   const sheet = getSheet_(SHEET);
   const test = getSheet_(TEST_SHEET);
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  if (!ss.getSheetByName(SOURCES_SHEET)) buildSources_(ss);
-  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + VISITS_SHEET + ", " + SOURCES_SHEET + " (columns: " + COLUMNS.length + ")");
+  ensureSources_(sheet.getParent());
+  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + " (columns: " + COLUMNS.length + ")");
 }
 
 /**

@@ -517,9 +517,9 @@ via
 
 - `src` and `via` say where someone came from: which of our links, and which app. See §9.
   `via` was appended 2026-09-25; older rows stay blank, same never-backfill rule as below.
-- Two more tabs sit beside `leads`: **`visits`**, one anonymous row per arrival (day, src,
-  via, page), and **`sources`**, formulas that total visits, rsvps and finished
-  questionnaires per link, per link and app (`@maya · tiktok`), and per app. Visits tagged `test…`/`claude-test` go to `visits_test`.
+- A **`sources`** tab sits beside `leads`: formulas that total rsvps and finished
+  questionnaires per link, per link and app (`@maya · tiktok`), and per app. It's built on
+  the first real sign-up. The sheet holds sign-ups only: visits belong in PostHog (§9).
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.
@@ -602,7 +602,7 @@ and the page reads it back (`attr.js`, on every page). Every lead gets two field
 | link | src | for |
 |---|---|---|
 | `/ig`, `/tt` | `ig`, `tt` | our own Instagram and TikTok: bios, stories, DMs |
-| `/@<name>` | `@<name>` | a creator, e.g. `/@maya`. Works the moment you say it: no deploy |
+| `/@<name>` | `@<name>` | a creator, e.g. `/@maya`. Any name works, no deploy (below) |
 | `/qr` | `qr` | the printed code |
 | share button | `friend` | "send to a single friend" |
 | the bare link | `direct` | mostly us, texting people. No per-founder links, by choice (2026-09-25) |
@@ -613,6 +613,13 @@ lists `@maya · instagram` and `@maya · tiktok` as separate rows, next to Maya'
 Don't hand out per-platform links: the app is detected more reliably than a creator pastes
 the right link in the right place. For a placement where the app can't be seen (a
 newsletter, a podcast), mint a variant on the spot: `/@maya-podcast`.
+
+**There is no list of creators.** Whatever follows `/@` becomes the label, so the link you
+send a creator *is* their registration: nothing to add in code or in the sheet when a deal
+is signed. The flip side: a typo (`/@mayaa`) becomes its own label. Copy the link, don't
+retype it. Anyone could type `/@whatever` themselves, but that only labels their own
+sign-up, which we check by hand anyway.
+
 `?src=` works on any URL too, and `utm_source` is read when there's no `src`. Location-specific
 QR codes (`/qr/<spot>`) were considered and dropped for now.
 
@@ -624,14 +631,14 @@ QR codes (`/qr/<spot>`) were considered and dropped for now.
 - A lead's `src`/`via` are fixed when it's created. Resuming later from another link doesn't
   rewrite where they came from.
 - In an in-app browser the app is written into the URL (`&via=instagram`), because "open in
-  Safari" hands over nothing but the URL. The reopened page isn't counted as a second visit.
-- Every arrival on `datein5days.com` adds a row to the `visits` tab. Previews, bots, reloads
-  and moves between our own pages don't. The row holds day, src, via and page: no id, no
-  time of day, no cookie, nothing about the person. It is a tally, not tracking, and it
-  doesn't touch PostHog. Keep it that way: never add an identifier to it.
+  Safari" hands over nothing but the URL.
+- **Visits go to PostHog, never the sheet** (decided 2026-09-25). Every PostHog event already
+  carries `src` and `via`, so `landing_viewed` broken down by either is visits per link or
+  per app. But capture is off for regular visitors (the ⚠️ above), so until a consent
+  flow ships, PostHog sees team devices only and the sheet's sign-ups are the only numbers.
 
 Read the `sources` tab with §3 in mind. Whether a creator was worth it is in `finished`,
-not in `visits`.
+not in `rsvps`.
 
 ---
 
@@ -639,7 +646,8 @@ not in `visits`.
 
 - [x] Instagram path collects no contact channel. Fixed 2026-09-23: phone + `reach_on` in step 2 (see §3).
 - [ ] Retention vs. waitlist: privacy notice deletes data 3 months after the cohort, but out-of-town RSVPs are promised "first to go" when their city opens. Ruby to decide.
-- [ ] Ruby to confirm the privacy notice covers link attribution (`src`/`via` on the lead, `d5d_attr` in localStorage) and the anonymous `visits` tally (§9). The notice's wording is untouched.
+- [ ] Ruby to confirm the privacy notice covers link attribution (`src`/`via` on the lead, `d5d_attr` in localStorage, §9). The notice's wording is untouched.
+- [ ] Consent flow for PostHog, so visits per link and per app can be counted for real visitors (§9). Ruby's call.
 - [x] Privacy notice. Live at `/privacy` (`privacy.html`), linked from the footer and from
       the RSVP consent step. Controller, purposes, legal bases, recipients/processors,
       transfers, retention, rights, withdrawal and complaint rights are all in it.
