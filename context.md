@@ -623,8 +623,13 @@ sign-up, which we check by hand anyway.
 
 **Did they find us on their own?** That's `direct`, and `via` says how:
 
-- `direct` + `google`, `bing`, `duckduckgo`, `chatgpt`, `perplexity` … : a search or an AI
-  assistant.
+- `direct` + `google`, `bing`, `duckduckgo` … : a search.
+- `direct` + `ai-…`: an AI assistant on the web. `ai-chatgpt`, `ai-claude`, `ai-gemini`,
+  `ai-copilot`, `ai-meta`, `ai-perplexity`, `ai-grok`, `ai-deepseek`, `ai-mistral`, `ai-poe`,
+  and the big Chinese ones (`ai-doubao`, `ai-kimi`, `ai-qwen`, `ai-yuanbao`, `ai-ernie`).
+  Filter `via` on `ai-` to see them all. Their phone apps mostly pass nothing along (ChatGPT's
+  tag is the exception, and Android names the app), so some AI traffic still reads `none`.
+  The list is in `attr.js` (`AI`): add an assistant there when a new one matters.
 - `direct` + a site's name (`reddit`, or the bare host of anything else): a link on another
   website.
 - `direct` + `none`: typed the address, or a bookmark. This only means "found us" as long as
