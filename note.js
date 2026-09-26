@@ -146,7 +146,7 @@ at: new Date().toISOString(),
 note,
 contact: contact.value.trim(),
 page: location.pathname,
-src: new URLSearchParams(location.search).get("src") || "direct",
+src: window.d5dAttr?.src || new URLSearchParams(location.search).get("src") || "direct",
 };
 send.disabled = true;
 form.hidden = true;

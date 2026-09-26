@@ -992,6 +992,7 @@ section{padding:56px 16px}
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
 <p><a href="/involved">get involved</a> &nbsp;/&nbsp; <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
 </footer>
+<script src="/attr.js"></script>
 <script>
 const CONFIG = {
 brand: "five days",
@@ -1026,11 +1027,12 @@ founders: [
 };
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const src = new URLSearchParams(location.search).get("src") || "direct";
-const lead = { cohort: "c" + CONFIG.cohort, id: (crypto.randomUUID?.() || String(Date.now()) + Math.random().toString(16).slice(2)), src };
+// which of our links brought them (src) and from which app (via), worked out in /attr.js
+const { src, via } = window.d5dAttr || { src: new URLSearchParams(location.search).get("src") || "direct", via: "" };
+const lead = { cohort: "c" + CONFIG.cohort, id: (crypto.randomUUID?.() || String(Date.now()) + Math.random().toString(16).slice(2)), src, via };
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function track(event, props = {}) {
-props = { ...props, src, cohort: "c" + CONFIG.cohort, lead_id: lead.id };
+props = { ...props, src, via, cohort: "c" + CONFIG.cohort, lead_id: lead.id };
 window.posthog?.capture(event, props);
 }
 async function sendLead(stage) {
@@ -1779,7 +1781,8 @@ if (!d || !d.lead || d.i == null || Date.now() - d.t > 14 * 864e5) return;
 const banner = $("[data-resume]");
 banner.hidden = false;
 $("[data-resume-go]").addEventListener("click", () => {
-Object.assign(lead, d.lead);
+// a draft saved before `via` existed leaves it blank rather than borrowing this visit's
+Object.assign(lead, { via: "" }, d.lead);
 answers = d.answers || {};
 if (lead.verify) verify.mode = lead.verify;
 track("poll_resume", { q: d.i + 1 });
