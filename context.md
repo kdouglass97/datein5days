@@ -353,7 +353,7 @@ a printed QR code, standing up. Nothing should require two hands or a wide viewp
 ## 6. The flow
 
 ```
-QR / link  →  /  →  307  →  /c/01
+QR / link  →  /  →  307  →  /c/01        (tagged links: /qr, /ig, /@maya … → /c/01?src=…, §9)
                               │
             step 1: RSVP      name · Instagram (or photo fallback) · cities · what you're looking for (ranked)
             step 2: details   age range · who you'd like to meet · price perception ·
@@ -460,6 +460,8 @@ The QR code is printed. Its target can never change.
 /rsvp      307 →  /c/01?go=rsvp
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
+
+/ig /tt /invite /@<name>   307 →  /c/01?src=…   the link book, §9
 ```
 
 Redirects are **307 (temporary)** on purpose. A 301 is cached by browsers indefinitely and
@@ -527,7 +529,14 @@ sensitive_consent marketing_consent
 want_most could_skip
 want_ranking rank_chemistry rank_ease rank_play rank_ambition rank_building
 phone reach_on
+via
 ```
+
+- `src` and `via` say where someone came from: which of our links, and which app. See §9.
+  `via` was appended 2026-09-25; older rows stay blank, same never-backfill rule as below.
+- A **`sources`** tab sits beside `leads`: formulas that total rsvps and finished
+  questionnaires per link, per link and app (`@maya · tiktok`), and per app. It's built on
+  the first real sign-up. The sheet holds sign-ups only: visits belong in PostHog (§9).
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.
@@ -576,8 +585,7 @@ never appear in this repo or in a chat.
 
 `person_profiles: "identified_only"`. Session replay masks all inputs, masks
 `[data-ph-mask]`, blocks `[data-ph-block]` (the photo dropzone), and does not capture
-console logs. `?src=…` tags traffic; `src=qr` is the printed code, `src=claude-test` is
-test traffic and every dashboard insight filters it out.
+console logs. `src=claude-test` is test traffic and every dashboard insight filters it out.
 
 > ⚠️ **Capture is opted out by default for everyone, as of 2026-09-19, on legal review.**
 > There is no consent flow yet, so PostHog must not fire for a regular visitor. `?team=on`
@@ -599,12 +607,85 @@ glyphs before rsvping, the topbar ones go and the footer keeps its pair.
 working. The number that matters is how many people finish *with real answers*, not what
 fraction of visitors finish.
 
+### Where people come from
+
+Nothing in a request can tell a text from a QR scan from a typed address: all three arrive
+carrying nothing. So attribution is **stamped into the link before it leaves our hands**,
+and the page reads it back (`attr.js`, on every page). Every lead gets two fields:
+
+- `src`: which of our links they used. We know it only because we minted the link.
+- `via`: which app the click came from, read off the in-app browser (instagram, tiktok,
+  threads, facebook, wechat …), the referrer (google, x, or the bare host of anything
+  unknown) or, on Android, the app that opened the link (whatsapp, sms, gmail). iMessage,
+  WhatsApp on an iPhone, QR scans and typed addresses read `none`: the blind spot `src` covers.
+
+**The link book.** All 307s in `vercel.json`, so a printed or posted link never goes stale.
+
+| link | src | for |
+|---|---|---|
+| `/ig`, `/tt` | `ig`, `tt` | our own Instagram and TikTok: bios, stories, DMs |
+| `/invite` | `invite` | a link either of us texts or sends to a person |
+| `/@<name>` | `@<name>` | a creator, e.g. `/@maya`. Any name works, no deploy (below) |
+| `/qr` | `qr` | the printed code |
+| share button | `friend` | "send to a single friend" |
+| the bare link | `direct` | they found us on their own (see below). No per-founder links, by choice |
+
+**A creator gets one link for every platform.** Maya pastes `/@maya` in her Instagram bio,
+her stories and her TikTok, and `via` says which one each click came from: the `sources` tab
+lists `@maya · instagram` and `@maya · tiktok` as separate rows, next to Maya's total.
+Don't hand out per-platform links: the app is detected more reliably than a creator pastes
+the right link in the right place. For a placement where the app can't be seen (a
+newsletter, a podcast), mint a variant on the spot: `/@maya-podcast`.
+
+**There is no list of creators.** Whatever follows `/@` becomes the label, so the link you
+send a creator *is* their registration: nothing to add in code or in the sheet when a deal
+is signed. The flip side: a typo (`/@mayaa`) becomes its own label. Copy the link, don't
+retype it. Anyone could type `/@whatever` themselves, but that only labels their own
+sign-up, which we check by hand anyway.
+
+**Did they find us on their own?** That's `direct`, and `via` says how:
+
+- `direct` + `google`, `bing`, `duckduckgo` … : a search.
+- `direct` + `ai-…`: an AI assistant on the web. `ai-chatgpt`, `ai-claude`, `ai-gemini`,
+  `ai-copilot`, `ai-meta`, `ai-perplexity`, `ai-grok`, `ai-deepseek`, `ai-mistral`, `ai-poe`,
+  and the big Chinese ones (`ai-doubao`, `ai-kimi`, `ai-qwen`, `ai-yuanbao`, `ai-ernie`).
+  Filter `via` on `ai-` to see them all. Their phone apps mostly pass nothing along (ChatGPT's
+  tag is the exception, and Android names the app), so some AI traffic still reads `none`.
+  The list is in `attr.js` (`AI`): add an assistant there when a new one matters.
+- `direct` + a site's name (`reddit`, or the bare host of anything else): a link on another
+  website.
+- `direct` + `none`: typed the address, or a bookmark. This only means "found us" as long as
+  our own texts use `/invite`: a texted bare link looks exactly like a typed one.
+
+`?src=` works on any URL too. Other people's tags (`utm_source`, `ref`; ChatGPT adds
+`utm_source` to every link it hands out) count as `via`, never `src`: `src` only ever names
+one of our links. Location-specific QR codes (`/qr/<spot>`) were considered and dropped for now.
+
+**The rules**, all in `attr.js`:
+
+- A lead is credited to the browser's **first tagged visit in the last 30 days** (kept as
+  `d5d_attr` in localStorage). A tag beats no tag. Someone who scans the QR code and comes
+  back two days later by typing the address still counts for the QR code.
+- A lead's `src`/`via` are fixed when it's created. Resuming later from another link doesn't
+  rewrite where they came from.
+- In an in-app browser the app is written into the URL (`&via=instagram`), because "open in
+  Safari" hands over nothing but the URL.
+- **Visits go to PostHog, never the sheet** (decided 2026-09-25). Every PostHog event already
+  carries `src` and `via`, so `landing_viewed` broken down by either is visits per link or
+  per app. But capture is off for regular visitors (the ⚠️ above), so until a consent
+  flow ships, PostHog sees team devices only and the sheet's sign-ups are the only numbers.
+
+Read the `sources` tab with §3 in mind. Whether a creator was worth it is in `finished`,
+not in `rsvps`.
+
 ---
 
 ## 10. Open items
 
 - [x] Instagram path collects no contact channel. Fixed 2026-09-23: phone + `reach_on` in step 2 (see §3).
 - [ ] Retention vs. waitlist: privacy notice deletes data 3 months after the cohort, but out-of-town RSVPs are promised "first to go" when their city opens. Ruby to decide.
+- [ ] Ruby to confirm the privacy notice covers link attribution (`src`/`via` on the lead, `d5d_attr` in localStorage, §9). The notice's wording is untouched.
+- [ ] Consent flow for PostHog, so visits per link and per app can be counted for real visitors (§9). Ruby's call.
 - [x] Privacy notice. Live at `/privacy` (`privacy.html`), linked from the footer and from
       the RSVP consent step. Controller, purposes, legal bases, recipients/processors,
       transfers, retention, rights, withdrawal and complaint rights are all in it.
