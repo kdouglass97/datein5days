@@ -77,7 +77,19 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
 @media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
 .topbar a:not(.brand):focus-visible{text-decoration:underline}
-@media (max-width:480px){.topbar .xp{display:none}}
+/* social links: glyphs set like type in the masthead, the menu card and the colophon; the pen circles one on hover */
+.soc{--g:18px;--r:34px;display:inline-flex;align-items:center;gap:14px;vertical-align:middle}
+.soc a{display:grid;place-items:center;color:inherit}
+.soc a>*{grid-area:1/1}
+.soc svg{width:var(--g);height:var(--g);overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.soc .ring{width:var(--r);height:var(--r);margin:calc((var(--g) - var(--r)) / 2);stroke-width:3.4;stroke-dasharray:1;stroke-dashoffset:1;opacity:0;transition:stroke-dashoffset 0s .2s,opacity .2s}
+@media (hover:hover){.soc a:hover .ring{opacity:1;stroke-dashoffset:0;transition:stroke-dashoffset .4s cubic-bezier(.5,.1,.3,1)}}
+.soc a:active svg:first-child{transform:translateY(1px)}
+.topbar .soc{margin-left:18px}
+.topbar .soc a{padding:12px 7px;margin:-12px -7px}
+/* narrow screens drop the cohort number before the glyphs: they're how a stranger checks we're real */
+@media (max-width:560px){.topbar .xp{display:none}}
+@media (max-width:440px){.topbar .no{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0;perspective:calc(var(--w)*4.1);perspective-origin:50% 72%}
 @media (min-width:700px) and (min-aspect-ratio:1/1){:root{--w:min(540px,82vw,max(280px,calc((100svh - 330px)/1.2)))}.hero .cta-wrap{margin-top:30px}.hero .spots{margin-top:14px}.hero .ctas{gap:16px}}
 /* the envelope is a small 3D scene: .env carries the drop onto the table, .env-tilt the in-air tilt and focus pull.
@@ -358,6 +370,15 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 footer{color:var(--line);text-align:center;padding:24px 20px 60px;font-size:14px}
 footer .brand{display:block;margin-bottom:6px;font-size:30px}
 footer p{margin:4px 0}
+.soc-row{display:flex;justify-content:center;align-items:center;gap:14px}
+footer .soc-row{margin:22px 0 16px}
+footer .soc{--g:24px;--r:44px;gap:16px}
+footer .soc svg{stroke-width:1.5}
+footer .soc .ring{stroke-width:3}
+footer .soc a{padding:8px;margin:-8px}
+/* phones: the links wrap, so they drop their slashes rather than strand one at a line end */
+.foot-links{display:flex;flex-wrap:wrap;justify-content:center;column-gap:1.1em}
+@media (max-width:480px){.foot-links{column-gap:22px}.foot-links .sep{display:none}}
 .mk{position:relative;white-space:nowrap}
 .mk svg{position:absolute;overflow:visible;pointer-events:none}
 .mk.circle svg{left:-8%;top:-20%;width:116%;height:140%}
@@ -444,6 +465,9 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .fmenu li path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
 .fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
 .fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
+.fmenu-foot .soc-row{justify-content:flex-start;padding:12px 0;font-size:13px}
+.fmenu-foot .soc a{padding:9px 7px;margin:-9px -7px}
+.fmenu .ring{stroke:var(--tag)}
 @media (hover:none){.fhead.typing{transform:translateY(calc(-100% - var(--fh-top) - 30px))}}
 @media (prefers-reduced-motion:no-preference){
 .fmenu:not([hidden]){animation:menuDrop .3s cubic-bezier(.2,.8,.25,1.15)}
@@ -632,6 +656,9 @@ section{padding:56px 16px}
 <feDisplacementMap in="SourceGraphic" scale="18"/>
 <feGaussianBlur stdDeviation="3"/>
 </filter>
+<symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.2" cy="6.8" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-tt" viewBox="0 0 24 24"><path d="M11.5 2.6H15.2A5.6 5.6 0 0 0 20.8 8.2V11.8A9.5 9.5 0 0 1 15.2 10.1V15.6A6 6 0 1 1 8 9.72V13.64A2.3 2.3 0 1 0 11.5 15.6Z"/></symbol>
+<symbol id="i-ring" viewBox="0 0 100 100"><path pathLength="1" filter="url(#pen)" d="M68 15C45 8 15 22 12 50C10 78 35 93 58 88C80 83 93 60 86 35C80 20 65 12 45 17"/></symbol>
 </defs>
 </svg>
 <nav class="fhead" aria-label="Site" inert>
@@ -648,14 +675,14 @@ section{padding:56px 16px}
 <li><a href="#faq"><span>questions</span></a></li>
 <li><a href="#team"><span>who's setting you up</span></a></li>
 </ol>
-<p class="fmenu-foot"><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
+<p class="fmenu-foot"><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></span></p>
 <svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true" data-here><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg>
 </div>
 <a class="btn" href="#rsvp" data-track="cta_float">rsvp</a>
 </div>
 </nav>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><a href="#"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; <a href="/involved" data-track="nav_involved">get involved</a></span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="stage">
 <div class="env-shadow" aria-hidden="true"></div>
 <div class="env"><div class="env-tilt">
@@ -990,13 +1017,15 @@ section{padding:56px 16px}
 </svg>
 <a class="brand" href="#" data-brand>five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
-<p><a href="/involved">get involved</a> &nbsp;/&nbsp; <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a> &nbsp;/&nbsp; <a href="/privacy">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener" data-ig-link><span data-ig-account>@datein5days</span></a></p>
+<p class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_foot"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_foot"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></p>
+<p class="foot-links"><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy">privacy</a></p>
 </footer>
 <script>
 const CONFIG = {
 brand: "five days",
 cohort: "01",
 igAccount: "@datein5days",
+ttAccount: "@datein5days",
 siteUrl: "https://datein5days.com",
 shareText: "You're single and I'm tired of hearing about the apps. Here:",
 cities: ["New York", "London", "Paris", "Tokyo", "Hong Kong", "Tbilisi"],
@@ -1066,6 +1095,7 @@ if (on) track("founder_flip", { who: c.dataset.who });
 }));
 $$("[data-ig-account]").forEach(el => el.textContent = CONFIG.igAccount);
 $$("[data-ig-link]").forEach(a => a.href = "https://instagram.com/" + CONFIG.igAccount.replace("@", ""));
+$$("[data-tt-link]").forEach(a => a.href = "https://www.tiktok.com/@" + CONFIG.ttAccount.replace("@", ""));
 const verify = { mode: "ig" };
 const photo = { data: "", state: "", override: false, token: 0 };
 const igWrap = $("[data-ig-wrap]"), photoWrap = $("[data-photo-wrap]");

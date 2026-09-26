@@ -51,7 +51,19 @@ h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 .topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
 @media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
 .topbar a:not(.brand):focus-visible{text-decoration:underline}
+/* social links: glyphs set like type in the masthead, the menu card and the colophon; the pen circles one on hover */
+.soc{--g:18px;--r:34px;display:inline-flex;align-items:center;gap:14px;vertical-align:middle}
+.soc a{display:grid;place-items:center;color:inherit}
+.soc a>*{grid-area:1/1}
+.soc svg{width:var(--g);height:var(--g);overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.soc .ring{width:var(--r);height:var(--r);margin:calc((var(--g) - var(--r)) / 2);stroke-width:3.4;stroke-dasharray:1;stroke-dashoffset:1;opacity:0;transition:stroke-dashoffset 0s .2s,opacity .2s}
+@media (hover:hover){.soc a:hover .ring{opacity:1;stroke-dashoffset:0;transition:stroke-dashoffset .4s cubic-bezier(.5,.1,.3,1)}}
+.soc a:active svg:first-child{transform:translateY(1px)}
+.topbar .soc{margin-left:18px}
+.topbar .soc a{padding:12px 7px;margin:-12px -7px}
+/* narrow screens drop the cohort number before the glyphs: they're how a stranger checks we're real */
 @media (max-width:480px){.topbar .xp{display:none}}
+@media (max-width:380px){.topbar .no{display:none}}
 
 /* floating header: drops in once the hero's own topbar scrolls away */
 :root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
@@ -85,6 +97,9 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
 .fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
 .fmenu-foot [aria-current]{font-weight:700}
+.fmenu-foot .soc-row{justify-content:flex-start;padding:12px 0;font-size:13px}
+.fmenu-foot .soc a{padding:9px 7px;margin:-9px -7px}
+.fmenu .ring{stroke:var(--tag)}
 @media (prefers-reduced-motion:no-preference){
 .fmenu:not([hidden]){animation:menuDrop .3s cubic-bezier(.2,.8,.25,1.15)}
 @keyframes menuDrop{from{opacity:0;transform:translateY(-12px) rotate(-2.4deg)}}
@@ -143,6 +158,15 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 18px 36px -20p
 footer{color:var(--line);text-align:center;padding:48px 20px 64px;font-size:14px}
 footer .brand{display:block;margin-bottom:6px;font-size:30px}
 footer p{margin:4px 0}
+.soc-row{display:flex;justify-content:center;align-items:center;gap:14px}
+footer .soc-row{margin:22px 0 16px}
+footer .soc{--g:24px;--r:44px;gap:16px}
+footer .soc svg{stroke-width:1.5}
+footer .soc .ring{stroke-width:3}
+footer .soc a{padding:8px;margin:-8px}
+/* phones: the links wrap, so they drop their slashes rather than strand one at a line end */
+.foot-links{display:flex;flex-wrap:wrap;justify-content:center;column-gap:1.1em}
+@media (max-width:480px){.foot-links{column-gap:22px}.foot-links .sep{display:none}}
 
 .btn{display:block;text-align:center;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 20px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
 @media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
@@ -166,6 +190,9 @@ footer p{margin:4px 0}
 <feDisplacementMap in="SourceGraphic" scale="18"/>
 <feGaussianBlur stdDeviation="3"/>
 </filter>
+<symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.2" cy="6.8" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-tt" viewBox="0 0 24 24"><path d="M11.5 2.6H15.2A5.6 5.6 0 0 0 20.8 8.2V11.8A9.5 9.5 0 0 1 15.2 10.1V15.6A6 6 0 1 1 8 9.72V13.64A2.3 2.3 0 1 0 11.5 15.6Z"/></symbol>
+<symbol id="i-ring" viewBox="0 0 100 100"><path pathLength="1" filter="url(#pen)" d="M68 15C45 8 15 22 12 50C10 78 35 93 58 88C80 83 93 60 86 35C80 20 65 12 45 17"/></symbol>
 </defs>
 </svg>
 
@@ -183,14 +210,14 @@ footer p{margin:4px 0}
 <li><a href="/#faq"><span>questions</span></a></li>
 <li><a href="/#team"><span>who's setting you up</span></a></li>
 </ol>
-<p class="fmenu-foot"><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy" aria-current="page">privacy</a><a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+<p class="fmenu-foot"><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy" aria-current="page">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></span></p>
 </div>
 <a class="btn" href="/rsvp">rsvp</a>
 </div>
 </nav>
 
 <header class="hero">
-<div class="topbar"><a class="brand" href="/">five days</a><span><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; <a href="/privacy" aria-current="page">privacy</a></span></div>
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><a href="/privacy" aria-current="page">privacy</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="intro">
 <svg class="sk sealed draw" data-reveal viewBox="0 0 180 124" aria-hidden="true">
 <g class="washes" filter="url(#wash)">
@@ -284,7 +311,8 @@ footer p{margin:4px 0}
 <footer>
 <a class="brand" href="/">five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
-<p><a href="/">experiment no. 01</a> &nbsp;/&nbsp; <a href="/involved">get involved</a> &nbsp;/&nbsp; <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a> &nbsp;/&nbsp; <a href="/privacy" aria-current="page">privacy</a> &nbsp;/&nbsp; <a href="https://instagram.com/datein5days" target="_blank" rel="noopener">@datein5days</a></p>
+<p class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></p>
+<p class="foot-links"><a href="/">experiment no. 01</a><span class="sep" aria-hidden="true">/</span><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy" aria-current="page">privacy</a></p>
 </footer>
 
 <script>
