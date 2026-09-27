@@ -4,7 +4,7 @@
 //   via  which app or site the click came from, read off the in-app browser or the referrer.
 //        iMessage, WhatsApp on an iPhone, QR scans and typed addresses all arrive carrying
 //        nothing, so they read "none". That blind spot is why the links carry src.
-// A sign-up is credited to this browser's first tagged visit in the last 30 days
+// A sign-up is credited to the last of our links this browser clicked in the past 30 days
 // (window.d5dAttr), so someone who scans the QR code and comes back two days later by typing
 // the address still counts for the QR code. Counting visits is PostHog's job, not the sheet's:
 // every event there carries src and via (track() in index.html).
@@ -64,13 +64,17 @@ q.set("via", app);
 history.replaceState(history.state, "", location.pathname + "?" + q + location.hash);
 }
 
-// A tagged visit beats an untagged one, and among tagged visits the first one wins.
+// The latest link clicked wins: Maya's link and then another creator's credits the other
+// creator. A visit that says less (no tag, then no app) never replaces one that says more,
+// and only a real arrival counts: not a reload, the back button, or a move between our pages.
 const rank = a => a.src !== "direct" ? 2 : a.via !== "none" ? 1 : 0;
-let first = null;
-try { first = JSON.parse(localStorage.getItem(KEY)); } catch {}
-if (!first || !(Date.now() - first.t < DAYS * 864e5) || rank(here) > rank(first)) {
-first = { ...here, t: Date.now() };
-try { localStorage.setItem(KEY, JSON.stringify(first)); } catch {}
+const nav = performance.getEntriesByType?.("navigation")[0]?.type;
+const arrived = !internal && nav !== "reload" && nav !== "back_forward";
+let last = null;
+try { last = JSON.parse(localStorage.getItem(KEY)); } catch {}
+if (!last || !(Date.now() - last.t < DAYS * 864e5) || (arrived && rank(here) >= rank(last))) {
+last = { ...here, t: Date.now() };
+try { localStorage.setItem(KEY, JSON.stringify(last)); } catch {}
 }
-window.d5dAttr = { src: tag(first.src) || "direct", via: tag(first.via) || "none" };
+window.d5dAttr = { src: tag(last.src) || "direct", via: tag(last.via) || "none" };
 })();

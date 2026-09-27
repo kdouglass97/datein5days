@@ -65,8 +65,8 @@ const COLUMNS = [
   // imessage | whatsapp | sms. Appended at the end for the same header-alignment reason.
   "phone", "reach_on",
   // Added 2026-09-25: the app or site the click came from (instagram, tiktok, whatsapp,
-  // google ... or "none"), next to `src`, which says which of our links it was. Both are the
-  // browser's first tagged visit, not the visit the form was sent on. Older rows stay blank.
+  // google ... or "none"), next to `src`, which says which of our links it was. Both come from
+  // the last of our links the browser clicked, not the visit the form was sent on. Older rows stay blank.
   "via",
 ];
 
