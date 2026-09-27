@@ -670,9 +670,13 @@ one of our links. Location-specific QR codes (`/qr/<spot>`) were considered and 
 
 **The rules**, all in `attr.js`:
 
-- A lead is credited to the browser's **first tagged visit in the last 30 days** (kept as
-  `d5d_attr` in localStorage). A tag beats no tag. Someone who scans the QR code and comes
-  back two days later by typing the address still counts for the QR code.
+- A lead is credited to the **last of our links the browser clicked in the past 30 days**
+  (kept as `d5d_attr` in localStorage). A tag beats no tag, so someone who scans the QR code
+  and comes back two days later by typing the address still counts for the QR code. Reloads,
+  the back button and moves between our own pages don't count as clicks.
+  It was first-link-wins until 2026-09-27: a test of `/@itgirlmovement_` on a phone that had
+  opened `/@maya` the day before landed as `@maya`. Creators expect the link that was
+  clicked to get the sign-up.
 - A lead's `src`/`via` are fixed when it's created. Resuming later from another link doesn't
   rewrite where they came from.
 - In an in-app browser the app is written into the URL (`&via=instagram`), because "open in
