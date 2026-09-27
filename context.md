@@ -351,6 +351,10 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   read stays level, and the page peeking out beneath it takes the tilt. The pen marks only two
   promises, "do not sell" and "no later than 7 days". The notice's words are legal text:
   restyle them, never reword them (headings are lowercased, nothing else changed).
+- **The favicon is the envelope's wax seal**: clay, an italic Bodoni 5, the inner ring
+  (`share/icon.html`, rendered with the OG card by `node share/render.js`; added 2026-09-26).
+  Below 48px the 5 goes heavier and the ring goes, the same hairline problem as above at its
+  most extreme.
 
 **Layout:** single column, mobile-first, `540px` measure. Most traffic is a phone scanning
 a printed QR code, standing up. Nothing should require two hands or a wide viewport.
@@ -453,8 +457,10 @@ on push to `main`. Google Apps Script Web App as the form backend, writing to a 
 Sheet. No build step, no framework, nothing external except the PostHog snippet and
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
-**Repo, flat at root:** `index.html`, `privacy.html`, `ruby.jpg`, `404.html`, `vercel.json`,
-`context.md`
+**Repo, flat at root:** the pages (`index.html`, `involved.html`, `privacy.html`, `404.html`),
+`note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
+`.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
+`CLAUDE.md`), `apps-script/` and `share/` live here too but never reach the site.
 
 ### URL structure, and why
 
@@ -473,12 +479,30 @@ The QR code is printed. Its target can never change.
 
 Redirects are **307 (temporary)** on purpose. A 301 is cached by browsers indefinitely and
 would weld a printed QR code to cohort 01 forever. To ship cohort 02: change the redirect
-destinations and `CONFIG.cohort`. The printed code keeps working.
+destinations and `CONFIG.cohort`, and move the canonical and `og:url` in `index.html` and the
+entry in `sitemap.xml` to the new path. The printed code keeps working.
 
 **Configuration lives in one `CONFIG` object** at the top of the script block: brand,
-cohort, IG and TikTok accounts, cities, cohort size, launch date, the poll array, the Apps Script
-endpoint, the paywall toggle, founder bios. Change the site by changing `CONFIG`, not by
-hunting through markup.
+cohort, IG and TikTok accounts, cities, cohort size, launch date, the poll array, the Apps
+Script endpoint, the paywall toggle. Change the site by changing `CONFIG`, not by hunting
+through markup. The one exception is anything a search engine should read (see below): the
+founder cards are markup in `#team`, not config.
+
+### Search engines and crawlers
+
+As of 2026-09-26 the site invites crawlers in. The invitation is marketing: we want it
+read, quoted, and repeated, by search engines and AI tools alike.
+
+- `robots.txt` allows everyone, AI training and search crawlers included, and points to
+  `sitemap.xml`, which lists `/c/01` and `/involved`. A new public page goes in the sitemap.
+- `/privacy` is `noindex` by design. Never `Disallow` it in `robots.txt`: a blocked page
+  can't show Google its `noindex`, and the bare URL can get indexed anyway.
+- `/c/01` and `/involved` carry a canonical tag, which folds every `?src=` tag, `?go=rsvp`,
+  `?team=on` and the vercel.app copy into one URL.
+- **AI crawlers don't run JavaScript.** Anything worth quoting has to be in the HTML, not
+  injected by the script. That's why the founder cards moved from `CONFIG` into markup.
+- `index.html` carries JSON-LD (`WebSite` + `Organization`) naming the founders. Keep it in
+  step with `#team`.
 
 **The header menu is hand-listed in three places.** Its targets are the section ids `#idea`
 `#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
@@ -494,6 +518,10 @@ height there, not in the padding.
 - **Never add `"cleanUrls": true` to `vercel.json`.** It strips `.html` at build time, which
   deletes `/index.html` as a rewrite target and 404s the entire site. This took production
   down on 2026-09-18.
+- **`.vercelignore` is an allowlist.** A new file the site serves (a page, an image, a
+  script) must be added to it, or it 404s in production while working fine locally. It
+  exists because, with no build step, Vercel served the whole repo root: until 2026-09-26
+  this file and `apps-script/` were public URLs.
 - **Never set `keepalive: true` unconditionally** on the lead `fetch`. Browsers cap keepalive
   bodies near 64KB and compressed photos are ~150KB, so uploads vanished silently. The
   guard is `keepalive: body.length < 60000`.
@@ -718,6 +746,7 @@ not in `rsvps`.
   before shipping. Stub `script.google.com` and `*.posthog.com` so tests never write rows.
 - Push to `main` deploys to production. There is no staging.
 - Verify a deploy by asserting `/c/01` returns **200**. `/` returning a 307 proves nothing:
-  the redirect working while the page 404s is exactly the failure already seen.
+  the redirect working while the page 404s is exactly the failure already seen. Then assert
+  `/context.md` returns **404**, which proves the allowlist is working.
 - Before committing copy, check it against §4. Before committing a visual, ask whether it
   is the printed form or the hand.

@@ -1,0 +1,20 @@
+# Deploy allowlist. Nothing in the repo reaches the site unless it's listed here,
+# so the working notes (context.md, CLAUDE.md), apps-script/ and share/ stay private.
+# A new file the site serves (a page, an image, a script) must be added below,
+# or it 404s in production.
+/*
+!vercel.json
+!index.html
+!involved.html
+!privacy.html
+!404.html
+!note.js
+!attr.js
+!og.jpg
+!kai.jpg
+!ruby.jpg
+!favicon.ico
+!icon.png
+!apple-touch-icon.png
+!robots.txt
+!sitemap.xml
