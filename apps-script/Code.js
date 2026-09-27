@@ -12,6 +12,9 @@
  *
  * Sign-ups whose first name starts with "test" write to the `test` tab instead of
  * `leads`, so QA runs never mix into real sign-up data. See targetSheetName_().
+ *
+ * The `sources` tab totals sign-ups per link (src) and app (via). See buildSources_().
+ * Visits are counted in PostHog, never here.
  */
 
 const SHEET_ID = "1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw";
@@ -26,6 +29,9 @@ const PHOTO_FOLDER = "datein5days / verification photos";
 const NOTES_SHEET = "notes";
 const NOTES_TEST_SHEET = "notes_test";
 const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
+
+// Formulas only: sign-ups totalled per link and per app. See buildSources_().
+const SOURCES_SHEET = "sources";
 
 const COLUMNS = [
   "id", "created", "updated", "stage", "src", "cohort",
@@ -58,6 +64,10 @@ const COLUMNS = [
   // phone is E.164 ("+12125550100"); reach_on is where they'd rather get it:
   // imessage | whatsapp | sms. Appended at the end for the same header-alignment reason.
   "phone", "reach_on",
+  // Added 2026-09-25: the app or site the click came from (instagram, tiktok, whatsapp,
+  // google ... or "none"), next to `src`, which says which of our links it was. Both come from
+  // the last of our links the browser clicked, not the visit the form was sent on. Older rows stay blank.
+  "via",
 ];
 
 /** columns Sheets must keep as text: "+1212..." would otherwise be coerced to a number */
@@ -101,6 +111,7 @@ function doPost(e) {
     const sheet = getSheet_(targetSheetName_(data));
     const row = buildRow_(data);
     upsert_(sheet, row);
+    if (sheet.getName() === SHEET) ensureSources_(sheet.getParent());
 
     return json_({ ok: true, id: data.id, stage: row.stage || "" });
   } catch (err) {
@@ -163,6 +174,65 @@ function saveNote_(d) {
   return { ok: true, kind: "note" };
 }
 
+/** builds the `sources` tab when it's missing, without ever letting it fail a sign-up */
+function ensureSources_(ss) {
+  try {
+    if (!ss.getSheetByName(SOURCES_SHEET)) buildSources_(ss);
+  } catch (err) {
+    console.error("sources tab: " + err);
+  }
+}
+
+/**
+ * The `sources` tab: sign-ups totalled three ways, most rsvps first.
+ *   A:C  per link (src), all platforms together
+ *   E:H  per link and app (src + via): @maya on tiktok and @maya on instagram as two rows.
+ *        Sign-ups from before `via` existed have none, so they only count in A:C.
+ *   J:L  per app (via)
+ * Formulas and totals only, never a name or an answer. Delete the tab and the next sign-up
+ * rebuilds it.
+ */
+function buildSources_(ss) {
+  const sheet = ss.insertSheet(SOURCES_SHEET);
+  const col = function (name) { const c = colLetter_(COLUMNS.indexOf(name) + 1); return SHEET + "!" + c + "2:" + c; };
+  const src = col("src"), via = col("via"), finished = col("stage") + ", \"poll_done\"";
+  // one key column: each distinct value, then its rsvps and finished
+  const byOne = function (r) {
+    return "=IFERROR(LET(keys, UNIQUE(FILTER(" + r + ", LEN(" + r + "))), " +
+      "SORT(HSTACK(keys, MAP(keys, LAMBDA(key, COUNTIF(" + r + ", key))), " +
+      "MAP(keys, LAMBDA(key, COUNTIFS(" + r + ", key, " + finished + ")))), 2, FALSE, 3, FALSE)), \"\")";
+  };
+  // two key columns: each distinct (src, via) pair
+  const byPair = "=IFERROR(LET(pairs, UNIQUE(FILTER(HSTACK(" + src + ", " + via + "), LEN(" + src + ") * LEN(" + via + "))), " +
+    "links, CHOOSECOLS(pairs, 1), apps, CHOOSECOLS(pairs, 2), " +
+    "SORT(HSTACK(pairs, MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + src + ", link, " + via + ", app))), " +
+    "MAP(links, apps, LAMBDA(link, app, COUNTIFS(" + src + ", link, " + via + ", app, " + finished + ")))), 3, FALSE, 4, FALSE)), \"\")";
+  sheet.getRange("A1:C1").setValues([["src", "rsvps", "finished"]]);
+  sheet.getRange("E1:H1").setValues([["src", "via", "rsvps", "finished"]]);
+  sheet.getRange("J1:L1").setValues([["via", "rsvps", "finished"]]);
+  sheet.getRange("A1:L1").setFontWeight("bold");
+  sheet.setFrozenRows(1);
+  sheet.getRange("A2").setFormula(byOne(src));
+  sheet.getRange("E2").setFormula(byPair);
+  sheet.getRange("J2").setFormula(byOne(via));
+  sheet.getRange("A1").setNote("src: which of our links they used (/ig, /tt, /qr, /invite, /@maya). direct = found us on their own.\n" +
+    "via: the app the click came from. none = a text, a QR scan or a typed address.\n" +
+    "A:C per link. E:H per link and app, so @maya on tiktok and on instagram. J:L per app.\n" +
+    "rsvps counts sign-ups, finished the ones who answered all seven. Visits live in PostHog.");
+}
+
+/** 1 -> A, 27 -> AA */
+function colLetter_(n) {
+  let s = "";
+  for (; n > 0; n = Math.floor((n - 1) / 26)) s = String.fromCharCode(65 + (n - 1) % 26) + s;
+  return s;
+}
+
+/** a link tag or app name, same rule as attr.js: lowercase a-z 0-9 . _ - and one leading @ */
+function cleanTag_(v) {
+  return String(v || "").toLowerCase().replace(/[^a-z0-9@._-]/g, "").replace(/^[._-]+/, "").replace(/(?!^)@/g, "").slice(0, 40);
+}
+
 /** true when the submitted first name marks this as test traffic, e.g. "test" or "testing test" */
 function isTestName_(name) {
   return /^test\b/i.test(String(name || "").trim());
@@ -200,7 +270,8 @@ function buildRow_(d) {
   out.id = String(d.id);
   out.updated = d.at || new Date().toISOString();
   out.stage = d.stage || "";
-  out.src = d.src || "";
+  out.src = cleanTag_(d.src);
+  if (d.via) out.via = cleanTag_(d.via);
   out.cohort = d.cohort || "";
 
   if (d.name) out.name = d.name;
@@ -325,7 +396,8 @@ function savePhoto_(dataUrl, name, id) {
 function setup() {
   const sheet = getSheet_(SHEET);
   const test = getSheet_(TEST_SHEET);
-  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + " (columns: " + COLUMNS.length + ")");
+  ensureSources_(sheet.getParent());
+  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + " (columns: " + COLUMNS.length + ")");
 }
 
 /**
