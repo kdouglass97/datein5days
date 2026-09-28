@@ -9,6 +9,15 @@ The Google Apps Script bound to the `cohort1-data` Sheet. It receives RSVPs from
 - Credentials are stored in the repo secret `CLASPRC_JSON` (clasp login, ktd283@nyu.edu).
 - To redeploy without a code change: Actions → Deploy Apps Script → Run workflow.
 
+## Everything posted is untrusted
+
+The `/exec` URL is in the page source, so anyone can post anything to it. Every string bound
+for a cell goes through `cell_()`: capped at 10,000 characters, and anything that starts like a
+formula (`= + - @`) is stored as text, which Sheets shows unchanged. `photo` only takes an image
+upload (JPEG, PNG or WebP, under 3MB as base64) that the script saves to Drive itself, never a
+link. Ids over 64 characters are refused. Errors reply `"failed"` and nothing more; the detail
+is in the execution log (Apps Script, Executions).
+
 ## Notes tab
 
 "leave us a note" (`note.js`, footer and FAQ on the site) posts `{ kind: "note", ... }` to the same

@@ -73,6 +73,14 @@ const COLUMNS = [
 /** columns Sheets must keep as text: "+1212..." would otherwise be coerced to a number */
 const TEXT_COLUMNS = ["phone"];
 
+// The /exec URL is public (it's in the page source), so anyone can post anything to it.
+// Every string bound for a cell goes through cell_(): capped at MAX_CELL, and anything that
+// starts like a formula is stored as text, so a "name" of =IMPORTXML(...) can't run, or
+// send the sheet anywhere, when one of us opens it.
+const MAX_CELL = 10000;
+// The page sends a JPEG at most 1080px on the long side, well under 1MB as base64.
+const MAX_PHOTO = 3000000;
+
 /** option keys for the relationship_adds ranking, one rank_<key> column each */
 const RANK_OPTIONS = ["chemistry", "ease", "play", "ambition", "building"];
 
@@ -108,6 +116,8 @@ function doPost(e) {
     if (data.kind === "note") return json_(saveNote_(data));
     if (!data.id) return json_({ ok: false, error: "no id" });
 
+    if (String(data.id).length > 64) return json_({ ok: false, error: "bad id" });
+
     const sheet = getSheet_(targetSheetName_(data));
     const row = buildRow_(data);
     upsert_(sheet, row);
@@ -115,7 +125,9 @@ function doPost(e) {
 
     return json_({ ok: true, id: data.id, stage: row.stage || "" });
   } catch (err) {
-    return json_({ ok: false, error: String(err) });
+    // the details go to the execution log, not to whoever is poking at the URL
+    console.error("doPost: " + err);
+    return json_({ ok: false, error: "failed" });
   } finally {
     lock.releaseLock();
   }
@@ -169,8 +181,8 @@ function saveNote_(d) {
     src: String(d.src || "").slice(0, 100),
     note_id: String(d.note_id || ""),
   };
-  // free text from strangers: a leading = + - @ would otherwise run as a formula
-  sheet.appendRow(NOTE_COLUMNS.map(function (c) { return /^[=+\-@]/.test(row[c]) ? "'" + row[c] : row[c]; }));
+  // free text from strangers: cell_() keeps a leading = + - @ from running as a formula
+  sheet.appendRow(NOTE_COLUMNS.map(function (c) { return cell_(c, row[c]); }));
   return { ok: true, kind: "note" };
 }
 
@@ -307,12 +319,11 @@ function buildRow_(d) {
     });
   }
 
-  // photo: base64 data URL -> Drive file, store the link only
+  // photo: base64 data URL -> Drive file, store the link only. Nothing else is taken:
+  // a "photo" that's already a link would be a stranger's link we click while checking photos.
   if (d.photo && String(d.photo).indexOf("data:image/") === 0) {
-    const url = savePhoto_(d.photo, d.name, d.id);
+    const url = savePhoto_(String(d.photo), d.name, d.id);
     if (url) out.photo = url;
-  } else if (d.photo) {
-    out.photo = d.photo; // already a link
   }
 
   // poll answers, mapped by key.
@@ -330,10 +341,18 @@ function buildRow_(d) {
   return out;
 }
 
-/** a leading apostrophe makes Sheets store the value as text instead of parsing it */
-function asText_(col, v) {
-  if (TEXT_COLUMNS.indexOf(col) === -1 || v === "" || v === undefined) return v;
-  return "'" + String(v).replace(/^'/, "");
+/**
+ * What goes in a cell. A leading apostrophe makes Sheets store the value as text instead of
+ * parsing it: always for TEXT_COLUMNS, and for any string that starts like a formula
+ * (= + - @, or a tab or return). Sheets hides the apostrophe, so "@maya" still reads @maya.
+ * getValues() hands text back without it, so this runs on every write, old values included.
+ */
+function cell_(col, v) {
+  if (v === "" || v === undefined || v === null) return v;
+  if (TEXT_COLUMNS.indexOf(col) > -1) return "'" + String(v).replace(/^'/, "").slice(0, MAX_CELL);
+  if (typeof v !== "string") return v;
+  v = v.slice(0, MAX_CELL);
+  return /^[=+\-@\t\r]/.test(v) ? "'" + v : v;
 }
 
 function join_(v) {
@@ -358,15 +377,15 @@ function upsert_(sheet, row) {
     const merged = COLUMNS.map(function (col, i) {
       const incoming = row[col];
       // never blank out something we already have
-      // existing values are re-written too, so text columns need re-protecting every time
-      if (incoming === undefined || incoming === "") return asText_(col, existing[i]);
-      return asText_(col, incoming);
+      // existing values are re-written too, so they need re-protecting every time
+      if (incoming === undefined || incoming === "") return cell_(col, existing[i]);
+      return cell_(col, incoming);
     });
     sheet.getRange(target, 1, 1, width).setValues([merged]);
   } else {
     row.created = row.updated;
     const fresh = COLUMNS.map(function (col) {
-      return row[col] === undefined ? "" : asText_(col, row[col]);
+      return row[col] === undefined ? "" : cell_(col, row[col]);
     });
     sheet.appendRow(fresh);
   }
@@ -374,11 +393,13 @@ function upsert_(sheet, row) {
 
 function savePhoto_(dataUrl, name, id) {
   try {
-    const match = /^data:(image\/[a-z]+);base64,(.+)$/.exec(dataUrl);
+    // photos only, and photo-sized: the URL is public, and every byte lands in our Drive
+    if (dataUrl.length > MAX_PHOTO) return "error: photo too large";
+    const match = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+\/]+={0,2})$/.exec(dataUrl);
     if (!match) return "";
     const folders = DriveApp.getFoldersByName(PHOTO_FOLDER);
     const folder = folders.hasNext() ? folders.next() : DriveApp.createFolder(PHOTO_FOLDER);
-    const safe = String(name || "guest").replace(/[^a-zA-Z0-9]/g, "") || "guest";
+    const safe = String(name || "guest").replace(/[^a-zA-Z0-9]/g, "").slice(0, 40) || "guest";
     const blob = Utilities.newBlob(
       Utilities.base64Decode(match[2]),
       match[1],
