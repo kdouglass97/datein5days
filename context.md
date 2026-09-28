@@ -147,7 +147,8 @@ As of 2026-09-23 step 2 asks everyone for a **phone number** (required, stored E
 (all regions, dial codes from libphonenumber, default guessed from the browser locale). The number is the one key that
 reaches people on every channel. The app is their preference, because the people we
 want split by geography: the US lives in iMessage, most of the world lives in WhatsApp,
-and a mobile ICP may use both. Email was rejected: the follow-ups (your city opened, the
+and a mobile ICP may use both. `/admin`'s "by place" card tests that claim, region by
+region (§8). Email was rejected: the follow-ups (your city opened, the
 logistics "details card", the date itself) are time-sensitive, and email is where a
 five-day plan goes to die.
 
@@ -583,9 +584,17 @@ via
   answered all seven. "side by side" crosses city, age and who they'd like to meet (age ×
   meet also for New York alone), for everyone or only those who answered all seven. A city
   needs three people in a view for its own row; smaller ones share "elsewhere", which also
-  waits for three, so a city row never points at one or two people. Own gender isn't
-  asked, so "meet" is the only gender axis there is (§10). The page refreshes every minute
-  while open and says what's new since you last looked.
+  waits for three, so a city row never points at one or two people. "by place" (added
+  2026-09-28) reads two answers across places, each row split into shares that add to 100%
+  so a small city sits on New York's scale: city × what a date is worth (plus the share at
+  $50 or more), and region × which app they'd rather be texted on. Region is the country
+  calling code on `phone`: the Apps Script reads the code off the number and keeps nothing
+  else of it (`callingCode_()`), and the page names it (+1 is the US, Canada and much of
+  the Caribbean). Rows from before 2026-09-23 have no number, so they sit out that table.
+  Each by-place table picks its own rows by the same three-person rule, and one count switch
+  drives both cross cards. Own gender isn't asked, so "meet" is the only gender axis there
+  is (§10). The page refreshes every minute while open and says what's new since you last
+  looked.
   The password is the **`ADMIN_PASSWORD` repo secret** (8+ characters; unset means locked).
   The Apps Script deploy writes it into `apps-script/secret.js` just before `clasp push`;
   that file is in `.gitignore` and must never be committed, and the password never goes in

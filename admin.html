@@ -174,9 +174,17 @@ main{padding:6px 0 10px}
 .hc.s4{background:#7FA46E;color:#1F2A17}
 .hc.s5{background:#3F7534;color:var(--paper)}
 @media (hover:hover){.heat td.hc:hover{box-shadow:inset 0 0 0 2px var(--ink)}}
-.heat .tot{color:var(--soft);font-size:12.5px;min-width:2.3em;padding:0 2px}
+.heat .tot{color:var(--soft);font-size:12.5px;min-width:2.3em;padding-left:2px;padding-right:2px}
 .heat tfoot th,.heat tfoot td{padding-top:5px}
-@media (max-width:360px){.heat{font-size:12px}.heat td.hc{min-width:2.15em;height:30px;padding:0 2px}.heat thead th{font-size:9.5px;letter-spacing:0;padding:0 1px 5px}.heat tbody th,.heat tfoot th{padding-right:6px}.heat .tot{min-width:2em}}
+/* phones up to 400px, where five columns and a city name don't fit at full size */
+@media (max-width:400px){.heat{font-size:12px}.heat td.hc{min-width:2.15em;height:30px;padding:0 2px}.heat thead th{font-size:9.5px;letter-spacing:0;padding:0 1px 5px}.heat tbody th,.heat tfoot th{padding-right:6px}.heat .tot{min-width:2em}}
+/* by place: the same squares read across, each one its share of the row on the same ramp in
+   fixed 20-point steps. the all row beneath is the line every place is read against */
+@media (min-width:1000px){.cross-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.heat th small{font-size:11px;color:var(--soft)}
+.heat .sum{font-weight:700;color:var(--ink);padding-left:6px;padding-right:3px}
+.heat tfoot .base{color:var(--ink);font-size:13px}
+@media (max-width:400px){.heat tfoot .base{font-size:12px}.heat .sum{padding-left:3px}}
 .switch{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;padding:2px;margin:0 0 12px;max-width:100%}
 .switch button{font:12.5px/1 var(--type);color:var(--ink);background:none;border:0;border-radius:999px;padding:0 13px;min-height:34px;cursor:pointer;white-space:nowrap}
 .switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
@@ -278,6 +286,20 @@ const WANTS = [["chemistry", "chemistry"], ["ease", "ease"], ["play", "play"], [
 const VERIFY = [["ig", "instagram"], ["photo", "photo"]];
 const REACH = [["imessage", "iMessage"], ["whatsapp", "WhatsApp"], ["sms", "text"]];
 const WORDS = ["under 50", "50–99", "100–149", "150–199", "200–299", "300–499", "500+"];
+// a phone's region, from the country calling code the Apps Script reads off the number (it
+// keeps nothing else of it). Region -> dial code, the libphonenumber table index.html's
+// country picker is built from; a code several regions share is named in DIAL_SHARED, the
+// rest by the browser, shortened where its name would crowd a row
+const DIAL = "AC247,AD376,AE971,AF93,AG1,AI1,AL355,AM374,AO244,AR54,AS1,AT43,AU61,AW297,AX358,AZ994,BA387,BB1,BD880,BE32,BF226,BG359,BH973,BI257,BJ229,BL590,BM1,BN673,BO591,BQ599,BR55,BS1,BT975,BW267,BY375,BZ501,CA1,CC61,CD243,CF236,CG242,CH41,CI225,CK682,CL56,CM237,CN86,CO57,CR506,CU53,CV238,CW599,CX61,CY357,CZ420,DE49,DJ253,DK45,DM1,DO1,DZ213,EC593,EE372,EG20,EH212,ER291,ES34,ET251,FI358,FJ679,FK500,FM691,FO298,FR33,GA241,GB44,GD1,GE995,GF594,GG44,GH233,GI350,GL299,GM220,GN224,GP590,GQ240,GR30,GT502,GU1,GW245,GY592,HK852,HN504,HR385,HT509,HU36,ID62,IE353,IL972,IM44,IN91,IO246,IQ964,IR98,IS354,IT39,JE44,JM1,JO962,JP81,KE254,KG996,KH855,KI686,KM269,KN1,KP850,KR82,KW965,KY1,KZ7,LA856,LB961,LC1,LI423,LK94,LR231,LS266,LT370,LU352,LV371,LY218,MA212,MC377,MD373,ME382,MF590,MG261,MH692,MK389,ML223,MM95,MN976,MO853,MP1,MQ596,MR222,MS1,MT356,MU230,MV960,MW265,MX52,MY60,MZ258,NA264,NC687,NE227,NF672,NG234,NI505,NL31,NO47,NP977,NR674,NU683,NZ64,OM968,PA507,PE51,PF689,PG675,PH63,PK92,PL48,PM508,PR1,PS970,PT351,PW680,PY595,QA974,RE262,RO40,RS381,RU7,RW250,SA966,SB677,SC248,SD249,SE46,SG65,SH290,SI386,SJ47,SK421,SL232,SM378,SN221,SO252,SR597,SS211,ST239,SV503,SX1,SY963,SZ268,TA290,TC1,TD235,TG228,TH66,TJ992,TK690,TL670,TM993,TN216,TO676,TR90,TT1,TV688,TW886,TZ255,UA380,UG256,US1,UY598,UZ998,VA39,VC1,VE58,VG1,VI1,VN84,VU678,WF681,WS685,XK383,YE967,YT262,ZA27,ZM260,ZW263";
+const DIAL_SHARED = { 1: "US & Canada", 7: "Russia & Kazakhstan", 39: "Italy", 44: "UK", 47: "Norway", 61: "Australia", 212: "Morocco", 262: "Réunion", 290: "St Helena", 358: "Finland", 590: "Guadeloupe", 599: "Curaçao", 852: "Hong Kong", 853: "Macao", 971: "UAE" };
+const regionNames = (() => { try { return new Intl.DisplayNames(["en"], { type: "region" }); } catch { return null; } })();
+// "44" -> ["UK", "+44"]: a row label and its small print
+function regionLabel(code) {
+  if (code === "elsewhere") return [code];
+  const hit = DIAL.split(",").find(x => x.slice(2) === code);
+  const name = DIAL_SHARED[code] || (hit && regionNames ? regionNames.of(hit.slice(0, 2)) : "");
+  return name ? [name, "+" + code] : ["+" + code];
+}
 
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -570,8 +592,22 @@ function trend(days, width) {
 }
 
 /* ---------------- side by side ---------------- */
-// which count the squares show, and where the age × meet table looks. kept across refreshes
+// which count the squares show, and where the age × meet table looks. kept across refreshes.
+// the count is one choice for both cards of crosses, side by side and by place
 let crossWho = "all", crossWhere = "all";
+// a switch redraws both cards, then gives focus back to the button pressed in the card it's in.
+// the numbers stay open if they were
+function redrawCrosses(id, label) {
+  for (const [key, make] of [["cross", crossCard], ["place", placeCard]]) {
+    const old = board.querySelector(`[data-card="${key}"]`), fresh = old && make(S.cross);
+    if (!fresh) continue;
+    const open = [...old.querySelectorAll("details.nums[open]")].map(d => d.dataset.id);
+    old.replaceWith(fresh);
+    fresh.querySelectorAll("details.nums").forEach(d => { if (open.includes(d.dataset.id)) d.open = true; });
+  }
+  const pressed = board.querySelector(`[data-card="${id}"] .switch[aria-label="${label}"] [aria-pressed="true"]`);
+  if (pressed) pressed.focus();
+}
 function switcher(label, options, current, set) {
   const el = h("div", { class: "switch", role: "group", "aria-label": label }, options.map(([v, text]) =>
     h("button", { type: "button", "aria-pressed": String(v === current), "data-v": v }, text)));
@@ -602,13 +638,7 @@ function crossCard(X) {
   const V = X[crossWho === "done" ? "done" : "all"];
   const who = crossWho === "done" ? "answered all seven" : "people";
   const cities = V.cities.map(c => [c, c]);
-  const redraw = label => {
-    const fresh = crossCard(X);
-    board.querySelector('[data-card="cross"]').replaceWith(fresh);
-    const pressed = fresh.querySelector(`.switch[aria-label="${label}"] [aria-pressed="true"]`);
-    if (pressed) pressed.focus();
-  };
-  const set = key => (v, label) => { if (key === "who") crossWho = v; else crossWhere = v; redraw(label); };
+  const set = key => (v, label) => { if (key === "who") crossWho = v; else crossWhere = v; redrawCrosses("cross", label); };
   const noCities = h("p", { class: "note", text: "No city has three people here yet." });
   return card("side by side", "Two answers crossed. The darker the square, the more people in it.", { id: "cross", wide: true, band: "var(--tag)" },
     switcher("count", [["all", "everyone"], ["done", "answered all seven"]], crossWho, set("who")),
@@ -620,6 +650,57 @@ function crossCard(X) {
       h("div", { class: "cross-block" }, h("h3", { text: "city × would like to meet" }), cities.length ? heat(V.city_meet, cities, MEET, "", who, false) : noCities.cloneNode(true))),
     h("p", { class: "note", text: "Someone can list up to three cities, so they can count in more than one row. A city needs three people for its own row; smaller ones share elsewhere, which also waits for three." +
       (V.unshown ? ` ${fmt(V.unshown)} ${V.unshown === 1 ? "person is" : "people are"} in cities too small to show yet.` : "") }));
+}
+
+/* ---------------- by place ---------------- */
+// place × answer, read across: every square is its share of the row, so a city of five sits on
+// New York's scale, and the all row beneath counts everyone in the view once. The counts are in
+// the tooltips and the numbers. G comes from grid_() in Code.js; name(key) -> [label, small print];
+// sum, when given, is one more column: [heading, the answers it adds up]
+function across(G, cols, name, done, id, sum, empty) {
+  if (!G.rows.length) return [h("p", { class: "note", text: empty })];
+  const count = (counts, keys) => keys.reduce((s, k) => s + ((counts || {})[k] || 0), 0);
+  const of = (c, n) => done ? `${fmt(c)} of the ${fmt(n)} who answered all seven` : `${fmt(c)} of ${fmt(n)} ${n === 1 ? "person" : "people"}`;
+  const line = (label, small, counts, foot) => {
+    const full = small ? `${label} ${small}` : label;
+    const vals = cols.map(([k]) => count(counts, [k])), n = vals.reduce((a, b) => a + b, 0);
+    return h("tr", {}, h("th", { scope: "row" }, label, small ? h("small", { text: " " + small }) : null),
+      vals.map((c, j) => {
+        if (foot) return h("td", { class: "tot base", text: pct(c, n) });
+        const td = h("td", { class: "hc s" + (c ? Math.max(1, Math.ceil((c / n) * 5)) : 0), tabindex: 0, "aria-label": `${full}, ${cols[j][1]}: ${pct(c, n)}, ${of(c, n)}` }, c ? pct(c, n) : "·");
+        bindTip(td, [`${pct(c, n)} of ${full}`, of(c, n), `${full} · ${cols[j][1]}`]);
+        return td;
+      }),
+      sum ? h("td", { class: "sum" + (foot ? " base" : ""), text: pct(count(counts, sum[1]), n) }) : null,
+      h("td", { class: "tot", text: fmt(n) }));
+  };
+  const places = G.rows.map(k => { const [label, small = ""] = name(k); return [label, small, G.cells[k]]; });
+  return [
+    h("div", { class: "scroll" }, h("table", { class: "heat" },
+      h("thead", {}, h("tr", {}, h("th", { scope: "col" }), [...cols.map(([, cl]) => cl), ...(sum ? [sum[0]] : []), "all"].map(t => h("th", { scope: "col", text: t })))),
+      h("tbody", {}, places.map(([label, small, counts]) => line(label, small, counts))),
+      h("tfoot", {}, line("all", "", G.total, true)))),
+    numbers(id, ["", ...cols.map(([, cl]) => cl), "all"],
+      [...places, ["all", "", G.total]].map(([label, small, counts]) => [small ? `${label} ${small}` : label, ...cols.map(([k]) => count(counts, [k])), count(counts, cols.map(([k]) => k))])),
+  ];
+}
+function placeCard(X) {
+  if (!X || !X.all || !X.all.city_price) return null; // an Apps Script from before this card
+  const V = X[crossWho === "done" ? "done" : "all"], done = crossWho === "done";
+  const set = (v, label) => { crossWho = v; redrawCrosses("place", label); };
+  const unshown = (G, one, many) => G.unshown ? ` ${fmt(G.unshown)} ${G.unshown === 1 ? one : many} too small to show yet.` : "";
+  return card("by place", "Does where they are change the answer? Each row adds up to 100%, so a city of five reads on the same scale as New York.", { id: "place", wide: true, band: "var(--clay)" },
+    switcher("count", [["all", "everyone"], ["done", "answered all seven"]], crossWho, set),
+    h("div", { class: "cross-grid two" },
+      h("div", { class: "cross-block" }, h("h3", { text: "city × what a date is worth" }),
+        ...across(V.city_price, PRICES, k => [k], done, "place-price", ["$50+", ["50", "100+"]], "No city has three people here yet."),
+        h("p", { class: "note", text: "$50+ is the share at $50 or more. Someone can list up to three cities, so they can count in more than one row." +
+          unshown(V.city_price, "person is in cities", "people are in cities") })),
+      h("div", { class: "cross-block" }, h("h3", { text: "region × text me on" }),
+        ...across(V.region_reach, REACH, regionLabel, done, "place-reach", null, "No region has three people here yet."),
+        h("p", { class: "note", text: "Region is the country code on their number, asked since Sep 23. +1 is the US, Canada and much of the Caribbean." +
+          unshown(V.region_reach, "person has a number from a region", "people have numbers from regions") }))),
+    h("p", { class: "note", text: "A place needs three people for its own row; smaller ones share elsewhere, which also waits for three. One person moves a row of five by 20 points, so read a gap as a hunch until its row has ten." }));
 }
 
 /* ---------------- the board ---------------- */
@@ -668,8 +749,8 @@ function render(data) {
     h("h3", { text: "would like to meet" }), ...stack(meetRows, "meet"),
     h("p", { class: "note", text: "The form never asks anyone's own gender, only who they'd like to meet. So this is demand, not supply." })));
 
-  // 4b. side by side
-  cards.push(crossCard(S.cross));
+  // 4b. side by side, and by place
+  cards.push(crossCard(S.cross), placeCard(S.cross));
 
   // 5. what a date is worth
   const priceRows = ordered(S.price, PRICES);
@@ -712,7 +793,7 @@ function render(data) {
     h("h3", { text: "text me on" }), ...stack(ordered(S.reach, REACH), "reach")));
 
   board.hidden = false;
-  board.replaceChildren(...cards);
+  board.replaceChildren(...cards.filter(Boolean));
   for (const [d, draw] of later) d.replaceChildren(draw(Math.max(200, d.clientWidth)));
   board.querySelectorAll("details.nums").forEach(d => { if (openNums.has(d.dataset.id)) d.open = true; });
   fitLabels(board);
@@ -851,14 +932,18 @@ function demoStats() {
     const looking = moved ? pick([["relationship", "date", "community", "friends"], ["relationship", "community", "date", "friends"], ["date", "relationship", "friends", "community"], ["community", "relationship", "friends", "date"], ["friends", "community", "relationship", "date"]], [10, 5, 4, 2, 1]) : ["date", "relationship", "friends", "community"];
     const wantOrder = rnd() > .18 ? [...WANTS.map(w => w[0])].sort(() => rnd() - .5).sort((x, y) => ({ building: 1.6, chemistry: 2.4, ease: 2.9, ambition: 3.3, play: 3.8 }[x] + rnd() * 2.6) - ({ building: 1.6, chemistry: 2.4, ease: 2.9, ambition: 3.3, play: 3.8 }[y] + rnd() * 2.6)) : WANTS.map(w => w[0]);
     const src = pick(["ig", "@maya", "qr", "direct", "tt", "invite", "friend", "@itgirlmovement_"], [14, 11, 8, 7, 6, 5, 4, 3]);
-    return { t, level, done, cities, looking, wantOrder, src,
+    // the number mostly comes from the first city, the app leans on the number, and what a date
+    // is worth leans a little by city, so the by-place card has a pattern to find
+    const region = rnd() < .85 ? { "New York": "1", "Los Angeles": "1", London: "44", Paris: "33", Tokyo: "81", Tbilisi: "995", "Mexico City": "52" }[cities[0]] : pick(["1", "44", "33", "49", "852"], [3, 3, 1, 1, 1]);
+    const lean = { London: 1.4, Paris: 1.2, Tokyo: 1.1, "Los Angeles": .9, "Mexico City": .55, Tbilisi: .45 }[cities[0]] || 1;
+    return { t, level, done, cities, looking, wantOrder, src, region,
       via: src === "qr" || src === "invite" ? "none" : src === "tt" ? "tiktok" : src === "direct" ? pick(["google", "ai-chatgpt", "none"], [3, 2, 2]) : pick(["instagram", "tiktok", "whatsapp"], [7, 3, 1]),
       age: pick(["21 to 24", "25 to 29", "30 to 34", "35 to 39", "40+"], [5, 16, 13, 5, 2]),
       meet: pick(["women", "men", "anyone"], [11, 10, 2]),
-      price: done ? pick(["0", "25", "50", "100+"], [1, 4, 7, 5]) : pick(["0", "25", "50", "100+"], [3, 6, 5, 2]),
+      price: pick(["0", "25", "50", "100+"], done ? [1 / lean, 4 / lean, 7 * lean, 5 * lean] : [3 / lean, 6 / lean, 5 * lean, 2 * lean]),
       share: rnd() < .15 ? 50 : Math.max(0, Math.min(100, Math.round(62 + (rnd() + rnd() + rnd() - 1.5) * 44))),
       words: Math.round(Math.exp(4.9 + (rnd() + rnd() - 1) * 1.2)),
-      verify: rnd() < .9 ? "ig" : "photo", reach: pick(["imessage", "whatsapp", "sms"], [9, 5, 1]) };
+      verify: rnd() < .9 ? "ig" : "photo", reach: pick(["imessage", "whatsapp", "sms"], region === "1" ? [13, 3, 1] : [2, 9, 1]) };
   };
   if (!demoPeople) {
     demoPeople = [];
@@ -884,7 +969,8 @@ function demoStats() {
     if (iso > out.last.rsvp) out.last.rsvp = iso;
     if (p.done) { const f = Math.min(Date.now(), p.t + 40 * 60e3); const fk = new Date(f).toISOString().slice(0, 13); (out.hours[fk] = out.hours[fk] || [0, 0])[1]++; if (new Date(f).toISOString() > out.last.done) out.last.done = new Date(f).toISOString(); }
     p.cities.forEach(c => count(out.cities, c, p.done));
-    crossPeople.push({ cities: p.cities, age: p.level >= 1 ? p.age : "", meet: p.level >= 1 ? p.meet : "", done: p.done });
+    const told = p.level >= 1;
+    crossPeople.push({ cities: p.cities, age: told ? p.age : "", meet: told ? p.meet : "", price: told ? p.price : "", reach: told ? p.reach : "", region: told ? p.region : "", done: p.done });
     count(out.src, p.src, p.done); count(out.via, p.via, p.done); count(out.verify, p.verify, p.done);
     out.looking.n++; count(out.looking.first, p.looking[0], p.done); p.looking.forEach((k, i) => lookSum[k] = (lookSum[k] || 0) + i + 1);
     if (p.looking.join() === "date,relationship,friends,community") out.looking.untouched++;
@@ -904,7 +990,22 @@ function demoStats() {
   for (const k in lookSum) out.looking.rank[k] = Math.round(lookSum[k] / out.looking.n * 100) / 100;
   for (const k in wantSum) out.want.rank[k] = Math.round(wantSum[k] / out.want.n * 100) / 100;
   out.sharing.median = med(shares); out.words.median = med(words);
-  // cross tables, by the rule in crossOf_() in Code.js
+  // cross tables, by the rules in crossOf_() and grid_() in Code.js
+  const cell = (t, r, c) => { t[r] = t[r] || {}; t[r][c] = (t[r][c] || 0) + 1; };
+  const grid = (list, placesOf, answerOf) => {
+    const ppl = list.filter(q => answerOf(q) && placesOf(q).length), size = {};
+    ppl.forEach(q => placesOf(q).forEach(k => { size[k] = (size[k] || 0) + 1; }));
+    const shown = Object.keys(size).filter(k => size[k] >= 3).sort((x, y) => size[y] - size[x] || (x < y ? -1 : 1));
+    const rowsOf = q => [...new Set(placesOf(q).map(k => (shown.includes(k) ? k : "elsewhere")))];
+    const elsewhere = ppl.filter(q => rowsOf(q).includes("elsewhere")).length;
+    const G = { rows: shown.slice(), cells: {}, total: {}, unshown: 0 };
+    for (const q of ppl) {
+      rowsOf(q).forEach(r => { if (r !== "elsewhere" || elsewhere >= 3) cell(G.cells, r, answerOf(q)); });
+      G.total[answerOf(q)] = (G.total[answerOf(q)] || 0) + 1;
+    }
+    if (elsewhere >= 3) G.rows.push("elsewhere"); else G.unshown = elsewhere;
+    return G;
+  };
   const crossOf = list => {
     const ppl = list.filter(q => q.age && q.meet), size = {};
     ppl.forEach(q => q.cities.forEach(c => { size[c] = (size[c] || 0) + 1; }));
@@ -912,13 +1013,14 @@ function demoStats() {
     const rowsOf = q => [...new Set(q.cities.map(c => (shown.includes(c) ? c : "elsewhere")))];
     const elsewhere = ppl.filter(q => rowsOf(q).includes("elsewhere")).length;
     const X = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, unshown: 0 };
-    const cell = (t, r, c) => { t[r] = t[r] || {}; t[r][c] = (t[r][c] || 0) + 1; };
     for (const q of ppl) {
       rowsOf(q).forEach(r => { if (r !== "elsewhere" || elsewhere >= 3) { cell(X.city_age, r, q.age); cell(X.city_meet, r, q.meet); } });
       cell(X.age_meet, q.age, q.meet);
       if (q.cities.includes("New York")) cell(X.ny_age_meet, q.age, q.meet);
     }
     if (elsewhere >= 3) X.cities.push("elsewhere"); else X.unshown = elsewhere;
+    X.city_price = grid(list, q => q.cities, q => q.price);
+    X.region_reach = grid(list, q => (q.region ? [q.region] : []), q => q.reach);
     return X;
   };
   out.cross = { all: crossOf(crossPeople), done: crossOf(crossPeople.filter(q => q.done)) };
