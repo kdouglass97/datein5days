@@ -16,8 +16,9 @@
 <!--
   The team dashboard, /admin. Not linked from anywhere on the site and not indexed.
   Totals only: the page asks the Apps Script for counts (POST { kind: "stats" }) and
-  never sees a name, an answer or a handle. It opens with the password in the Sheet's
-  `admin` tab; a device keeps a token derived from it, never the password itself.
+  never sees a name, an answer or a handle. It opens with the team password (the
+  ADMIN_PASSWORD repo secret, written into the Apps Script at deploy); a device keeps a
+  token derived from it, never the password itself.
   ?tab=test counts the `test` tab. ?demo shows made-up numbers, but never on the live
   domain. See context.md §8.
 -->
@@ -235,7 +236,7 @@ footer .brand{display:block;font-size:26px;margin-bottom:4px}
 <div class="lock" data-lock hidden>
 <section class="card">
 <h2>team only</h2>
-<p class="dek">The password is in the sheet, on the <b>admin</b> tab.</p>
+<p class="dek">Enter the team password.</p>
 <form data-lock-form>
 <input type="text" name="username" value="five days admin" autocomplete="username" hidden>
 <label class="field"><span>password</span><input type="password" name="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required></label>
@@ -793,8 +794,6 @@ function lock(msg) {
   $("[data-foot-notes]").textContent = $("[data-foot-meta]").textContent = "";
   $("[data-lock-err]").textContent = msg || "";
   setStatus("locked");
-  // asking once without a password is what makes the sheet grow its admin tab
-  if (!msg) fetchStats({}).catch(() => {});
 }
 function unlocked() {
   $("[data-lock]").hidden = true;

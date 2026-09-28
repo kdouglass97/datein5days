@@ -586,10 +586,12 @@ via
   waits for three, so a city row never points at one or two people. Own gender isn't
   asked, so "meet" is the only gender axis there is (§10). The page refreshes every minute
   while open and says what's new since you last looked.
-  The password is cell A2 of the **`admin`** tab (8+ characters; blank means a random one is
-  written there), so Sheet access is dashboard access. It never goes in the repo: git
-  history keeps everything. Devices keep a token derived from it, never the password, and
-  changing A2 signs them all out. The page asks the Apps Script by POST
+  The password is the **`ADMIN_PASSWORD` repo secret** (8+ characters; unset means locked).
+  The Apps Script deploy writes it into `apps-script/secret.js` just before `clasp push`;
+  that file is in `.gitignore` and must never be committed, and the password never goes in
+  the Sheet either. To change it, update the secret and run the Deploy Apps Script workflow
+  by hand (a secret change alone doesn't trigger it). Devices keep a token derived from the
+  password, never the password, and a new password signs them all out. The page asks the Apps Script by POST
   (`{ kind: "stats" }`, `stats_()`), so the password never sits in a URL. `?tab=test` counts
   the `test` tab; `?demo` shows made-up numbers on a local copy or a preview, never on the
   live domain. Don't put `/admin` in `robots.txt`: a Disallow line advertises the path, and
@@ -757,8 +759,8 @@ not in `rsvps`.
 - [x] Kai founder photo added (`kai.jpg`, same 360x480 treatment as `ruby.jpg`)
 - [ ] Delete only the rows whose `src` is `claude-test`, and the one corrupted row (id repeated across every column). **Everything else in `leads` is a real sign-up.**
 - [ ] Delete the `Sheet1` tab (empty decoy) and the test photo from Drive
-- [ ] Share Sheet and Drive folder with Ruby; invite Ruby to PostHog. Sheet access is also
-      what opens `/admin` (the password is in the `admin` tab).
+- [ ] Share Sheet and Drive folder with Ruby; invite Ruby to PostHog. (`/admin` is separate:
+      it takes the team password, the `ADMIN_PASSWORD` repo secret.)
 - [ ] Own gender isn't asked. `meet` is who someone wants to meet, not who they are, so
       nobody can count how many people each person could be matched with, and `/admin` can
       only show demand. Adding it is a form change and touches sensitive data (the privacy

@@ -17,7 +17,8 @@
  * Visits are counted in PostHog, never here.
  *
  * POST { kind: "stats", password } feeds the team dashboard (/admin on the site): totals
- * only, never a name, an answer or a handle. The password sits in the `admin` tab. See stats_().
+ * only, never a name, an answer or a handle. The password comes from the ADMIN_PASSWORD
+ * secret in GitHub, which the deploy writes into secret.js. See stats_().
  */
 
 const SHEET_ID = "1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw";
@@ -36,9 +37,7 @@ const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
 // Formulas only: sign-ups totalled per link and per app. See buildSources_().
 const SOURCES_SHEET = "sources";
 
-// The team dashboard's password, in cell A2. Whoever can open the Sheet can open /admin. See adminPassword_().
-const ADMIN_SHEET = "admin";
-// shorter than this never opens anything, so a stray "x" in A2 can't be the password
+// A dashboard password shorter than this never opens anything. See adminPassword_().
 const ADMIN_MIN_LENGTH = 8;
 
 const COLUMNS = [
@@ -430,18 +429,17 @@ function statsAsk_(body) {
 
 /**
  * What /admin shows. It opens with the password (typed once per device) or the token the
- * page keeps instead of it; anything else gets "locked" and nothing more. Changing the
- * password in the `admin` tab retires every token. Reading only, apart from writing a
- * random password into the `admin` tab when A2 is blank.
+ * page keeps instead of it; anything else gets "locked" and nothing more. A new password
+ * retires every token. Reading only: it never writes to the Sheet.
  */
 function stats_(ask) {
   try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const real = adminPassword_(ss);
+    const real = adminPassword_();
     const token = adminToken_(real);
     const password = String(ask.password || "").trim();
     const opened = real.length >= ADMIN_MIN_LENGTH && (password ? password === real : String(ask.token || "") === token);
     if (!opened) return { ok: false, error: "locked" };
+    const ss = SpreadsheetApp.openById(SHEET_ID);
     const tab = ask.tab === "test" ? TEST_SHEET : SHEET;
     const sheet = ss.getSheetByName(tab);
     const values = sheet && sheet.getLastRow() > 1 ? sheet.getDataRange().getValues() : [];
@@ -458,22 +456,12 @@ function stats_(ask) {
 }
 
 /**
- * The password is cell A2 of the `admin` tab, ADMIN_MIN_LENGTH characters or more (shorter
- * never opens anything). Blank, a random one is written there, so /admin is never open by default.
+ * The password: ADMIN_PASSWORD_SECRET, which only exists in secret.js, a file the deploy
+ * writes from the ADMIN_PASSWORD secret in GitHub (.github/workflows/apps-script.yml). It is
+ * never in the repo. Unset or under ADMIN_MIN_LENGTH, /admin stays locked.
  */
-function adminPassword_(ss) {
-  let sheet = ss.getSheetByName(ADMIN_SHEET);
-  if (!sheet) {
-    sheet = ss.insertSheet(ADMIN_SHEET);
-    sheet.getRange("A1").setValue("password for datein5days.com/admin, in A2. Type your own, " + ADMIN_MIN_LENGTH +
-      " characters or more. Changing it signs every device out.");
-  }
-  let password = String(sheet.getRange("A2").getValue() || "").trim();
-  if (!password) {
-    password = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, "").slice(0, 32);
-    sheet.getRange("A2").setValue(password);
-  }
-  return password;
+function adminPassword_() {
+  return typeof ADMIN_PASSWORD_SECRET === "string" ? ADMIN_PASSWORD_SECRET.trim() : "";
 }
 
 /** what a device keeps instead of the password: an HMAC of it, so the password itself is never stored */
@@ -688,8 +676,7 @@ function setup() {
   const sheet = getSheet_(SHEET);
   const test = getSheet_(TEST_SHEET);
   ensureSources_(sheet.getParent());
-  adminPassword_(sheet.getParent());
-  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + ", " + ADMIN_SHEET + " (columns: " + COLUMNS.length + ")");
+  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + " (columns: " + COLUMNS.length + ")");
 }
 
 /**
