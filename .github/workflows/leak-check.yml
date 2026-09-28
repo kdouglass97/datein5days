@@ -21,6 +21,12 @@ on:
   schedule:
     - cron: "41 12 * * *"
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "full checks everything once the site serves this branch; private only asks for the private files"
+        type: choice
+        options: [auto, full, private]
+        default: auto
 
 permissions:
   contents: read
@@ -37,4 +43,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check the live site
-        run: bash .github/scripts/leak-check.sh ${{ github.ref == 'refs/heads/main' && 'full' || 'private' }}
+        run: bash .github/scripts/leak-check.sh ${{ (inputs.mode == 'full' || inputs.mode == 'private') && inputs.mode || (github.ref == 'refs/heads/main' && 'full' || 'private') }}
