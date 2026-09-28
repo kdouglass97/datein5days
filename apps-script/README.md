@@ -12,7 +12,7 @@ The Google Apps Script bound to the `cohort1-data` Sheet. It receives RSVPs from
 ## Everything posted is untrusted
 
 The `/exec` URL is in the page source, so anyone can post anything to it. Every string bound
-for a cell goes through `cell_()`: capped at 10,000 characters, and anything that starts like a
+for a cell goes through `cellValue_()`: capped at 10,000 characters, and anything that starts like a
 formula (`= + - @`) is stored as text, which Sheets shows unchanged. `photo` only takes an image
 upload (JPEG, PNG or WebP, under 3MB as base64) that the script saves to Drive itself, never a
 link. Ids over 64 characters are refused. Errors reply `"failed"` and nothing more; the detail
@@ -32,3 +32,32 @@ The first real sign-up builds the `sources` tab: three self-updating tables coun
 finished questionnaires per link (`src`), per link and app (`@maya` on `tiktok` and on
 `instagram` as two rows), and per app (`via`). It's formulas only. Delete it and the next
 sign-up rebuilds it. Visits aren't counted in the sheet; that's PostHog's job.
+
+## Dashboard (/admin)
+
+`/admin` on the site (`admin.html`) is the team dashboard. It isn't linked from anywhere and
+isn't indexed. It asks this script for totals with a POST, `{ kind: "stats", password }`, and
+gets counts only: every answer split into everyone and those who answered all seven, medians,
+and sign-ups per hour. Never a name, an answer, a handle or a row. See `stats_()` and `tally_()`.
+It also crosses answers (city × age, city × who they'd like to meet, age × who they'd like to
+meet, age × what a date is worth, and the two age tables for New York alone), worked out
+separately for everyone and for those
+who answered all seven. A city needs 3 people in a view for its own row; smaller ones share
+"elsewhere", which also waits for 3. See `crosses_()`.
+
+- The password is the **`ADMIN_PASSWORD` repo secret** (GitHub: Settings → Secrets and
+  variables → Actions). The deploy writes it into `secret.js` just before `clasp push`, so it
+  lives in the Apps Script project and GitHub's secret store, never in the repo or the Sheet.
+  `secret.js` is in `.gitignore`. 8 characters or more; unset or shorter, `/admin` stays locked.
+- To change it: update the secret, then Actions → Deploy Apps Script → Run workflow. The
+  automatic runs skip when `apps-script/` hasn't changed, and a secret change doesn't change it.
+- A device types the password once and keeps a token derived from it (an HMAC), never the
+  password. A new password signs every device out.
+- The ask is a POST so the password never sits in a URL. It's answered before the sign-up
+  lock, checks the password before it opens the Sheet, and writes nothing, so it can't slow
+  an rsvp down. GET still only answers the health check.
+- `tab: "test"` (`/admin?tab=test`) counts the `test` tab, so a QA sign-up can be watched end
+  to end.
+- Skipped, same as everywhere: `src=claude-test`, first names starting with the word "test",
+  and rows without a readable `created`.
+- No new OAuth scopes: SpreadsheetApp and Utilities, which the script already used.

@@ -20,8 +20,23 @@ jobs:
             npm ci || npm install
             npm run build --if-present
           fi
+      - name: Keep analytics off /admin
+        run: |
+          # the team dashboard never loads PostHog, attr.js or any other analytics (context.md §8, §9)
+          if grep -nE "posthog\.(init|capture)|window\.posthog|posthog\.com|src=[\"'][^\"']*attr\.js|googletagmanager|gtag\(|fbq\(|_vercel/insights|plausible\.io" admin.html; then
+            echo "::error file=admin.html::/admin must not load analytics (context.md §9)"
+            exit 1
+          fi
       - name: No keys in the repo
         run: bash .github/scripts/leak-check.sh keys
+      - name: Every Apps Script name defined once
+        run: |
+          # one global scope across apps-script/*.js: a second function with the same name silently wins
+          dups=$(cat apps-script/*.js | grep -oE "^(function|const|let|var) [A-Za-z0-9_$]+" | awk '{print $2}' | sort | uniq -d)
+          if [ -n "$dups" ]; then
+            echo "::error file=apps-script/Code.js::Defined more than once: $(echo $dups). Rename one (context.md, landmines)."
+            exit 1
+          fi
       - name: Merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

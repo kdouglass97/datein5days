@@ -15,6 +15,10 @@
  *
  * The `sources` tab totals sign-ups per link (src) and app (via). See buildSources_().
  * Visits are counted in PostHog, never here.
+ *
+ * POST { kind: "stats", password } feeds the team dashboard (/admin on the site): totals
+ * only, never a name, an answer or a handle. The password comes from the ADMIN_PASSWORD
+ * secret in GitHub, which the deploy writes into secret.js. See stats_().
  */
 
 const SHEET_ID = "1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw";
@@ -32,6 +36,9 @@ const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
 
 // Formulas only: sign-ups totalled per link and per app. See buildSources_().
 const SOURCES_SHEET = "sources";
+
+// A dashboard password shorter than this never opens anything. See adminPassword_().
+const ADMIN_MIN_LENGTH = 8;
 
 const COLUMNS = [
   "id", "created", "updated", "stage", "src", "cohort",
@@ -74,7 +81,7 @@ const COLUMNS = [
 const TEXT_COLUMNS = ["phone"];
 
 // The /exec URL is public (it's in the page source), so anyone can post anything to it.
-// Every string bound for a cell goes through cell_(): capped at MAX_CELL, and anything that
+// Every string bound for a cell goes through cellValue_(): capped at MAX_CELL, and anything that
 // starts like a formula is stored as text, so a "name" of =IMPORTXML(...) can't run, or
 // send the sheet anywhere, when one of us opens it.
 const MAX_CELL = 10000;
@@ -102,6 +109,10 @@ function doGet() {
 }
 
 function doPost(e) {
+  // the /admin dashboard asking for totals: read-only, so it never waits on the sign-up lock
+  const ask = statsAsk_(e && e.postData && e.postData.contents);
+  if (ask) return json_(stats_(ask));
+
   const lock = LockService.getScriptLock();
   try {
     lock.waitLock(30000);
@@ -181,8 +192,8 @@ function saveNote_(d) {
     src: String(d.src || "").slice(0, 100),
     note_id: String(d.note_id || ""),
   };
-  // free text from strangers: cell_() keeps a leading = + - @ from running as a formula
-  sheet.appendRow(NOTE_COLUMNS.map(function (c) { return cell_(c, row[c]); }));
+  // free text from strangers: cellValue_() keeps a leading = + - @ from running as a formula
+  sheet.appendRow(NOTE_COLUMNS.map(function (c) { return cellValue_(c, row[c]); }));
   return { ok: true, kind: "note" };
 }
 
@@ -346,8 +357,10 @@ function buildRow_(d) {
  * parsing it: always for TEXT_COLUMNS, and for any string that starts like a formula
  * (= + - @, or a tab or return). Sheets hides the apostrophe, so "@maya" still reads @maya.
  * getValues() hands text back without it, so this runs on every write, old values included.
+ * (Not cell_: that name is the dashboard's counter, further down. Apps Script shares one
+ * global scope, so a second function of the same name silently replaces the first.)
  */
-function cell_(col, v) {
+function cellValue_(col, v) {
   if (v === "" || v === undefined || v === null) return v;
   if (TEXT_COLUMNS.indexOf(col) > -1) return "'" + String(v).replace(/^'/, "").slice(0, MAX_CELL);
   if (typeof v !== "string") return v;
@@ -378,14 +391,14 @@ function upsert_(sheet, row) {
       const incoming = row[col];
       // never blank out something we already have
       // existing values are re-written too, so they need re-protecting every time
-      if (incoming === undefined || incoming === "") return cell_(col, existing[i]);
-      return cell_(col, incoming);
+      if (incoming === undefined || incoming === "") return cellValue_(col, existing[i]);
+      return cellValue_(col, incoming);
     });
     sheet.getRange(target, 1, 1, width).setValues([merged]);
   } else {
     row.created = row.updated;
     const fresh = COLUMNS.map(function (col) {
-      return row[col] === undefined ? "" : cell_(col, row[col]);
+      return row[col] === undefined ? "" : cellValue_(col, row[col]);
     });
     sheet.appendRow(fresh);
   }
@@ -409,6 +422,334 @@ function savePhoto_(dataUrl, name, id) {
   } catch (err) {
     return "error: " + String(err);
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* The dashboard: totals only.                                          */
+
+/** stage -> how far in: 0 rsvp, 1 details, 2..7 answered q1..q6, 8 answered all seven */
+const STAGE_LEVEL = { rsvp: 0, details: 1, q1: 2, q2: 3, q3: 4, q4: 5, q5: 6, q6: 7, poll_done: 8 };
+
+/** the order both ranked lists start in on the page. A ranking that still reads this way may never have been dragged. */
+const LOOKING_START = ["date", "relationship", "friends", "community"];
+
+/** the written answers, summed into "words written" */
+const TEXT_ANSWERS = ["q2_wednesday", "q3_friendships", "q5_cared_for", "q6_not_done_yet", "q7_spoke_up_sooner"];
+
+/** word-count buckets: under 50, 50-99, 100-149, 150-199, 200-299, 300-499, 500+ */
+const WORD_EDGES = [50, 100, 150, 200, 300, 500];
+
+/** the dashboard's { kind: "stats", password | token, tab } from a POST body, null for anything else */
+function statsAsk_(body) {
+  if (!body) return null;
+  try {
+    const d = JSON.parse(body);
+    return d && d.kind === "stats" ? d : null;
+  } catch (err) {
+    return null; // not ours: the sign-up path below reports it as it always has
+  }
+}
+
+/**
+ * What /admin shows. It opens with the password (typed once per device) or the token the
+ * page keeps instead of it; anything else gets "locked" and nothing more. A new password
+ * retires every token. Reading only: it never writes to the Sheet.
+ */
+function stats_(ask) {
+  try {
+    const real = adminPassword_();
+    const token = adminToken_(real);
+    const password = String(ask.password || "").trim();
+    const opened = real.length >= ADMIN_MIN_LENGTH && (password ? password === real : String(ask.token || "") === token);
+    if (!opened) return { ok: false, error: "locked" };
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const tab = ask.tab === "test" ? TEST_SHEET : SHEET;
+    const sheet = ss.getSheetByName(tab);
+    const values = sheet && sheet.getLastRow() > 1 ? sheet.getDataRange().getValues() : [];
+    const notes = ss.getSheetByName(tab === TEST_SHEET ? NOTES_TEST_SHEET : NOTES_SHEET);
+    const out = tally_(values, new Date());
+    out.tab = tab;
+    out.token = token;
+    out.notes = notes ? Math.max(0, notes.getLastRow() - 1) : 0;
+    return out;
+  } catch (err) {
+    console.error("stats: " + err);
+    return { ok: false, error: "unavailable" };
+  }
+}
+
+/**
+ * The password: ADMIN_PASSWORD_SECRET, which only exists in secret.js, a file the deploy
+ * writes from the ADMIN_PASSWORD secret in GitHub (.github/workflows/apps-script.yml). It is
+ * never in the repo. Unset or under ADMIN_MIN_LENGTH, /admin stays locked.
+ */
+function adminPassword_() {
+  return typeof ADMIN_PASSWORD_SECRET === "string" ? ADMIN_PASSWORD_SECRET.trim() : "";
+}
+
+/** what a device keeps instead of the password: an HMAC of it, so the password itself is never stored */
+function adminToken_(password) {
+  return Utilities.computeHmacSha256Signature("five days admin", password)
+    .map(function (b) { return ((b + 256) % 256).toString(16).padStart(2, "0"); }).join("");
+}
+
+/**
+ * Totals from a tab's values (header row first). Counts, shares and medians only: nothing
+ * returned is a name, an answer, a handle or a row. Skips claude-test rows, "test…" names
+ * and rows without a readable `created` (the one corrupted row).
+ */
+function tally_(values, now) {
+  const head = values[0] || [];
+  const col = {};
+  COLUMNS.forEach(function (c) { col[c] = head.indexOf(c); });
+  const out = {
+    ok: true, v: 1, at: now.toISOString(), rows: 0, skipped: 0,
+    reached: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hours: {}, last: { rsvp: "", done: "" },
+    // every breakdown is { value: [everyone, finished all seven] }
+    age: {}, meet: {}, price: {}, cities: {}, src: {}, via: {}, verify: {}, reach: {},
+    looking: { first: {}, rank: {}, n: 0, untouched: 0 },
+    want: { first: {}, last: {}, rank: {}, n: 0, untouched: 0 },
+    sharing: { bins: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]], n: 0, at50: 0, median: null },
+    words: { bins: [0, 0, 0, 0, 0, 0, 0], n: 0, median: null },
+  };
+  const lookSum = {}, wantSum = {}, shares = [], words = [], people = [];
+
+  for (let r = 1; r < values.length; r++) {
+    const row = values[r];
+    const cell = function (c) { return col[c] < 0 ? "" : row[col[c]]; };
+    const text = function (c) { return String(cell(c) === null ? "" : cell(c)).trim(); };
+    if (!text("id")) continue;
+    const created = toDate_(cell("created"));
+    if (!created || text("src") === "claude-test" || isTestName_(text("name"))) { out.skipped++; continue; }
+    out.rows++;
+
+    const level = STAGE_LEVEL[text("stage")] || 0;
+    const done = level === 8;
+    for (let k = 0; k <= level; k++) out.reached[k]++;
+
+    bump_(out.hours, hourKey_(created), 0);
+    if (created.toISOString() > out.last.rsvp) out.last.rsvp = created.toISOString();
+    if (done) {
+      const finished = toDate_(cell("updated")) || created;
+      bump_(out.hours, hourKey_(finished), 1);
+      if (finished.toISOString() > out.last.done) out.last.done = finished.toISOString();
+    }
+
+    count_(out.age, text("age"), done);
+    count_(out.meet, text("meet"), done);
+    count_(out.price, text("price"), done);
+    count_(out.src, text("src") || "unknown", done);
+    count_(out.via, text("via"), done);
+    count_(out.verify, text("verify"), done);
+    count_(out.reach, text("reach_on"), done);
+
+    // `looking`: only full rankings of all four count, never an older partial pick
+    const looking = text("looking").split(",").map(function (s) { return s.trim(); }).filter(String);
+    if (looking.length === LOOKING_START.length && LOOKING_START.every(function (k) { return looking.indexOf(k) > -1; })) {
+      out.looking.n++;
+      count_(out.looking.first, looking[0], done);
+      looking.forEach(function (k, i) { lookSum[k] = (lookSum[k] || 0) + i + 1; });
+      if (looking.join() === LOOKING_START.join()) out.looking.untouched++;
+    }
+
+    // question 1: first and last from want_most/could_skip, averages only from full rank_ rows
+    count_(out.want.first, text("want_most"), done);
+    count_(out.want.last, text("could_skip"), done);
+    const ranks = RANK_OPTIONS.map(function (k) { return Number(cell("rank_" + k)); });
+    if (ranks.every(function (n) { return n >= 1 && n <= RANK_OPTIONS.length && Math.floor(n) === n; })) {
+      out.want.n++;
+      RANK_OPTIONS.forEach(function (k, i) { wantSum[k] = (wantSum[k] || 0) + ranks[i]; });
+      if (ranks.every(function (n, i) { return n === i + 1; })) out.want.untouched++;
+    }
+
+    // question 4: "70%" or "70% — why", which Sheets may already have turned into 0.7
+    const share = sharePercent_(cell("q4_sharing_life"));
+    if (share !== null) {
+      out.sharing.n++;
+      const bin = out.sharing.bins[Math.min(9, Math.floor(share / 10))];
+      bin[0]++;
+      if (done) bin[1]++;
+      if (share === 50) out.sharing.at50++;
+      shares.push(share);
+    }
+
+    if (done) {
+      const n = TEXT_ANSWERS.reduce(function (sum, c) { return sum + wordCount_(text(c)); }, 0);
+      out.words.n++;
+      out.words.bins[WORD_EDGES.filter(function (edge) { return n >= edge; }).length]++;
+      words.push(n);
+    }
+
+    const cities = text("cities").split(",").map(function (c) { return c.trim(); }).filter(String);
+    cities.forEach(function (c) { count_(out.cities, c, done); });
+    // for the cross tables, and only ever counted there: never returned as a row. The number
+    // itself goes no further than this line: only its country calling code is kept
+    people.push({ cities: cities, age: text("age"), meet: text("meet"), price: text("price"),
+      reach: text("reach_on"), region: callingCode_(cell("phone")), done: done });
+  }
+
+  Object.keys(lookSum).forEach(function (k) { out.looking.rank[k] = round2_(lookSum[k] / out.looking.n); });
+  Object.keys(wantSum).forEach(function (k) { out.want.rank[k] = round2_(wantSum[k] / out.want.n); });
+  out.sharing.median = median_(shares);
+  out.words.median = median_(words);
+  out.cross = crosses_(people);
+  return out;
+}
+
+/** obj[key] = [everyone, finished all seven] */
+function count_(obj, key, done) {
+  if (key === "") return;
+  if (!obj[key]) obj[key] = [0, 0];
+  obj[key][0]++;
+  if (done) obj[key][1]++;
+}
+
+/** a row in the cross tables needs this many people: smaller cities fold into "elsewhere" */
+const CROSS_MIN = 3;
+
+/**
+ * Two answers crossed: city × age, city × who they'd like to meet, and age × who they'd like
+ * to meet and age × what a date is worth (both also for New York alone). Worked out twice,
+ * for everyone and for those who answered all seven, so each view keeps its own rows. Only
+ * people who gave their age and who they'd like to meet count. Someone who lists two cities counts in both rows. A city with
+ * fewer than CROSS_MIN people in the view folds into "elsewhere", and "elsewhere" itself only
+ * shows once it has CROSS_MIN, so a city row never points at one or two people.
+ * Two more, by place, follow the same rule with rows of their own: city × what a date is
+ * worth, and the phone's region × which app they'd rather be texted on. See grid_().
+ */
+function crosses_(people) {
+  return { all: crossOf_(people), done: crossOf_(people.filter(function (p) { return p.done; })) };
+}
+
+function crossOf_(people) {
+  const ppl = people.filter(function (p) { return p.age && p.meet; });
+  const size = {};
+  ppl.forEach(function (p) { p.cities.forEach(function (c) { size[c] = (size[c] || 0) + 1; }); });
+  const shown = Object.keys(size).filter(function (c) { return size[c] >= CROSS_MIN; })
+    .sort(function (a, b) { return size[b] - size[a] || (a < b ? -1 : 1); });
+  const rowsOf = function (p) {
+    const rows = [];
+    p.cities.forEach(function (c) { const row = shown.indexOf(c) > -1 ? c : "elsewhere"; if (rows.indexOf(row) === -1) rows.push(row); });
+    return rows;
+  };
+  const elsewhere = ppl.filter(function (p) { return rowsOf(p).indexOf("elsewhere") > -1; }).length;
+  const out = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, age_price: {}, ny_age_price: {}, unshown: 0 };
+  ppl.forEach(function (p) {
+    const ny = p.cities.indexOf("New York") > -1;
+    rowsOf(p).forEach(function (row) {
+      if (row === "elsewhere" && elsewhere < CROSS_MIN) return;
+      cell_(out.city_age, row, p.age);
+      cell_(out.city_meet, row, p.meet);
+    });
+    cell_(out.age_meet, p.age, p.meet);
+    if (ny) cell_(out.ny_age_meet, p.age, p.meet);
+    if (p.price) {
+      cell_(out.age_price, p.age, p.price);
+      if (ny) cell_(out.ny_age_price, p.age, p.price);
+    }
+  });
+  if (elsewhere >= CROSS_MIN) out.cities.push("elsewhere");
+  else out.unshown = elsewhere;
+  out.city_price = grid_(people, function (p) { return p.cities; }, function (p) { return p.price; });
+  out.region_reach = grid_(people, function (p) { return p.region ? [p.region] : []; }, function (p) { return p.reach; });
+  return out;
+}
+
+/**
+ * One answer by place, for reading across: does where they are change it? Places are cities
+ * (up to three each, so someone can count in more than one row) or a phone's region (one
+ * each). Everyone in the view who gave both counts, and each table picks its own rows by the
+ * CROSS_MIN rule above. `total` counts each of them once, whatever their rows: the line the
+ * page reads every place against.
+ */
+function grid_(people, placesOf, answerOf) {
+  const ppl = people.filter(function (p) { return answerOf(p) && placesOf(p).length; });
+  const size = {};
+  ppl.forEach(function (p) { placesOf(p).forEach(function (k) { size[k] = (size[k] || 0) + 1; }); });
+  const shown = Object.keys(size).filter(function (k) { return size[k] >= CROSS_MIN; })
+    .sort(function (a, b) { return size[b] - size[a] || (a < b ? -1 : 1); });
+  const rowsOf = function (p) {
+    const rows = [];
+    placesOf(p).forEach(function (k) { const row = shown.indexOf(k) > -1 ? k : "elsewhere"; if (rows.indexOf(row) === -1) rows.push(row); });
+    return rows;
+  };
+  const elsewhere = ppl.filter(function (p) { return rowsOf(p).indexOf("elsewhere") > -1; }).length;
+  const out = { rows: shown.slice(), cells: {}, total: {}, unshown: 0 };
+  ppl.forEach(function (p) {
+    rowsOf(p).forEach(function (row) {
+      if (row === "elsewhere" && elsewhere < CROSS_MIN) return;
+      cell_(out.cells, row, answerOf(p));
+    });
+    out.total[answerOf(p)] = (out.total[answerOf(p)] || 0) + 1;
+  });
+  if (elsewhere >= CROSS_MIN) out.rows.push("elsewhere");
+  else out.unshown = elsewhere;
+  return out;
+}
+
+/** the two-digit country calling codes. 1 and 7 are the only one-digit codes; every other is three */
+const CALLING_2 = ["20", "27", "30", "31", "32", "33", "34", "36", "39", "40", "41", "43", "44", "45", "46", "47", "48", "49",
+  "51", "52", "53", "54", "55", "56", "57", "58", "60", "61", "62", "63", "64", "65", "66", "81", "82", "84", "86",
+  "90", "91", "92", "93", "94", "95", "98"];
+
+/**
+ * "+442071838750" -> "44": the country calling code a stored number starts with, "" when there
+ * is none. Reads a number Sheets turned into digits too. Codes never prefix one another, so the
+ * first match is the only one. +1 covers the US, Canada and the Caribbean; the page names it.
+ */
+function callingCode_(v) {
+  const d = String(v === null || v === undefined ? "" : v).replace(/\D/g, "");
+  if (d.length < 8 || d[0] === "0") return "";
+  if (d[0] === "1" || d[0] === "7") return d[0];
+  return CALLING_2.indexOf(d.slice(0, 2)) > -1 ? d.slice(0, 2) : d.slice(0, 3);
+}
+
+/** table[row][col] += 1 */
+function cell_(table, row, col) {
+  if (!table[row]) table[row] = {};
+  table[row][col] = (table[row][col] || 0) + 1;
+}
+
+/** hours["2026-09-28T14"] = [rsvps, finished] in that UTC hour */
+function bump_(hours, key, i) {
+  if (!hours[key]) hours[key] = [0, 0];
+  hours[key][i]++;
+}
+
+function hourKey_(d) {
+  return d.toISOString().slice(0, 13);
+}
+
+/** a Date from a Date cell or an ISO string, null for anything else */
+function toDate_(v) {
+  if (v && typeof v.getTime === "function") return isNaN(v.getTime()) ? null : new Date(v.getTime());
+  const s = String(v || "").trim();
+  if (!/^\d{4}-\d{2}-\d{2}/.test(s)) return null;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/** 0-100 from "70%", "70% — why" or a percent cell (0.7), null when it isn't one */
+function sharePercent_(v) {
+  if (typeof v === "number") return Math.max(0, Math.min(100, Math.round(v <= 1 ? v * 100 : v)));
+  const m = /^\s*(\d{1,3})\s*%/.exec(String(v || ""));
+  return m ? Math.min(100, Number(m[1])) : null;
+}
+
+function wordCount_(s) {
+  return s ? s.split(/\s+/).filter(String).length : 0;
+}
+
+function median_(list) {
+  if (!list.length) return null;
+  const s = list.slice().sort(function (a, b) { return a - b; });
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : round2_((s[mid - 1] + s[mid]) / 2);
+}
+
+function round2_(n) {
+  return Math.round(n * 100) / 100;
 }
 
 /* ------------------------------------------------------------------ */

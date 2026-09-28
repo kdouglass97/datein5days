@@ -8,6 +8,11 @@ name: Deploy Apps Script
 #   - manually from the Actions tab
 # Skips if apps-script/ hasn't changed since the commit that's live, so
 # versions don't pile up (Apps Script caps a project at 200).
+#
+# The /admin dashboard's password is the ADMIN_PASSWORD repo secret, written into
+# apps-script/secret.js just before the push. It is never committed. After changing
+# the secret, run this workflow by hand: a secret change alone doesn't touch apps-script/,
+# so the automatic runs would skip it.
 on:
   push:
     branches: [main]
@@ -54,6 +59,12 @@ jobs:
             echo "apps-script/ unchanged since live commit $LIVE_SHA, skipping."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
+      - name: Write the dashboard password from its secret
+        if: steps.check.outputs.skip != 'true'
+        env:
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          node -e 'require("fs").writeFileSync("secret.js", "// Written by the deploy from the ADMIN_PASSWORD secret. Never committed.\nconst ADMIN_PASSWORD_SECRET = " + JSON.stringify(process.env.ADMIN_PASSWORD || "") + ";\n")'
       - name: Push code to Apps Script
         if: steps.check.outputs.skip != 'true'
         run: clasp push --force
