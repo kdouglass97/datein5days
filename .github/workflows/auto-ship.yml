@@ -20,6 +20,8 @@ jobs:
             npm ci || npm install
             npm run build --if-present
           fi
+      - name: No keys in the repo
+        run: bash .github/scripts/leak-check.sh keys
       - name: Merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

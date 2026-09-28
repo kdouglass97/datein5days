@@ -1,0 +1,35 @@
+name: Leak check
+
+# Fetches datein5days.com the way a stranger would and fails if anything the repo keeps
+# private is served, anything served looks like a secret key, or the security headers are
+# off. The checks are in .github/scripts/leak-check.sh.
+#
+#   - a push to main that touches the allowlist, the headers or this check: waits until Vercel
+#     serves that commit, then checks everything
+#   - every day, for what changes outside the repo (Vercel settings, a rollback, a failed deploy)
+#   - on demand: Actions -> Leak check -> Run workflow
+#   - the same paths on any other branch: the private-file half only, since the branch isn't live
+# Keys are also stopped before they ship: auto-ship.yml runs the keys check before merging.
+# A failed run emails the repo owner.
+on:
+  push:
+    paths: [".vercelignore", "vercel.json", ".github/workflows/leak-check.yml", ".github/scripts/leak-check.sh"]
+  schedule:
+    - cron: "41 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leak-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the live site
+        run: bash .github/scripts/leak-check.sh ${{ github.ref == 'refs/heads/main' && 'full' || 'private' }}
