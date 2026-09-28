@@ -551,7 +551,8 @@ The guards:
 - **`vercel.json` headers**, on every path: no framing (`frame-ancestors`, `X-Frame-Options`)
   except by PostHog's heatmaps, no MIME sniffing, a referrer policy, `form-action 'none'` (a
   form that ever submitted natively would put a name and number in a URL), and a
-  `Permissions-Policy`. Vercel adds HSTS itself.
+  `Permissions-Policy`. HSTS is set here too, at Vercel's own default, so it never rests on a
+  platform default nobody can see.
 - **No `script-src` in the CSP, on purpose.** Every page is inline script, so it would need
   `'unsafe-inline'`, which cancels most of its value, and a wrong allowlist breaks PostHog or
   the face check without a sound. Hashing the inline scripts needs a build step (see Stack).
@@ -566,6 +567,10 @@ The guards:
   exists because, with no build step, Vercel served the whole repo root: until 2026-09-26
   this file and `apps-script/` were public URLs. The leak check fails either way: a served
   file that isn't live, or a private one that is.
+- **The leak check never asks for `/.env`, `/.git/…` or any dotfile.** Its first version did,
+  on 2026-09-28, and Vercel's firewall took the runner for a scanner: everything after got 403,
+  headers included. A 403 proves nothing, so the check counts it as unchecked and fails; it
+  only passes on a plain 404. It also paces itself and names itself in the User-Agent.
 - **`Permissions-Policy` keeps the microphone at `(self)`.** Voice answers use it. A copied
   "secure headers" template with `microphone=()` kills them without an error (tested
   2026-09-28), and the leak check fails if it's dropped. Camera, geolocation and payments are
