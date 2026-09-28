@@ -20,6 +20,13 @@ jobs:
             npm ci || npm install
             npm run build --if-present
           fi
+      - name: Keep analytics off /admin
+        run: |
+          # the team dashboard never loads PostHog, attr.js or any other analytics (context.md §8, §9)
+          if grep -nE "posthog\.(init|capture)|window\.posthog|posthog\.com|src=[\"'][^\"']*attr\.js|googletagmanager|gtag\(|fbq\(|_vercel/insights|plausible\.io" admin.html; then
+            echo "::error file=admin.html::/admin must not load analytics (context.md §9)"
+            exit 1
+          fi
       - name: Merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

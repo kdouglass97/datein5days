@@ -20,7 +20,8 @@
   ADMIN_PASSWORD repo secret, written into the Apps Script at deploy); a device keeps a
   token derived from it, never the password itself.
   ?tab=test counts the `test` tab. ?demo shows made-up numbers, but never on the live
-  domain. See context.md §8.
+  domain. No analytics of any kind (no PostHog, no link attribution): team visits aren't
+  traffic, and auto-ship refuses a PR that adds them. See context.md §8 and §9.
 -->
 <style>
 :root{
@@ -159,7 +160,7 @@ main{padding:6px 0 10px}
 /* side by side: two answers crossed, a one-hue ramp (checked: monotone, even steps) with the
    count in every square. dark ink on the four light steps, paper on the darkest: 5:1 or better */
 .cross-grid{display:grid;gap:4px}
-@media (min-width:1000px){.cross-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}}
+@media (min-width:1000px){.cross-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 40px}}
 .cross-block{min-width:0}
 .heat{border-collapse:separate;border-spacing:2px;width:auto;margin:0 -2px;font-size:13px;font-variant-numeric:tabular-nums}
 .heat th,.heat td{border:0;padding:0;text-align:center;white-space:nowrap}
@@ -570,8 +571,9 @@ function trend(days, width) {
 }
 
 /* ---------------- side by side ---------------- */
-// which count the squares show, and where the age × meet table looks. kept across refreshes
-let crossWho = "all", crossWhere = "all";
+// which count the squares show, and where each age table looks. kept across refreshes
+let crossWho = "all";
+const crossWhere = { meet: "all", price: "all" };
 function switcher(label, options, current, set) {
   const el = h("div", { class: "switch", role: "group", "aria-label": label }, options.map(([v, text]) =>
     h("button", { type: "button", "aria-pressed": String(v === current), "data-v": v }, text)));
@@ -608,14 +610,16 @@ function crossCard(X) {
     const pressed = fresh.querySelector(`.switch[aria-label="${label}"] [aria-pressed="true"]`);
     if (pressed) pressed.focus();
   };
-  const set = key => (v, label) => { if (key === "who") crossWho = v; else crossWhere = v; redraw(label); };
+  const set = key => (v, label) => { if (key === "who") crossWho = v; else crossWhere[key] = v; redraw(label); };
+  const where = key => switcher("where, age × " + key, [["all", "everywhere"], ["ny", "New York"]], crossWhere[key], set(key));
   const noCities = h("p", { class: "note", text: "No city has three people here yet." });
   return card("side by side", "Two answers crossed. The darker the square, the more people in it.", { id: "cross", wide: true, band: "var(--tag)" },
     switcher("count", [["all", "everyone"], ["done", "answered all seven"]], crossWho, set("who")),
     h("div", { class: "cross-grid" },
-      h("div", { class: "cross-block" }, h("h3", { text: "age × would like to meet" }),
-        switcher("where", [["all", "everywhere"], ["ny", "New York"]], crossWhere, set("where")),
-        heat(crossWhere === "ny" ? V.ny_age_meet : V.age_meet, AGES, MEET, "", who, true)),
+      h("div", { class: "cross-block" }, h("h3", { text: "age × would like to meet" }), where("meet"),
+        heat(crossWhere.meet === "ny" ? V.ny_age_meet : V.age_meet, AGES, MEET, "", who, true)),
+      h("div", { class: "cross-block" }, h("h3", { text: "age × what a date is worth" }), where("price"),
+        heat(crossWhere.price === "ny" ? V.ny_age_price : V.age_price, AGES, PRICES, "", who, true)),
       h("div", { class: "cross-block" }, h("h3", { text: "city × age" }), cities.length ? heat(V.city_age, cities, AGES, "", who, false) : noCities),
       h("div", { class: "cross-block" }, h("h3", { text: "city × would like to meet" }), cities.length ? heat(V.city_meet, cities, MEET, "", who, false) : noCities.cloneNode(true))),
     h("p", { class: "note", text: "Someone can list up to three cities, so they can count in more than one row. A city needs three people for its own row; smaller ones share elsewhere, which also waits for three." +
@@ -884,7 +888,7 @@ function demoStats() {
     if (iso > out.last.rsvp) out.last.rsvp = iso;
     if (p.done) { const f = Math.min(Date.now(), p.t + 40 * 60e3); const fk = new Date(f).toISOString().slice(0, 13); (out.hours[fk] = out.hours[fk] || [0, 0])[1]++; if (new Date(f).toISOString() > out.last.done) out.last.done = new Date(f).toISOString(); }
     p.cities.forEach(c => count(out.cities, c, p.done));
-    crossPeople.push({ cities: p.cities, age: p.level >= 1 ? p.age : "", meet: p.level >= 1 ? p.meet : "", done: p.done });
+    crossPeople.push({ cities: p.cities, age: p.level >= 1 ? p.age : "", meet: p.level >= 1 ? p.meet : "", price: p.level >= 1 ? p.price : "", done: p.done });
     count(out.src, p.src, p.done); count(out.via, p.via, p.done); count(out.verify, p.verify, p.done);
     out.looking.n++; count(out.looking.first, p.looking[0], p.done); p.looking.forEach((k, i) => lookSum[k] = (lookSum[k] || 0) + i + 1);
     if (p.looking.join() === "date,relationship,friends,community") out.looking.untouched++;
@@ -911,12 +915,14 @@ function demoStats() {
     const shown = Object.keys(size).filter(c => size[c] >= 3).sort((x, y) => size[y] - size[x] || (x < y ? -1 : 1));
     const rowsOf = q => [...new Set(q.cities.map(c => (shown.includes(c) ? c : "elsewhere")))];
     const elsewhere = ppl.filter(q => rowsOf(q).includes("elsewhere")).length;
-    const X = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, unshown: 0 };
+    const X = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, age_price: {}, ny_age_price: {}, unshown: 0 };
     const cell = (t, r, c) => { t[r] = t[r] || {}; t[r][c] = (t[r][c] || 0) + 1; };
     for (const q of ppl) {
+      const ny = q.cities.includes("New York");
       rowsOf(q).forEach(r => { if (r !== "elsewhere" || elsewhere >= 3) { cell(X.city_age, r, q.age); cell(X.city_meet, r, q.meet); } });
       cell(X.age_meet, q.age, q.meet);
-      if (q.cities.includes("New York")) cell(X.ny_age_meet, q.age, q.meet);
+      if (ny) cell(X.ny_age_meet, q.age, q.meet);
+      if (q.price) { cell(X.age_price, q.age, q.price); if (ny) cell(X.ny_age_price, q.age, q.price); }
     }
     if (elsewhere >= 3) X.cities.push("elsewhere"); else X.unshown = elsewhere;
     return X;

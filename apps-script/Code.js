@@ -561,7 +561,7 @@ function tally_(values, now) {
     const cities = text("cities").split(",").map(function (c) { return c.trim(); }).filter(String);
     cities.forEach(function (c) { count_(out.cities, c, done); });
     // for the cross tables, and only ever counted there: never returned as a row
-    people.push({ cities: cities, age: text("age"), meet: text("meet"), done: done });
+    people.push({ cities: cities, age: text("age"), meet: text("meet"), price: text("price"), done: done });
   }
 
   Object.keys(lookSum).forEach(function (k) { out.looking.rank[k] = round2_(lookSum[k] / out.looking.n); });
@@ -585,9 +585,9 @@ const CROSS_MIN = 3;
 
 /**
  * Two answers crossed: city × age, city × who they'd like to meet, and age × who they'd like
- * to meet (everyone, and New York alone). Worked out twice, for everyone and for those who
- * answered all seven, so each view keeps its own rows. Only people who gave their age and who
- * they'd like to meet count. Someone who lists two cities counts in both rows. A city with
+ * to meet and age × what a date is worth (both also for New York alone). Worked out twice,
+ * for everyone and for those who answered all seven, so each view keeps its own rows. Only
+ * people who gave their age and who they'd like to meet count. Someone who lists two cities counts in both rows. A city with
  * fewer than CROSS_MIN people in the view folds into "elsewhere", and "elsewhere" itself only
  * shows once it has CROSS_MIN, so a city row never points at one or two people.
  */
@@ -607,15 +607,20 @@ function crossOf_(people) {
     return rows;
   };
   const elsewhere = ppl.filter(function (p) { return rowsOf(p).indexOf("elsewhere") > -1; }).length;
-  const out = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, unshown: 0 };
+  const out = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, age_price: {}, ny_age_price: {}, unshown: 0 };
   ppl.forEach(function (p) {
+    const ny = p.cities.indexOf("New York") > -1;
     rowsOf(p).forEach(function (row) {
       if (row === "elsewhere" && elsewhere < CROSS_MIN) return;
       cell_(out.city_age, row, p.age);
       cell_(out.city_meet, row, p.meet);
     });
     cell_(out.age_meet, p.age, p.meet);
-    if (p.cities.indexOf("New York") > -1) cell_(out.ny_age_meet, p.age, p.meet);
+    if (ny) cell_(out.ny_age_meet, p.age, p.meet);
+    if (p.price) {
+      cell_(out.age_price, p.age, p.price);
+      if (ny) cell_(out.ny_age_price, p.age, p.price);
+    }
   });
   if (elsewhere >= CROSS_MIN) out.cities.push("elsewhere");
   else out.unshown = elsewhere;

@@ -580,8 +580,9 @@ via
   it: sign-ups by day, how far people get, age, who they'd like to meet, what a date is
   worth, what they're looking for, the sharing slider, words written, question one's
   want-most/could-skip, cities, links and apps, each split into everyone and those who
-  answered all seven. "side by side" crosses city, age and who they'd like to meet (age ×
-  meet also for New York alone), for everyone or only those who answered all seven. A city
+  answered all seven. "side by side" crosses city, age, who they'd like to meet and what a
+  date is worth (the two age tables also for New York alone), for everyone or only those
+  who answered all seven. A city
   needs three people in a view for its own row; smaller ones share "elsewhere", which also
   waits for three, so a city row never points at one or two people. Own gender isn't
   asked, so "meet" is the only gender axis there is (§10). The page refreshes every minute
@@ -595,7 +596,10 @@ via
   (`{ kind: "stats" }`, `stats_()`), so the password never sits in a URL. `?tab=test` counts
   the `test` tab; `?demo` shows made-up numbers on a local copy or a preview, never on the
   live domain. Don't put `/admin` in `robots.txt`: a Disallow line advertises the path, and
-  `noindex` already keeps it out of search.
+  `noindex` already keeps it out of search. It loads no PostHog, no `attr.js` and nothing
+  else that counts visits: team visits aren't traffic, and a device opted in with
+  `?team=on` would otherwise put us in the dashboards. The auto-ship workflow refuses to
+  merge a change that adds any of them to `admin.html`.
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.
@@ -655,6 +659,10 @@ console logs. `src=claude-test` is test traffic and every dashboard insight filt
 > place. Meta Pixel / Google Analytics were checked and are **not** loaded anywhere on the
 > page (the dead `window.fbq?.()` call in `track()` was removed); if either is ever added,
 > it must be gated the same way.
+
+PostHog loads only on `/c/01` (`index.html`). `/admin` loads neither PostHog nor `attr.js`,
+so the team dashboard never shows up as a visit, a replay or a link credit, and auto-ship
+checks `admin.html` for them before every merge (§8).
 
 Events: `rsvp_sent`, `question_answered` (with `q`), `questions_done`, `poll_resume`,
 `verify_mode`. Dashboard **2107266**, "datein5days: cohort 01 launch."
