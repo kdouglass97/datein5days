@@ -560,8 +560,10 @@ function tally_(values, now) {
 
     const cities = text("cities").split(",").map(function (c) { return c.trim(); }).filter(String);
     cities.forEach(function (c) { count_(out.cities, c, done); });
-    // for the cross tables, and only ever counted there: never returned as a row
-    people.push({ cities: cities, age: text("age"), meet: text("meet"), price: text("price"), done: done });
+    // for the cross tables, and only ever counted there: never returned as a row. The number
+    // itself goes no further than this line: only its country calling code is kept
+    people.push({ cities: cities, age: text("age"), meet: text("meet"), price: text("price"),
+      reach: text("reach_on"), region: callingCode_(cell("phone")), done: done });
   }
 
   Object.keys(lookSum).forEach(function (k) { out.looking.rank[k] = round2_(lookSum[k] / out.looking.n); });
@@ -590,6 +592,8 @@ const CROSS_MIN = 3;
  * people who gave their age and who they'd like to meet count. Someone who lists two cities counts in both rows. A city with
  * fewer than CROSS_MIN people in the view folds into "elsewhere", and "elsewhere" itself only
  * shows once it has CROSS_MIN, so a city row never points at one or two people.
+ * Two more, by place, follow the same rule with rows of their own: city × what a date is
+ * worth, and the phone's region × which app they'd rather be texted on. See grid_().
  */
 function crosses_(people) {
   return { all: crossOf_(people), done: crossOf_(people.filter(function (p) { return p.done; })) };
@@ -624,7 +628,58 @@ function crossOf_(people) {
   });
   if (elsewhere >= CROSS_MIN) out.cities.push("elsewhere");
   else out.unshown = elsewhere;
+  out.city_price = grid_(people, function (p) { return p.cities; }, function (p) { return p.price; });
+  out.region_reach = grid_(people, function (p) { return p.region ? [p.region] : []; }, function (p) { return p.reach; });
   return out;
+}
+
+/**
+ * One answer by place, for reading across: does where they are change it? Places are cities
+ * (up to three each, so someone can count in more than one row) or a phone's region (one
+ * each). Everyone in the view who gave both counts, and each table picks its own rows by the
+ * CROSS_MIN rule above. `total` counts each of them once, whatever their rows: the line the
+ * page reads every place against.
+ */
+function grid_(people, placesOf, answerOf) {
+  const ppl = people.filter(function (p) { return answerOf(p) && placesOf(p).length; });
+  const size = {};
+  ppl.forEach(function (p) { placesOf(p).forEach(function (k) { size[k] = (size[k] || 0) + 1; }); });
+  const shown = Object.keys(size).filter(function (k) { return size[k] >= CROSS_MIN; })
+    .sort(function (a, b) { return size[b] - size[a] || (a < b ? -1 : 1); });
+  const rowsOf = function (p) {
+    const rows = [];
+    placesOf(p).forEach(function (k) { const row = shown.indexOf(k) > -1 ? k : "elsewhere"; if (rows.indexOf(row) === -1) rows.push(row); });
+    return rows;
+  };
+  const elsewhere = ppl.filter(function (p) { return rowsOf(p).indexOf("elsewhere") > -1; }).length;
+  const out = { rows: shown.slice(), cells: {}, total: {}, unshown: 0 };
+  ppl.forEach(function (p) {
+    rowsOf(p).forEach(function (row) {
+      if (row === "elsewhere" && elsewhere < CROSS_MIN) return;
+      cell_(out.cells, row, answerOf(p));
+    });
+    out.total[answerOf(p)] = (out.total[answerOf(p)] || 0) + 1;
+  });
+  if (elsewhere >= CROSS_MIN) out.rows.push("elsewhere");
+  else out.unshown = elsewhere;
+  return out;
+}
+
+/** the two-digit country calling codes. 1 and 7 are the only one-digit codes; every other is three */
+const CALLING_2 = ["20", "27", "30", "31", "32", "33", "34", "36", "39", "40", "41", "43", "44", "45", "46", "47", "48", "49",
+  "51", "52", "53", "54", "55", "56", "57", "58", "60", "61", "62", "63", "64", "65", "66", "81", "82", "84", "86",
+  "90", "91", "92", "93", "94", "95", "98"];
+
+/**
+ * "+442071838750" -> "44": the country calling code a stored number starts with, "" when there
+ * is none. Reads a number Sheets turned into digits too. Codes never prefix one another, so the
+ * first match is the only one. +1 covers the US, Canada and the Caribbean; the page names it.
+ */
+function callingCode_(v) {
+  const d = String(v === null || v === undefined ? "" : v).replace(/\D/g, "");
+  if (d.length < 8 || d[0] === "0") return "";
+  if (d[0] === "1" || d[0] === "7") return d[0];
+  return CALLING_2.indexOf(d.slice(0, 2)) > -1 ? d.slice(0, 2) : d.slice(0, 3);
 }
 
 /** table[row][col] += 1 */
