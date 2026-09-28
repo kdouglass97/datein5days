@@ -15,6 +15,9 @@
  *
  * The `sources` tab totals sign-ups per link (src) and app (via). See buildSources_().
  * Visits are counted in PostHog, never here.
+ *
+ * GET ?view=stats&key=… feeds the founders' dashboard (/count on the site): totals only,
+ * never a name, an answer or a handle. The key sits in the `key` tab. See stats_().
  */
 
 const SHEET_ID = "1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw";
@@ -32,6 +35,9 @@ const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
 
 // Formulas only: sign-ups totalled per link and per app. See buildSources_().
 const SOURCES_SHEET = "sources";
+
+// The dashboard's key, in cell A2. Whoever can open the Sheet can open the dashboard. See statsKey_().
+const KEY_SHEET = "key";
 
 const COLUMNS = [
   "id", "created", "updated", "stage", "src", "cohort",
@@ -89,7 +95,9 @@ const POLL_MAP = {
 
 /* ------------------------------------------------------------------ */
 
-function doGet() {
+function doGet(e) {
+  const p = (e && e.parameter) || {};
+  if (p.view === "stats") return json_(stats_(p.key, p.tab === "test" ? TEST_SHEET : SHEET));
   return json_({ ok: true, service: "datein5days", columns: COLUMNS.length });
 }
 
@@ -391,13 +399,217 @@ function savePhoto_(dataUrl, name, id) {
 }
 
 /* ------------------------------------------------------------------ */
+/* The dashboard: totals only.                                          */
+
+/** stage -> how far in: 0 rsvp, 1 details, 2..7 answered q1..q6, 8 answered all seven */
+const STAGE_LEVEL = { rsvp: 0, details: 1, q1: 2, q2: 3, q3: 4, q4: 5, q5: 6, q6: 7, poll_done: 8 };
+
+/** the order both ranked lists start in on the page. A ranking that still reads this way may never have been dragged. */
+const LOOKING_START = ["date", "relationship", "friends", "community"];
+
+/** the written answers, summed into "words written" */
+const TEXT_ANSWERS = ["q2_wednesday", "q3_friendships", "q5_cared_for", "q6_not_done_yet", "q7_spoke_up_sooner"];
+
+/** word-count buckets: under 50, 50-99, 100-149, 150-199, 200-299, 300-499, 500+ */
+const WORD_EDGES = [50, 100, 150, 200, 300, 500];
+
+/**
+ * GET ?view=stats&key=… : what the dashboard shows. Wrong or missing key, "locked" and
+ * nothing else. Reading only, apart from writing a key into the `key` tab the first time.
+ */
+function stats_(key, tab) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const real = statsKey_(ss);
+    if (real.length < 12 || String(key || "") !== real) return { ok: false, error: "locked" };
+    const sheet = ss.getSheetByName(tab);
+    const values = sheet && sheet.getLastRow() > 1 ? sheet.getDataRange().getValues() : [];
+    const notes = ss.getSheetByName(tab === TEST_SHEET ? NOTES_TEST_SHEET : NOTES_SHEET);
+    const out = tally_(values, new Date());
+    out.tab = tab;
+    out.notes = notes ? Math.max(0, notes.getLastRow() - 1) : 0;
+    return out;
+  } catch (err) {
+    console.error("stats: " + err);
+    return { ok: false, error: "unavailable" };
+  }
+}
+
+/**
+ * The key is cell A2 of the `key` tab. Missing or blank, a fresh one is written there, so
+ * changing it is clearing A2 (or typing your own, 12 characters or more).
+ */
+function statsKey_(ss) {
+  let sheet = ss.getSheetByName(KEY_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(KEY_SHEET);
+    sheet.getRange("A1").setValue("dashboard key: paste A2 into datein5days.com/count, once per device. " +
+      "To change it, clear A2 (a new one appears on the next visit) or type your own, 12 characters or more.");
+  }
+  let key = String(sheet.getRange("A2").getValue() || "").trim();
+  if (!key) {
+    key = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, "").slice(0, 32);
+    sheet.getRange("A2").setValue(key);
+  }
+  return key;
+}
+
+/**
+ * Totals from a tab's values (header row first). Counts, shares and medians only: nothing
+ * returned is a name, an answer, a handle or a row. Skips claude-test rows, "test…" names
+ * and rows without a readable `created` (the one corrupted row).
+ */
+function tally_(values, now) {
+  const head = values[0] || [];
+  const col = {};
+  COLUMNS.forEach(function (c) { col[c] = head.indexOf(c); });
+  const out = {
+    ok: true, v: 1, at: now.toISOString(), rows: 0, skipped: 0,
+    reached: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hours: {}, last: { rsvp: "", done: "" },
+    // every breakdown is { value: [everyone, finished all seven] }
+    age: {}, meet: {}, price: {}, cities: {}, src: {}, via: {}, verify: {}, reach: {},
+    looking: { first: {}, rank: {}, n: 0, untouched: 0 },
+    want: { first: {}, last: {}, rank: {}, n: 0, untouched: 0 },
+    sharing: { bins: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]], n: 0, at50: 0, median: null },
+    words: { bins: [0, 0, 0, 0, 0, 0, 0], n: 0, median: null },
+  };
+  const lookSum = {}, wantSum = {}, shares = [], words = [];
+
+  for (let r = 1; r < values.length; r++) {
+    const row = values[r];
+    const cell = function (c) { return col[c] < 0 ? "" : row[col[c]]; };
+    const text = function (c) { return String(cell(c) === null ? "" : cell(c)).trim(); };
+    if (!text("id")) continue;
+    const created = toDate_(cell("created"));
+    if (!created || text("src") === "claude-test" || isTestName_(text("name"))) { out.skipped++; continue; }
+    out.rows++;
+
+    const level = STAGE_LEVEL[text("stage")] || 0;
+    const done = level === 8;
+    for (let k = 0; k <= level; k++) out.reached[k]++;
+
+    bump_(out.hours, hourKey_(created), 0);
+    if (created.toISOString() > out.last.rsvp) out.last.rsvp = created.toISOString();
+    if (done) {
+      const finished = toDate_(cell("updated")) || created;
+      bump_(out.hours, hourKey_(finished), 1);
+      if (finished.toISOString() > out.last.done) out.last.done = finished.toISOString();
+    }
+
+    count_(out.age, text("age"), done);
+    count_(out.meet, text("meet"), done);
+    count_(out.price, text("price"), done);
+    count_(out.src, text("src") || "unknown", done);
+    count_(out.via, text("via"), done);
+    count_(out.verify, text("verify"), done);
+    count_(out.reach, text("reach_on"), done);
+
+    // `looking`: only full rankings of all four count, never an older partial pick
+    const looking = text("looking").split(",").map(function (s) { return s.trim(); }).filter(String);
+    if (looking.length === LOOKING_START.length && LOOKING_START.every(function (k) { return looking.indexOf(k) > -1; })) {
+      out.looking.n++;
+      count_(out.looking.first, looking[0], done);
+      looking.forEach(function (k, i) { lookSum[k] = (lookSum[k] || 0) + i + 1; });
+      if (looking.join() === LOOKING_START.join()) out.looking.untouched++;
+    }
+
+    // question 1: first and last from want_most/could_skip, averages only from full rank_ rows
+    count_(out.want.first, text("want_most"), done);
+    count_(out.want.last, text("could_skip"), done);
+    const ranks = RANK_OPTIONS.map(function (k) { return Number(cell("rank_" + k)); });
+    if (ranks.every(function (n) { return n >= 1 && n <= RANK_OPTIONS.length && Math.floor(n) === n; })) {
+      out.want.n++;
+      RANK_OPTIONS.forEach(function (k, i) { wantSum[k] = (wantSum[k] || 0) + ranks[i]; });
+      if (ranks.every(function (n, i) { return n === i + 1; })) out.want.untouched++;
+    }
+
+    // question 4: "70%" or "70% — why", which Sheets may already have turned into 0.7
+    const share = sharePercent_(cell("q4_sharing_life"));
+    if (share !== null) {
+      out.sharing.n++;
+      const bin = out.sharing.bins[Math.min(9, Math.floor(share / 10))];
+      bin[0]++;
+      if (done) bin[1]++;
+      if (share === 50) out.sharing.at50++;
+      shares.push(share);
+    }
+
+    if (done) {
+      const n = TEXT_ANSWERS.reduce(function (sum, c) { return sum + wordCount_(text(c)); }, 0);
+      out.words.n++;
+      out.words.bins[WORD_EDGES.filter(function (edge) { return n >= edge; }).length]++;
+      words.push(n);
+    }
+
+    text("cities").split(",").forEach(function (c) { count_(out.cities, c.trim(), done); });
+  }
+
+  Object.keys(lookSum).forEach(function (k) { out.looking.rank[k] = round2_(lookSum[k] / out.looking.n); });
+  Object.keys(wantSum).forEach(function (k) { out.want.rank[k] = round2_(wantSum[k] / out.want.n); });
+  out.sharing.median = median_(shares);
+  out.words.median = median_(words);
+  return out;
+}
+
+/** obj[key] = [everyone, finished all seven] */
+function count_(obj, key, done) {
+  if (key === "") return;
+  if (!obj[key]) obj[key] = [0, 0];
+  obj[key][0]++;
+  if (done) obj[key][1]++;
+}
+
+/** hours["2026-09-28T14"] = [rsvps, finished] in that UTC hour */
+function bump_(hours, key, i) {
+  if (!hours[key]) hours[key] = [0, 0];
+  hours[key][i]++;
+}
+
+function hourKey_(d) {
+  return d.toISOString().slice(0, 13);
+}
+
+/** a Date from a Date cell or an ISO string, null for anything else */
+function toDate_(v) {
+  if (v && typeof v.getTime === "function") return isNaN(v.getTime()) ? null : new Date(v.getTime());
+  const s = String(v || "").trim();
+  if (!/^\d{4}-\d{2}-\d{2}/.test(s)) return null;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/** 0-100 from "70%", "70% — why" or a percent cell (0.7), null when it isn't one */
+function sharePercent_(v) {
+  if (typeof v === "number") return Math.max(0, Math.min(100, Math.round(v <= 1 ? v * 100 : v)));
+  const m = /^\s*(\d{1,3})\s*%/.exec(String(v || ""));
+  return m ? Math.min(100, Number(m[1])) : null;
+}
+
+function wordCount_(s) {
+  return s ? s.split(/\s+/).filter(String).length : 0;
+}
+
+function median_(list) {
+  if (!list.length) return null;
+  const s = list.slice().sort(function (a, b) { return a - b; });
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : round2_((s[mid - 1] + s[mid]) / 2);
+}
+
+function round2_(n) {
+  return Math.round(n * 100) / 100;
+}
+
+/* ------------------------------------------------------------------ */
 /* Run this once from the editor after pasting, to create/fix the tab.  */
 
 function setup() {
   const sheet = getSheet_(SHEET);
   const test = getSheet_(TEST_SHEET);
   ensureSources_(sheet.getParent());
-  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + " (columns: " + COLUMNS.length + ")");
+  statsKey_(sheet.getParent());
+  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + ", " + KEY_SHEET + " (columns: " + COLUMNS.length + ")");
 }
 
 /**
