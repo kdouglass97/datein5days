@@ -16,8 +16,8 @@
  * The `sources` tab totals sign-ups per link (src) and app (via). See buildSources_().
  * Visits are counted in PostHog, never here.
  *
- * GET ?view=stats&key=… feeds the founders' dashboard (/count on the site): totals only,
- * never a name, an answer or a handle. The key sits in the `key` tab. See stats_().
+ * POST { kind: "stats", password } feeds the team dashboard (/admin on the site): totals
+ * only, never a name, an answer or a handle. The password sits in the `admin` tab. See stats_().
  */
 
 const SHEET_ID = "1Jy7SUieIe0czsjNdIalHDSnUQ9BcJ-_izSGoxn1d2sw";
@@ -36,8 +36,8 @@ const NOTE_COLUMNS = ["created", "note", "contact", "page", "src", "note_id"];
 // Formulas only: sign-ups totalled per link and per app. See buildSources_().
 const SOURCES_SHEET = "sources";
 
-// The dashboard's key, in cell A2. Whoever can open the Sheet can open the dashboard. See statsKey_().
-const KEY_SHEET = "key";
+// The team dashboard's password, in cell A2. Whoever can open the Sheet can open /admin. See adminPassword_().
+const ADMIN_SHEET = "admin";
 
 const COLUMNS = [
   "id", "created", "updated", "stage", "src", "cohort",
@@ -95,13 +95,15 @@ const POLL_MAP = {
 
 /* ------------------------------------------------------------------ */
 
-function doGet(e) {
-  const p = (e && e.parameter) || {};
-  if (p.view === "stats") return json_(stats_(p.key, p.tab === "test" ? TEST_SHEET : SHEET));
+function doGet() {
   return json_({ ok: true, service: "datein5days", columns: COLUMNS.length });
 }
 
 function doPost(e) {
+  // the /admin dashboard asking for totals: read-only, so it never waits on the sign-up lock
+  const ask = statsAsk_(e && e.postData && e.postData.contents);
+  if (ask) return json_(stats_(ask));
+
   const lock = LockService.getScriptLock();
   try {
     lock.waitLock(30000);
@@ -413,20 +415,38 @@ const TEXT_ANSWERS = ["q2_wednesday", "q3_friendships", "q5_cared_for", "q6_not_
 /** word-count buckets: under 50, 50-99, 100-149, 150-199, 200-299, 300-499, 500+ */
 const WORD_EDGES = [50, 100, 150, 200, 300, 500];
 
+/** the dashboard's { kind: "stats", password | token, tab } from a POST body, null for anything else */
+function statsAsk_(body) {
+  if (!body) return null;
+  try {
+    const d = JSON.parse(body);
+    return d && d.kind === "stats" ? d : null;
+  } catch (err) {
+    return null; // not ours: the sign-up path below reports it as it always has
+  }
+}
+
 /**
- * GET ?view=stats&key=… : what the dashboard shows. Wrong or missing key, "locked" and
- * nothing else. Reading only, apart from writing a key into the `key` tab the first time.
+ * What /admin shows. It opens with the password (typed once per device) or the token the
+ * page keeps instead of it; anything else gets "locked" and nothing more. Changing the
+ * password in the `admin` tab retires every token. Reading only, apart from writing a
+ * random password into the `admin` tab when A2 is blank.
  */
-function stats_(key, tab) {
+function stats_(ask) {
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
-    const real = statsKey_(ss);
-    if (real.length < 12 || String(key || "") !== real) return { ok: false, error: "locked" };
+    const real = adminPassword_(ss);
+    const token = adminToken_(real);
+    const password = String(ask.password || "").trim();
+    const opened = real.length >= 12 && (password ? password === real : String(ask.token || "") === token);
+    if (!opened) return { ok: false, error: "locked" };
+    const tab = ask.tab === "test" ? TEST_SHEET : SHEET;
     const sheet = ss.getSheetByName(tab);
     const values = sheet && sheet.getLastRow() > 1 ? sheet.getDataRange().getValues() : [];
     const notes = ss.getSheetByName(tab === TEST_SHEET ? NOTES_TEST_SHEET : NOTES_SHEET);
     const out = tally_(values, new Date());
     out.tab = tab;
+    out.token = token;
     out.notes = notes ? Math.max(0, notes.getLastRow() - 1) : 0;
     return out;
   } catch (err) {
@@ -436,22 +456,28 @@ function stats_(key, tab) {
 }
 
 /**
- * The key is cell A2 of the `key` tab. Missing or blank, a fresh one is written there, so
- * changing it is clearing A2 (or typing your own, 12 characters or more).
+ * The password is cell A2 of the `admin` tab, 12 characters or more (shorter never opens
+ * anything). Blank, a random one is written there, so /admin is never open by default.
  */
-function statsKey_(ss) {
-  let sheet = ss.getSheetByName(KEY_SHEET);
+function adminPassword_(ss) {
+  let sheet = ss.getSheetByName(ADMIN_SHEET);
   if (!sheet) {
-    sheet = ss.insertSheet(KEY_SHEET);
-    sheet.getRange("A1").setValue("dashboard key: paste A2 into datein5days.com/count, once per device. " +
-      "To change it, clear A2 (a new one appears on the next visit) or type your own, 12 characters or more.");
+    sheet = ss.insertSheet(ADMIN_SHEET);
+    sheet.getRange("A1").setValue("password for datein5days.com/admin, in A2. Type your own, 12 characters or more " +
+      "(four random words work well). Changing it signs every device out.");
   }
-  let key = String(sheet.getRange("A2").getValue() || "").trim();
-  if (!key) {
-    key = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, "").slice(0, 32);
-    sheet.getRange("A2").setValue(key);
+  let password = String(sheet.getRange("A2").getValue() || "").trim();
+  if (!password) {
+    password = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, "").slice(0, 32);
+    sheet.getRange("A2").setValue(password);
   }
-  return key;
+  return password;
+}
+
+/** what a device keeps instead of the password: an HMAC of it, so the password itself is never stored */
+function adminToken_(password) {
+  return Utilities.computeHmacSha256Signature("five days admin", password)
+    .map(function (b) { return ((b + 256) % 256).toString(16).padStart(2, "0"); }).join("");
 }
 
 /**
@@ -608,8 +634,8 @@ function setup() {
   const sheet = getSheet_(SHEET);
   const test = getSheet_(TEST_SHEET);
   ensureSources_(sheet.getParent());
-  statsKey_(sheet.getParent());
-  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + ", " + KEY_SHEET + " (columns: " + COLUMNS.length + ")");
+  adminPassword_(sheet.getParent());
+  Logger.log("Ready. Tabs: " + sheet.getName() + ", " + test.getName() + ", " + SOURCES_SHEET + ", " + ADMIN_SHEET + " (columns: " + COLUMNS.length + ")");
 }
 
 /**

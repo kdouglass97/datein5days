@@ -458,7 +458,7 @@ Sheet. No build step, no framework, nothing external except the PostHog snippet 
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
 **Repo, flat at root:** the pages (`index.html`, `involved.html`, `privacy.html`, `404.html`,
-and `count.html`, the founders' dashboard),
+and `admin.html`, the team dashboard),
 `note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
 `.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
 `CLAUDE.md`), `apps-script/` and `share/` live here too but never reach the site.
@@ -474,7 +474,7 @@ The QR code is printed. Its target can never change.
 /rsvp      307 →  /c/01?go=rsvp
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
-/count     rewrite → /count.html   the founders' dashboard, §8
+/admin     rewrite → /admin.html   the team dashboard, password only, §8
 
 /ig /tt /invite /@<name>   307 →  /c/01?src=…   the link book, §9
 ```
@@ -574,16 +574,20 @@ via
 - A **`sources`** tab sits beside `leads`: formulas that total rsvps and finished
   questionnaires per link, per link and app (`@maya · tiktok`), and per app. It's built on
   the first real sign-up. The sheet holds sign-ups only: visits belong in PostHog (§9).
-- **`/count`** (`count.html`, added 2026-09-28) is the dashboard over `leads`: sign-ups by
-  day, how far people get, age, who they'd like to meet, what a date is worth, what they're
-  looking for, the sharing slider, words written, question one's want-most/could-skip,
-  cities, links and apps. Every breakdown splits everyone from those who answered all
-  seven. The page asks the Apps Script for totals (`?view=stats`, `stats_()`), refreshes
-  every minute while open, and says what's new since you last looked. It opens with the key
-  in cell A2 of the **`key`** tab, pasted once per device: whoever can open the Sheet can
-  open the dashboard. Clear A2 to change it. `?demo` shows made-up numbers, `?tab=test`
-  counts the `test` tab. It's `noindex` and absent from the sitemap, and it holds no data
-  until the key is in.
+- **`/admin`** (`admin.html`, added 2026-09-28) is the team dashboard over `leads`, and it is
+  not public: nothing on the site links to it, it's `noindex` and out of the sitemap, and
+  until the password is in it shows the wordmark and a password box, nothing else. Behind
+  it: sign-ups by day, how far people get, age, who they'd like to meet, what a date is
+  worth, what they're looking for, the sharing slider, words written, question one's
+  want-most/could-skip, cities, links and apps, each split into everyone and those who
+  answered all seven. It refreshes every minute while open and says what's new since you
+  last looked. The password is cell A2 of the **`admin`** tab (12+ characters; blank means a
+  random one is written there), so Sheet access is dashboard access. Devices keep a token
+  derived from it, never the password, and changing A2 signs them all out. The page asks
+  the Apps Script by POST (`{ kind: "stats" }`, `stats_()`), so the password never sits in a
+  URL. `?tab=test` counts the `test` tab; `?demo` shows made-up numbers on a local copy or a
+  preview, never on the live domain. Don't put `/admin` in `robots.txt`: a Disallow line
+  advertises the path, and `noindex` already keeps it out of search.
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.
@@ -619,9 +623,9 @@ These are commitments, not preferences. Do not trade them for convenience.
 - The face check **stays in the browser**. No photo is transmitted for detection.
 - **No lead payloads in `console.log`.** Removed deliberately.
 - Any future admin view shows **totals only.** No names, no answers, no handles. A
-  hard-to-guess URL is not access control. `/count` is built to this: the Apps Script
-  aggregates before anything leaves Google, and the page opens only with the key. Keep it
-  that way. A per-person feed (even "a 25–29 finished at 14:02") breaks this promise.
+  hard-to-guess URL is not access control. `/admin` is built to this: the Apps Script
+  aggregates before anything leaves Google, and the page opens only with the password. Keep
+  it that way. A per-person feed (even "a 25–29 finished at 14:02") breaks this promise.
 - We do not post, comment, message, or follow from the Instagram account. The page says so.
 
 ---
@@ -727,7 +731,7 @@ one of our links. Location-specific QR codes (`/qr/<spot>`) were considered and 
   carries `src` and `via`, so `landing_viewed` broken down by either is visits per link or
   per app. But capture is off for regular visitors (the ⚠️ above), so until a consent
   flow ships, PostHog sees team devices only and the sheet's sign-ups are the only numbers.
-  `/count` shows those numbers per link and per app, split by who answered all seven.
+  `/admin` shows those numbers per link and per app, split by who answered all seven.
 
 Read the `sources` tab with §3 in mind. Whether a creator was worth it is in `finished`,
 not in `rsvps`.
@@ -748,13 +752,13 @@ not in `rsvps`.
 - [ ] Delete only the rows whose `src` is `claude-test`, and the one corrupted row (id repeated across every column). **Everything else in `leads` is a real sign-up.**
 - [ ] Delete the `Sheet1` tab (empty decoy) and the test photo from Drive
 - [ ] Share Sheet and Drive folder with Ruby; invite Ruby to PostHog. Sheet access is also
-      what opens `/count` (the key is in the `key` tab).
+      what opens `/admin` (the password is in the `admin` tab).
 - [ ] Own gender isn't asked. `meet` is who someone wants to meet, not who they are, so
-      nobody can count how many people each person could be matched with, and `/count` can
+      nobody can count how many people each person could be matched with, and `/admin` can
       only show demand. Adding it is a form change and touches sensitive data (the privacy
       notice). Kai and Ruby.
 - [ ] Both ranked lists (`looking`, question one) start in a fixed order and the sharing
-      slider starts at 50, so an untouched answer reads like a chosen one. `/count` counts
+      slider starts at 50, so an untouched answer reads like a chosen one. `/admin` counts
       how many kept the starting order. Shuffling each person's starting order would remove
       the bias. A product call, not a bug fix.
 - [ ] "testing test" isn't routed to the `test` tab: `isTestName_()` matches "test" only as a

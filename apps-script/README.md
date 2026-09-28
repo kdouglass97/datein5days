@@ -24,20 +24,25 @@ finished questionnaires per link (`src`), per link and app (`@maya` on `tiktok` 
 `instagram` as two rows), and per app (`via`). It's formulas only. Delete it and the next
 sign-up rebuilds it. Visits aren't counted in the sheet; that's PostHog's job.
 
-## Dashboard
+## Dashboard (/admin)
 
-`/count` on the site (`count.html`) is the founders' dashboard. It reads
-`GET <exec url>?view=stats&key=…`, which returns totals only: counts per answer, split into
-everyone and those who answered all seven, plus medians and hourly sign-up counts. Never a
-name, an answer, a handle or a row. See `stats_()` and `tally_()`.
+`/admin` on the site (`admin.html`) is the team dashboard. It isn't linked from anywhere and
+isn't indexed. It asks this script for totals with a POST, `{ kind: "stats", password }`, and
+gets counts only: every answer split into everyone and those who answered all seven, medians,
+and sign-ups per hour. Never a name, an answer, a handle or a row. See `stats_()` and `tally_()`.
 
-- The key is cell **A2 of the `key` tab**. The tab and a random key appear the first time
-  anything asks for stats (or when `setup()` runs). Whoever can open the Sheet can open the
-  dashboard: paste A2 into `/count` once per device.
-- To change it, clear A2 (a new key appears on the next ask) or type your own, 12 characters
-  or more. Every device then has to paste the new one.
-- `&tab=test` counts the `test` tab instead, so a QA sign-up can be watched end to end.
+- The password is cell **A2 of the `admin` tab**. Type your own there, 12 characters or more
+  (four random words work well); shorter never opens anything. Left blank, the script writes
+  a random one, so `/admin` is never open by default. The tab appears the first time anything
+  asks (or when `setup()` runs).
+- Whoever can open the Sheet can read the password, so Sheet access is dashboard access.
+- A device types the password once and keeps a token derived from it (an HMAC), never the
+  password. Changing A2 signs every device out.
+- The ask is a POST so the password never sits in a URL. It's answered before the sign-up
+  lock and writes nothing (apart from a blank A2), so it can't slow an rsvp down. GET still
+  only answers the health check.
+- `tab: "test"` (`/admin?tab=test`) counts the `test` tab, so a QA sign-up can be watched end
+  to end.
 - Skipped, same as everywhere: `src=claude-test`, first names starting with the word "test",
   and rows without a readable `created`.
-- Reading only. The one write is the key, into the `key` tab. No new OAuth scopes: it uses
-  SpreadsheetApp and Utilities, which the script already had.
+- No new OAuth scopes: SpreadsheetApp and Utilities, which the script already used.

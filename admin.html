@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#4F6B45">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<title>five days: head count</title>
+<title>five days: admin</title>
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="/icon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -14,10 +14,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <!--
-  The founders' dashboard. Totals only: the page asks the Apps Script for counts
-  (GET ?view=stats&key=…) and never sees a name, an answer or a handle. The key lives
-  in the Sheet's `key` tab, so whoever can open the Sheet can open this. ?demo shows
-  made-up numbers, ?tab=test counts the `test` tab. See context.md §8.
+  The team dashboard, /admin. Not linked from anywhere on the site and not indexed.
+  Totals only: the page asks the Apps Script for counts (POST { kind: "stats" }) and
+  never sees a name, an answer or a handle. It opens with the password in the Sheet's
+  `admin` tab; a device keeps a token derived from it, never the password itself.
+  ?tab=test counts the `test` tab. ?demo shows made-up numbers, but never on the live
+  domain. See context.md §8.
 -->
 <style>
 :root{
@@ -196,8 +198,8 @@ footer .brand{display:block;font-size:26px;margin-bottom:4px}
 </defs>
 </svg>
 <header class="mast">
-<div class="topbar"><a class="brand" href="/">five days</a><span>cohort 01 &nbsp;/&nbsp; <span data-where>head count</span></span></div>
-<div class="intro">
+<div class="topbar"><a class="brand" href="/">five days</a><span data-where>admin</span></div>
+<div class="intro" data-intro hidden>
 <h1>head count</h1>
 <p>Totals from the sheet. Never a name, an answer or a handle.</p>
 <p class="status" data-status><i aria-hidden="true"></i><span data-status-text>opening the sheet</span></p>
@@ -207,15 +209,14 @@ footer .brand{display:block;font-size:26px;margin-bottom:4px}
 <main>
 <div class="lock" data-lock hidden>
 <section class="card">
-<h2>the key, please</h2>
-<p class="dek">This page opens with the key in the sheet's <b>key</b> tab, cell A2. Paste it once and this device keeps it.</p>
+<h2>team only</h2>
+<p class="dek">The password is in the sheet, on the <b>admin</b> tab.</p>
 <form data-lock-form>
-<label class="field"><span>key</span><input type="password" name="key" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required></label>
+<input type="text" name="username" value="five days admin" autocomplete="username" hidden>
+<label class="field"><span>password</span><input type="password" name="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required></label>
 <button class="btn" type="submit">open</button>
 <p class="err" role="alert" data-lock-err></p>
 </form>
-<p class="hint">No key tab yet? It appears the first time this page asks. Reload the sheet.</p>
-<p class="hint"><a href="?demo">See it with made-up numbers</a></p>
 </section>
 </div>
 <div class="board" data-board hidden aria-live="off"></div>
@@ -234,10 +235,12 @@ const CONFIG = {
   every: 60000,
 };
 const params = new URLSearchParams(location.search);
-const DEMO = params.has("demo");
+// made-up numbers for working on the page locally or on a preview, never on the live domain
+const LIVE = /(^|\.)datein5days\.com$/.test(location.hostname) || location.hostname === "five-days-experiment.vercel.app";
+const DEMO = params.has("demo") && !LIVE;
 const TAB = params.get("tab") === "test" ? "test" : "leads";
-const KEY_STORE = "d5d_count_key";
-const SEEN_STORE = "d5d_count_seen" + (DEMO ? "_demo" : TAB === "test" ? "_test" : "");
+const TOKEN_STORE = "d5d_admin_token";
+const SEEN_STORE = "d5d_admin_seen" + (DEMO ? "_demo" : TAB === "test" ? "_test" : "");
 
 // labels, in the order the page asks them
 const STAGES = ["rsvp sent", "details", "1 · want most", "2 · wednesday", "3 · friendships", "4 · sharing", "5 · cared for", "6 · not done yet", "7 · spoke up"];
@@ -655,12 +658,11 @@ function saveSeen() {
 }
 
 /* ---------------- the sheet ---------------- */
-async function fetchStats(key) {
-  const u = new URL(CONFIG.endpoint);
-  u.searchParams.set("view", "stats");
-  if (key) u.searchParams.set("key", key);
-  if (TAB === "test") u.searchParams.set("tab", "test");
-  const r = await fetch(u, { cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer" });
+// the password goes in the body, never the URL. text/plain keeps it a "simple" request, so
+// there's no preflight for Apps Script to fail; unlike the rsvp form, this one reads the reply
+async function fetchStats(auth) {
+  const body = JSON.stringify({ kind: "stats", ...auth, tab: TAB === "test" ? "test" : undefined });
+  const r = await fetch(CONFIG.endpoint, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body, cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer" });
   const data = JSON.parse(await r.text());
   if (!data || typeof data.ok !== "boolean") throw new Error("unexpected reply");
   return data;
@@ -678,7 +680,7 @@ function setStatus(state) {
     : `live, updated ${timeFmt.format(new Date(lastOk))}` + (TAB === "test" ? " · test tab" : "");
 }
 
-let key = DEMO ? "" : (store.get(KEY_STORE) || "");
+let token = DEMO ? "" : (store.get(TOKEN_STORE) || "");
 let timer = 0;
 function schedule() { clearTimeout(timer); timer = setTimeout(load, CONFIG.every); }
 async function load() {
@@ -686,9 +688,9 @@ async function load() {
   if (document.visibilityState === "hidden") return;
   setStatus("busy");
   try {
-    const data = DEMO ? demoStats() : await fetchStats(key);
+    const data = DEMO ? demoStats() : await fetchStats({ token });
     if (!data.ok) {
-      if (data.error === "locked") { store.del(KEY_STORE); key = ""; return lock("That key doesn't open it anymore. The current one is in the key tab, cell A2."); }
+      if (data.error === "locked") { store.del(TOKEN_STORE); token = ""; return lock("The password changed. Enter the new one."); }
       throw new Error(data.error);
     }
     if (!S) { const raw = store.get(SEEN_STORE); try { seenPrev = raw ? JSON.parse(raw) : null; } catch { seenPrev = null; } if (DEMO) seenPrev = { t: Date.now() - 9 * 3600e3, rows: data.rows - 4, done: data.reached[8] - 2 }; }
@@ -704,28 +706,33 @@ async function load() {
 function lock(msg) {
   clearTimeout(timer);
   board.hidden = true;
+  $("[data-intro]").hidden = true;
   $("[data-lock]").hidden = false;
   $("[data-forget]").hidden = true;
+  $("[data-foot-notes]").textContent = $("[data-foot-meta]").textContent = "";
   $("[data-lock-err]").textContent = msg || "";
   setStatus("locked");
-  statusText.textContent = "locked";
-  // asking once without a key is what makes the sheet grow its key tab
-  if (!msg) fetchStats("").catch(() => {});
+  // asking once without a password is what makes the sheet grow its admin tab
+  if (!msg) fetchStats({}).catch(() => {});
+}
+function unlocked() {
+  $("[data-lock]").hidden = true;
+  $("[data-intro]").hidden = false;
+  $("[data-forget]").hidden = DEMO;
 }
 $("[data-lock-form]").addEventListener("submit", async e => {
   e.preventDefault();
-  const input = e.target.elements.key, err = $("[data-lock-err]"), btn = e.target.querySelector("button");
-  const tryKey = input.value.trim();
-  if (!tryKey) return;
+  const input = e.target.elements.password, err = $("[data-lock-err]"), btn = e.target.querySelector("button");
+  const password = input.value.trim();
+  if (!password) return;
   btn.disabled = true; err.textContent = "";
   try {
-    const data = await fetchStats(tryKey);
-    if (!data.ok) { err.textContent = data.error === "locked" ? "That key doesn't open it. Check the key tab, cell A2." : "The sheet didn't answer. Try again in a minute."; return; }
-    key = tryKey;
-    store.set(KEY_STORE, key);
+    const data = await fetchStats({ password });
+    if (!data.ok) { err.textContent = data.error === "locked" ? "That password doesn't open it." : "The sheet didn't answer. Try again in a minute."; return; }
+    token = data.token || "";
+    if (token) store.set(TOKEN_STORE, token);
     input.value = "";
-    $("[data-lock]").hidden = true;
-    $("[data-forget]").hidden = false;
+    unlocked();
     const raw = store.get(SEEN_STORE); try { seenPrev = raw ? JSON.parse(raw) : null; } catch { seenPrev = null; }
     lastOk = Date.now();
     render(data);
@@ -734,11 +741,11 @@ $("[data-lock-form]").addEventListener("submit", async e => {
   } catch { err.textContent = "Couldn't reach the sheet. Check the connection and try again."; }
   finally { btn.disabled = false; }
 });
-$("[data-forget]").addEventListener("click", () => { store.del(KEY_STORE); location.replace(location.pathname + location.search); });
+$("[data-forget]").addEventListener("click", () => { store.del(TOKEN_STORE); location.replace(location.pathname + location.search); });
 
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") { clearTimeout(timer); if (!DEMO) saveSeen(); }
-  else if (DEMO || key) load();
+  else if (DEMO || token) load();
 });
 addEventListener("pagehide", () => { if (!DEMO) saveSeen(); });
 let resizeT = 0, lastW = innerWidth;
@@ -820,10 +827,10 @@ function demoStats() {
 }
 
 /* ---------------- start ---------------- */
-if (DEMO) { $("[data-where]").textContent = "demo"; load(); }
-else if (TAB === "test") $("[data-where]").textContent = "test tab";
-if (!DEMO) {
-  if (key) { $("[data-forget]").hidden = false; load(); }
+if (DEMO) { $("[data-where]").textContent = "admin / demo"; unlocked(); load(); }
+else {
+  if (TAB === "test") $("[data-where]").textContent = "admin / test tab";
+  if (token) { unlocked(); load(); }
   else lock();
 }
 })();
