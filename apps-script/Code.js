@@ -38,6 +38,8 @@ const SOURCES_SHEET = "sources";
 
 // The team dashboard's password, in cell A2. Whoever can open the Sheet can open /admin. See adminPassword_().
 const ADMIN_SHEET = "admin";
+// shorter than this never opens anything, so a stray "x" in A2 can't be the password
+const ADMIN_MIN_LENGTH = 8;
 
 const COLUMNS = [
   "id", "created", "updated", "stage", "src", "cohort",
@@ -438,7 +440,7 @@ function stats_(ask) {
     const real = adminPassword_(ss);
     const token = adminToken_(real);
     const password = String(ask.password || "").trim();
-    const opened = real.length >= 12 && (password ? password === real : String(ask.token || "") === token);
+    const opened = real.length >= ADMIN_MIN_LENGTH && (password ? password === real : String(ask.token || "") === token);
     if (!opened) return { ok: false, error: "locked" };
     const tab = ask.tab === "test" ? TEST_SHEET : SHEET;
     const sheet = ss.getSheetByName(tab);
@@ -456,15 +458,15 @@ function stats_(ask) {
 }
 
 /**
- * The password is cell A2 of the `admin` tab, 12 characters or more (shorter never opens
- * anything). Blank, a random one is written there, so /admin is never open by default.
+ * The password is cell A2 of the `admin` tab, ADMIN_MIN_LENGTH characters or more (shorter
+ * never opens anything). Blank, a random one is written there, so /admin is never open by default.
  */
 function adminPassword_(ss) {
   let sheet = ss.getSheetByName(ADMIN_SHEET);
   if (!sheet) {
     sheet = ss.insertSheet(ADMIN_SHEET);
-    sheet.getRange("A1").setValue("password for datein5days.com/admin, in A2. Type your own, 12 characters or more " +
-      "(four random words work well). Changing it signs every device out.");
+    sheet.getRange("A1").setValue("password for datein5days.com/admin, in A2. Type your own, " + ADMIN_MIN_LENGTH +
+      " characters or more. Changing it signs every device out.");
   }
   let password = String(sheet.getRange("A2").getValue() || "").trim();
   if (!password) {
@@ -500,7 +502,7 @@ function tally_(values, now) {
     sharing: { bins: [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]], n: 0, at50: 0, median: null },
     words: { bins: [0, 0, 0, 0, 0, 0, 0], n: 0, median: null },
   };
-  const lookSum = {}, wantSum = {}, shares = [], words = [];
+  const lookSum = {}, wantSum = {}, shares = [], words = [], people = [];
 
   for (let r = 1; r < values.length; r++) {
     const row = values[r];
@@ -568,13 +570,17 @@ function tally_(values, now) {
       words.push(n);
     }
 
-    text("cities").split(",").forEach(function (c) { count_(out.cities, c.trim(), done); });
+    const cities = text("cities").split(",").map(function (c) { return c.trim(); }).filter(String);
+    cities.forEach(function (c) { count_(out.cities, c, done); });
+    // for the cross tables, and only ever counted there: never returned as a row
+    people.push({ cities: cities, age: text("age"), meet: text("meet"), done: done });
   }
 
   Object.keys(lookSum).forEach(function (k) { out.looking.rank[k] = round2_(lookSum[k] / out.looking.n); });
   Object.keys(wantSum).forEach(function (k) { out.want.rank[k] = round2_(wantSum[k] / out.want.n); });
   out.sharing.median = median_(shares);
   out.words.median = median_(words);
+  out.cross = crosses_(people);
   return out;
 }
 
@@ -584,6 +590,54 @@ function count_(obj, key, done) {
   if (!obj[key]) obj[key] = [0, 0];
   obj[key][0]++;
   if (done) obj[key][1]++;
+}
+
+/** a row in the cross tables needs this many people: smaller cities fold into "elsewhere" */
+const CROSS_MIN = 3;
+
+/**
+ * Two answers crossed: city × age, city × who they'd like to meet, and age × who they'd like
+ * to meet (everyone, and New York alone). Worked out twice, for everyone and for those who
+ * answered all seven, so each view keeps its own rows. Only people who gave their age and who
+ * they'd like to meet count. Someone who lists two cities counts in both rows. A city with
+ * fewer than CROSS_MIN people in the view folds into "elsewhere", and "elsewhere" itself only
+ * shows once it has CROSS_MIN, so a city row never points at one or two people.
+ */
+function crosses_(people) {
+  return { all: crossOf_(people), done: crossOf_(people.filter(function (p) { return p.done; })) };
+}
+
+function crossOf_(people) {
+  const ppl = people.filter(function (p) { return p.age && p.meet; });
+  const size = {};
+  ppl.forEach(function (p) { p.cities.forEach(function (c) { size[c] = (size[c] || 0) + 1; }); });
+  const shown = Object.keys(size).filter(function (c) { return size[c] >= CROSS_MIN; })
+    .sort(function (a, b) { return size[b] - size[a] || (a < b ? -1 : 1); });
+  const rowsOf = function (p) {
+    const rows = [];
+    p.cities.forEach(function (c) { const row = shown.indexOf(c) > -1 ? c : "elsewhere"; if (rows.indexOf(row) === -1) rows.push(row); });
+    return rows;
+  };
+  const elsewhere = ppl.filter(function (p) { return rowsOf(p).indexOf("elsewhere") > -1; }).length;
+  const out = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, unshown: 0 };
+  ppl.forEach(function (p) {
+    rowsOf(p).forEach(function (row) {
+      if (row === "elsewhere" && elsewhere < CROSS_MIN) return;
+      cell_(out.city_age, row, p.age);
+      cell_(out.city_meet, row, p.meet);
+    });
+    cell_(out.age_meet, p.age, p.meet);
+    if (p.cities.indexOf("New York") > -1) cell_(out.ny_age_meet, p.age, p.meet);
+  });
+  if (elsewhere >= CROSS_MIN) out.cities.push("elsewhere");
+  else out.unshown = elsewhere;
+  return out;
+}
+
+/** table[row][col] += 1 */
+function cell_(table, row, col) {
+  if (!table[row]) table[row] = {};
+  table[row][col] = (table[row][col] || 0) + 1;
 }
 
 /** hours["2026-09-28T14"] = [rsvps, finished] in that UTC hour */

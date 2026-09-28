@@ -580,14 +580,20 @@ via
   it: sign-ups by day, how far people get, age, who they'd like to meet, what a date is
   worth, what they're looking for, the sharing slider, words written, question one's
   want-most/could-skip, cities, links and apps, each split into everyone and those who
-  answered all seven. It refreshes every minute while open and says what's new since you
-  last looked. The password is cell A2 of the **`admin`** tab (12+ characters; blank means a
-  random one is written there), so Sheet access is dashboard access. Devices keep a token
-  derived from it, never the password, and changing A2 signs them all out. The page asks
-  the Apps Script by POST (`{ kind: "stats" }`, `stats_()`), so the password never sits in a
-  URL. `?tab=test` counts the `test` tab; `?demo` shows made-up numbers on a local copy or a
-  preview, never on the live domain. Don't put `/admin` in `robots.txt`: a Disallow line
-  advertises the path, and `noindex` already keeps it out of search.
+  answered all seven. "side by side" crosses city, age and who they'd like to meet (age ×
+  meet also for New York alone), for everyone or only those who answered all seven. A city
+  needs three people in a view for its own row; smaller ones share "elsewhere", which also
+  waits for three, so a city row never points at one or two people. Own gender isn't
+  asked, so "meet" is the only gender axis there is (§10). The page refreshes every minute
+  while open and says what's new since you last looked.
+  The password is cell A2 of the **`admin`** tab (8+ characters; blank means a random one is
+  written there), so Sheet access is dashboard access. It never goes in the repo: git
+  history keeps everything. Devices keep a token derived from it, never the password, and
+  changing A2 signs them all out. The page asks the Apps Script by POST
+  (`{ kind: "stats" }`, `stats_()`), so the password never sits in a URL. `?tab=test` counts
+  the `test` tab; `?demo` shows made-up numbers on a local copy or a preview, never on the
+  live domain. Don't put `/admin` in `robots.txt`: a Disallow line advertises the path, and
+  `noindex` already keeps it out of search.
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.

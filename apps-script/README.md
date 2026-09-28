@@ -30,9 +30,13 @@ sign-up rebuilds it. Visits aren't counted in the sheet; that's PostHog's job.
 isn't indexed. It asks this script for totals with a POST, `{ kind: "stats", password }`, and
 gets counts only: every answer split into everyone and those who answered all seven, medians,
 and sign-ups per hour. Never a name, an answer, a handle or a row. See `stats_()` and `tally_()`.
+It also crosses answers (city × age, city × who they'd like to meet, age × who they'd like to
+meet, and that last one for New York alone), worked out separately for everyone and for those
+who answered all seven. A city needs 3 people in a view for its own row; smaller ones share
+"elsewhere", which also waits for 3. See `crosses_()`.
 
-- The password is cell **A2 of the `admin` tab**. Type your own there, 12 characters or more
-  (four random words work well); shorter never opens anything. Left blank, the script writes
+- The password is cell **A2 of the `admin` tab**. Type your own there, 8 characters or more;
+  shorter never opens anything. Left blank, the script writes
   a random one, so `/admin` is never open by default. The tab appears the first time anything
   asks (or when `setup()` runs).
 - Whoever can open the Sheet can read the password, so Sheet access is dashboard access.
