@@ -31,7 +31,8 @@ isn't indexed. It asks this script for totals with a POST, `{ kind: "stats", pas
 gets counts only: every answer split into everyone and those who answered all seven, medians,
 and sign-ups per hour. Never a name, an answer, a handle or a row. See `stats_()` and `tally_()`.
 It also crosses answers (city × age, city × who they'd like to meet, age × who they'd like to
-meet, and that last one for New York alone), worked out separately for everyone and for those
+meet, age × what a date is worth, and the two age tables for New York alone), worked out
+separately for everyone and for those
 who answered all seven. A city needs 3 people in a view for its own row; smaller ones share
 "elsewhere", which also waits for 3. See `crosses_()`.
 
