@@ -538,9 +538,10 @@ The guards:
 
 - **`.github/workflows/leak-check.yml`** fetches the live site like a stranger: every repo file
   `.vercelignore` leaves out must 404, the site must serve exactly `main`, nothing served may
-  look like a secret key, and the headers must be on. It runs after a push to `main` that
-  touches the allowlist or the headers, daily, and on demand. Its key scan also runs in
-  `auto-ship.yml` before every merge, so a key can't ship. A failure emails the repo owner.
+  look like a secret key, and the headers must be on. It runs after every auto-ship merge
+  (through `workflow_run`: those merges can't trigger push workflows), daily, and on demand.
+  Its key scan also runs in `auto-ship.yml` before every merge, so a key can't ship. A
+  failure shows red in the Actions tab.
 - **`vercel.json` headers**, on every path: no framing (`frame-ancestors`, `X-Frame-Options`)
   except by PostHog's heatmaps, no MIME sniffing, a referrer policy, `form-action 'none'` (a
   form that ever submitted natively would put a name and number in a URL), and a

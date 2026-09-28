@@ -4,14 +4,18 @@ name: Leak check
 # private is served, anything served looks like a secret key, or the security headers are
 # off. The checks are in .github/scripts/leak-check.sh.
 #
-#   - a push to main that touches the allowlist, the headers or this check: waits until Vercel
-#     serves that commit, then checks everything
+#   - after every merge auto-ship makes: waits until Vercel serves main, then checks everything.
+#     (Its merges use GITHUB_TOKEN, which can't trigger push workflows, hence workflow_run.)
+#   - a direct push to main that touches the allowlist, the headers or this check: the same
 #   - every day, for what changes outside the repo (Vercel settings, a rollback, a failed deploy)
 #   - on demand: Actions -> Leak check -> Run workflow
-#   - the same paths on any other branch: the private-file half only, since the branch isn't live
+#   - those paths on any other branch: the private-file half only, since the branch isn't live
 # Keys are also stopped before they ship: auto-ship.yml runs the keys check before merging.
-# A failed run emails the repo owner.
+# A failure shows red in the Actions tab.
 on:
+  workflow_run:
+    workflows: ["Auto-ship Claude branches"]
+    types: [completed]
   push:
     paths: [".vercelignore", "vercel.json", ".github/workflows/leak-check.yml", ".github/scripts/leak-check.sh"]
   schedule:
@@ -27,6 +31,7 @@ concurrency:
 
 jobs:
   check:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
