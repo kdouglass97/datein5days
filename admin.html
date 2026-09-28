@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4F6B45">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>five days: admin</title>
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/icon.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<!--
+  The team dashboard, /admin. Not linked from anywhere on the site and not indexed.
+  Totals only: the page asks the Apps Script for counts (POST { kind: "stats" }) and
+  never sees a name, an answer or a handle. It opens with the team password (the
+  ADMIN_PASSWORD repo secret, written into the Apps Script at deploy); a device keeps a
+  token derived from it, never the password itself.
+  ?tab=test counts the `test` tab. ?demo shows made-up numbers, but never on the live
+  domain. See context.md §8.
+-->
+<style>
+:root{
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--kraft-deep:#B5AB93;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
+--soft:#6B7560;      /* secondary text, 4.6:1 on paper */
+--hair:#E4DFD2;      /* gridlines and rules, one step off paper */
+/* chart marks, run through the dataviz palette checks against paper (#FBFAF5):
+   --done and --skip pass all six (CVD dE 9.1, normal-vision 21.5, 3:1+ contrast);
+   --rest is the de-emphasis kraft, so every bar it draws carries a visible label */
+--done:#3F7534;      /* answered all seven, and "want most" */
+--rest:#CDC4AF;      /* not yet */
+--rest-line:#968B73; /* everyone, drawn as a line: 3:1 on paper */
+--skip:#C47E5A;      /* "could skip" */
+--serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+--type:"Courier Prime","Courier New",Courier,monospace;
+--opsz:10;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+--w:min(560px,calc(100vw - 32px));
+color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--kraft);color:var(--ink);font:15px/1.5 var(--type);-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:var(--noise);opacity:.2;mix-blend-mode:multiply;z-index:50}
+a{color:inherit}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0}
+/* bodoni's auto optical size keeps hairlines ~0.2px at every size: pin it per tier (!important: font shorthands reset it) */
+*{font-variation-settings:"opsz" var(--opsz)!important}
+h1{--opsz:24}
+h2{--opsz:18}
+[hidden]{display:none!important}
+
+/* the masthead: the printed form */
+.mast{background:var(--grass);color:var(--line);padding:calc(20px + env(safe-area-inset-top)) 16px 18px}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;font-size:14px;max-width:1120px;margin:0 auto}
+.brand{font-family:var(--serif);font-size:clamp(23px,7vw,29px);text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.topbar span{text-align:right}
+.intro{width:var(--w);margin:26px auto 0}
+@media (min-width:1000px){.intro{width:min(1120px,calc(100vw - 64px))}}
+h1{font-size:clamp(46px,13vw,76px);line-height:.95;letter-spacing:-.02em}
+.intro p{margin:10px 0 0;font-size:14px}
+.status{display:flex;align-items:center;gap:9px;min-height:22px}
+.status i{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none;opacity:.55}
+.status.live i{background:#B9D98F;opacity:1}
+.status.busy i{animation:breathe 1s ease-in-out infinite alternate}
+.status.stale i{background:#E8A98E;opacity:1}
+@keyframes breathe{from{opacity:.35}to{opacity:1}}
+.arc{display:block;width:100%;height:clamp(28px,5vw,56px);margin-top:-1px}
+
+/* the board: paper cards on kraft. the data stays level, the sheet beneath takes the tilt */
+main{padding:6px 0 10px}
+.board,.lock{width:var(--w);margin:0 auto;display:grid;gap:22px;align-items:start;isolation:isolate}
+@media (min-width:1000px){.board{width:min(1120px,calc(100vw - 64px));grid-template-columns:1fr 1fr}.card.wide{grid-column:1/-1}}
+.card{position:relative;background:var(--paper);padding:20px 18px 16px;border-radius:2px;box-shadow:inset 0 5px 0 var(--band,var(--grass)),0 16px 30px -20px rgba(0,0,0,.55);min-width:0}
+.card::before{content:"";position:absolute;inset:4px -3px -2px 3px;background:#EFEBE1;transform:rotate(var(--tilt,-1deg));z-index:-1;box-shadow:0 10px 24px -18px rgba(0,0,0,.6)}
+.card:nth-child(even){--tilt:.8deg}
+.card h2{font-size:27px;line-height:1.1;letter-spacing:-.01em;margin:0 0 4px}
+.card h3{font:700 12px/1.3 var(--type);letter-spacing:.08em;text-transform:uppercase;margin:20px 0 10px}
+.card h3:first-of-type{margin-top:14px}
+.dek{margin:0 0 14px;font-size:13.5px;color:var(--soft)}
+.note{margin:12px 0 0;font-size:12.5px;color:var(--soft)}
+.note b{color:var(--ink)}
+
+/* one legend for the whole board: green is answered all seven */
+.key{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink);margin:0}
+.key span{display:inline-flex;align-items:center;gap:7px}
+.key i{width:14px;height:10px;border-radius:0 3px 3px 0;background:var(--rest)}
+.key .done i{background:var(--done)}
+.key .line i{height:2px;border-radius:1px;background:var(--rest-line)}
+.key .line.done i{background:var(--done)}
+.card>.key{margin:0 0 14px}
+
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 4px}
+.tile{min-width:0}
+.tile .n{position:relative;display:inline-block;font:700 clamp(34px,10vw,50px)/1 var(--type);letter-spacing:-.03em}
+.tile .l{display:block;margin-top:8px;font-size:11px;line-height:1.3;letter-spacing:.07em;text-transform:uppercase}
+.tile .s{display:block;margin-top:3px;font-size:12px;color:var(--soft)}
+.tile .n svg{position:absolute;overflow:visible;pointer-events:none;fill:none;stroke-linecap:round}
+.circle{left:-16px;top:-13px;width:calc(100% + 32px);height:calc(100% + 24px);stroke:var(--clay);stroke-width:2.2}
+.under{left:-4px;bottom:-9px;width:calc(100% + 8px);height:8px;stroke:var(--ink);stroke-width:2}
+.pen path{stroke-dasharray:1;stroke-dashoffset:1;animation:ink .9s .25s cubic-bezier(.5,.1,.3,1) forwards}
+@keyframes ink{to{stroke-dashoffset:0}}
+.pulse{margin:16px 0 0;padding-top:12px;border-top:1px solid var(--hair);font-size:13px;display:grid;gap:3px}
+.pulse p{margin:0}
+
+/* horizontal bars: label, then the bar with its value at the tip */
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:8px;--val:3.4em;--lab:8.6em}
+.bar{display:grid;grid-template-columns:minmax(0,var(--lab)) minmax(0,1fr);align-items:center;gap:10px;font-size:13px;border-radius:3px;outline-offset:2px}
+.bar-label{line-height:1.25;overflow-wrap:anywhere}
+.track{display:flex;align-items:center;height:16px;min-width:0}
+.seg{position:relative;height:100%;flex:none;overflow:hidden}
+.seg.done{background:var(--done)}
+.seg.rest{background:var(--rest)}
+.seg.done+.seg{margin-left:2px}
+.track .seg:nth-last-child(2){border-radius:0 4px 4px 0}
+.seg b{position:absolute;left:5px;top:0;font:700 11px/16px var(--type);color:var(--paper);white-space:nowrap}
+.seg b.off{visibility:hidden}
+.val{margin-left:6px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.val small{font-size:11.5px;color:var(--soft)}
+@media (hover:hover){.bar:hover .seg,.fly-row:hover .seg{filter:brightness(1.12)}}
+.bar:focus-visible .seg,.fly-row:focus-visible .seg{filter:brightness(1.12)}
+
+/* want most / could skip: two arms from one centre line */
+.fly{display:grid;gap:8px;font-size:13px}
+.fly-row{display:grid;grid-template-columns:minmax(0,1fr) 6.4em minmax(0,1fr);align-items:center;gap:8px;border-radius:3px}
+.fly-head{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink)}
+.fly-head span{display:flex;align-items:center;gap:6px;white-space:nowrap}
+@media (max-width:360px){.fly-head{font-size:10.5px;letter-spacing:.03em}}
+.fly-head span:first-child{justify-content:flex-end}
+.fly-head i{width:14px;height:10px;flex:none;background:var(--done);border-radius:0 3px 3px 0}
+.fly-head span:first-child i{background:var(--skip);border-radius:3px 0 0 3px}
+.arm{display:flex;align-items:center;height:16px;min-width:0}
+.arm.left{justify-content:flex-end}
+.arm .seg{height:16px}
+.arm.left .seg{background:var(--skip);border-radius:4px 0 0 4px}
+.arm.right .seg{background:var(--done);border-radius:0 4px 4px 0}
+.arm .val{margin:0 6px}
+.fly-name{text-align:center;line-height:1.2}
+
+/* svg charts */
+.chart{position:relative;width:100%;min-height:1px;touch-action:pan-y}
+.chart svg{display:block;overflow:visible;font:11px var(--type);fill:var(--soft)}
+.chart .grid{stroke:var(--hair);stroke-width:1;shape-rendering:crispEdges}
+.chart .base{stroke:var(--kraft-deep);stroke-width:1;shape-rendering:crispEdges}
+.chart .tick{font-variant-numeric:tabular-nums}
+.chart .cross{stroke:var(--ink);stroke-width:1;shape-rendering:crispEdges}
+.chart .hit{fill:transparent;cursor:crosshair}
+.chart .col{cursor:default}
+.chart .col:hover path,.chart .col:focus path{filter:brightness(1.12)}
+.chart .col:focus{outline:none}
+.chart .col:focus-visible rect.ring{stroke:#F2C94C;stroke-width:3;fill:none}
+
+/* side by side: two answers crossed, a one-hue ramp (checked: monotone, even steps) with the
+   count in every square. dark ink on the four light steps, paper on the darkest: 5:1 or better */
+.cross-grid{display:grid;gap:4px}
+@media (min-width:1000px){.cross-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}}
+.cross-block{min-width:0}
+.heat{border-collapse:separate;border-spacing:2px;width:auto;margin:0 -2px;font-size:13px;font-variant-numeric:tabular-nums}
+.heat th,.heat td{border:0;padding:0;text-align:center;white-space:nowrap}
+.heat thead th{font:700 10.5px/1.2 var(--type);letter-spacing:.03em;text-transform:uppercase;color:var(--soft);padding:0 3px 5px;vertical-align:bottom}
+.heat tbody th,.heat tfoot th{text-align:left;font:400 13px var(--type);letter-spacing:0;text-transform:none;padding:0 10px 0 0;min-width:0;white-space:nowrap}
+.heat td.hc{height:32px;min-width:2.6em;padding:0 4px;border-radius:3px}
+.heat td.hc:focus-visible{outline-offset:1px}
+.hc.s0{color:var(--kraft-deep)}
+.hc.s1{background:#E3EADB;color:#1F2A17}
+.hc.s2{background:#C6D6B8;color:#1F2A17}
+.hc.s3{background:#A3BF92;color:#1F2A17}
+.hc.s4{background:#7FA46E;color:#1F2A17}
+.hc.s5{background:#3F7534;color:var(--paper)}
+@media (hover:hover){.heat td.hc:hover{box-shadow:inset 0 0 0 2px var(--ink)}}
+.heat .tot{color:var(--soft);font-size:12.5px;min-width:2.3em;padding:0 2px}
+.heat tfoot th,.heat tfoot td{padding-top:5px}
+@media (max-width:360px){.heat{font-size:12px}.heat td.hc{min-width:2.15em;height:30px;padding:0 2px}.heat thead th{font-size:9.5px;letter-spacing:0;padding:0 1px 5px}.heat tbody th,.heat tfoot th{padding-right:6px}.heat .tot{min-width:2em}}
+.switch{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;padding:2px;margin:0 0 12px;max-width:100%}
+.switch button{font:12.5px/1 var(--type);color:var(--ink);background:none;border:0;border-radius:999px;padding:0 13px;min-height:34px;cursor:pointer;white-space:nowrap}
+.switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* the numbers behind each chart */
+details.nums{margin:12px 0 0;font-size:12.5px}
+details.nums summary{cursor:pointer;color:var(--soft);width:max-content;list-style:none;text-decoration:underline;text-decoration-color:var(--kraft-deep);text-underline-offset:3px}
+details.nums summary::-webkit-details-marker{display:none}
+details.nums[open] summary{margin-bottom:8px}
+.nums .scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:4px 8px 4px 0;text-align:left;border-bottom:1px solid var(--hair);white-space:nowrap}
+th{font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+td+td,th+th{text-align:right}
+td:first-child{white-space:normal;overflow-wrap:anywhere;min-width:5.5em}
+@media (max-width:360px){th,td{padding-right:6px}th{letter-spacing:.02em}}
+
+/* tooltip: the value leads, the label follows */
+.tip{position:fixed;z-index:60;pointer-events:none;background:var(--ink);color:var(--paper);padding:7px 10px 8px;border-radius:4px;font-size:12.5px;line-height:1.35;max-width:min(280px,calc(100vw - 24px));box-shadow:0 8px 20px -10px rgba(0,0,0,.6)}
+.tip b{display:block;font-size:14px}
+.tip span{display:block;opacity:.85}
+
+/* the lock */
+.lock .card{--band:var(--clay)}
+.field{display:grid;gap:6px;margin:16px 0 12px;font-size:12px;letter-spacing:.07em;text-transform:uppercase}
+.field input{font:16px var(--type);letter-spacing:0;text-transform:none;color:var(--ink);background:#fff;border:1.5px solid var(--ink);border-radius:4px;padding:11px 12px;width:100%}
+.btn{font:700 15px var(--type);color:var(--paper);background:var(--grass);border:0;border-radius:999px;padding:12px 26px;cursor:pointer}
+.err{min-height:1.4em;margin:10px 0 0;color:var(--clay);font-size:13.5px}
+.hint{margin:10px 0 0;font-size:13px;color:var(--soft)}
+
+footer{text-align:center;padding:30px 20px calc(48px + env(safe-area-inset-bottom));font-size:13px}
+footer p{margin:4px 0}
+footer .brand{display:block;font-size:26px;margin-bottom:4px}
+.linkish{font:inherit;color:inherit;background:none;border:0;padding:8px;margin:-8px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.pen path{animation:none;stroke-dashoffset:0}.status.busy i{animation:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<filter id="pen" x="-10%" y="-10%" width="120%" height="120%">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/>
+<feDisplacementMap in="SourceGraphic" scale="2.4"/>
+</filter>
+</defs>
+</svg>
+<header class="mast">
+<div class="topbar"><a class="brand" href="/">five days</a><span data-where>admin</span></div>
+<div class="intro" data-intro hidden>
+<h1>head count</h1>
+<p>Totals from the sheet. Never a name, an answer or a handle.</p>
+<p class="status" data-status><i aria-hidden="true"></i><span data-status-text>opening the sheet</span></p>
+</div>
+</header>
+<svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16C820 24 400 48 0 70Z" fill="#4F6B45"/><path d="M0 70C400 48 820 24 1200 16" fill="none" stroke="#EDEAE1" stroke-width="8" vector-effect="non-scaling-stroke"/></svg>
+<main>
+<div class="lock" data-lock hidden>
+<section class="card">
+<h2>team only</h2>
+<p class="dek">Enter the team password.</p>
+<form data-lock-form>
+<input type="text" name="username" value="five days admin" autocomplete="username" hidden>
+<label class="field"><span>password</span><input type="password" name="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required></label>
+<button class="btn" type="submit">open</button>
+<p class="err" role="alert" data-lock-err></p>
+</form>
+</section>
+</div>
+<div class="board" data-board hidden aria-live="off"></div>
+</main>
+<footer>
+<span class="brand">five days</span>
+<p data-foot-notes></p>
+<p data-foot-meta></p>
+<p><button type="button" class="linkish" data-forget hidden>lock this device</button></p>
+</footer>
+<script>
+(() => {
+const CONFIG = {
+  // the same web app the rsvp form posts to (index.html, CONFIG.leadEndpoint)
+  endpoint: "https://script.google.com/macros/s/AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU/exec",
+  every: 60000,
+};
+const params = new URLSearchParams(location.search);
+// made-up numbers for working on the page locally or on a preview, never on the live domain
+const LIVE = /(^|\.)datein5days\.com$/.test(location.hostname) || location.hostname === "five-days-experiment.vercel.app";
+const DEMO = params.has("demo") && !LIVE;
+const TAB = params.get("tab") === "test" ? "test" : "leads";
+const TOKEN_STORE = "d5d_admin_token";
+const SEEN_STORE = "d5d_admin_seen" + (DEMO ? "_demo" : TAB === "test" ? "_test" : "");
+
+// labels, in the order the page asks them
+const STAGES = ["rsvp sent", "details", "1 · want most", "2 · wednesday", "3 · friendships", "4 · sharing", "5 · cared for", "6 · not done yet", "7 · spoke up"];
+const AGES = [["21 to 24", "21–24"], ["25 to 29", "25–29"], ["30 to 34", "30–34"], ["35 to 39", "35–39"], ["40+", "40+"]];
+const MEET = [["women", "women"], ["men", "men"], ["anyone", "anyone"]];
+const PRICES = [["0", "$0"], ["25", "$25"], ["50", "$50"], ["100+", "$100+"]];
+const LOOKING = [["relationship", "something serious"], ["date", "a date"], ["friends", "new friends"], ["community", "finding my people"]];
+const WANTS = [["chemistry", "chemistry"], ["ease", "ease"], ["play", "play"], ["ambition", "ambition"], ["building", "building"]];
+const VERIFY = [["ig", "instagram"], ["photo", "photo"]];
+const REACH = [["imessage", "iMessage"], ["whatsapp", "WhatsApp"], ["sms", "text"]];
+const WORDS = ["under 50", "50–99", "100–149", "150–199", "200–299", "300–499", "500+"];
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+const $ = (sel, root = document) => root.querySelector(sel);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// dom helpers. data only ever goes in through textContent
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k === "text") el.textContent = v;
+    else if (k === "style") el.style.cssText = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : String(kid));
+  return el;
+}
+function sv(tag, attrs, ...kids) {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [k, v] of Object.entries(attrs || {})) if (v != null) el.setAttribute(k, v);
+  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+const fmt = n => Number(n || 0).toLocaleString("en-US");
+const pct = (a, b) => (b ? Math.round((a / b) * 100) + "%" : "0%");
+const signed = n => (n < 0 ? "−" : "+") + fmt(Math.abs(n));
+const pair = (obj, k) => (obj && obj[k]) || [0, 0];
+const dayKey = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const dayFmt = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric" });
+const shortDay = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
+const timeFmt = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" });
+function ago(iso, now = Date.now()) {
+  if (!iso) return "";
+  const m = Math.round((now - Date.parse(iso)) / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return m + " min ago";
+  const hrs = Math.round(m / 60);
+  if (hrs < 24) return hrs + " h ago";
+  const d = Math.round(hrs / 24);
+  return d === 1 ? "yesterday" : d + " days ago";
+}
+function when(t) {
+  const d = new Date(t), today = dayKey(new Date());
+  return (dayKey(d) === today ? "today" : shortDay.format(d)) + " at " + timeFmt.format(d);
+}
+
+/* ---------------- tooltip ---------------- */
+const tip = h("div", { class: "tip", role: "tooltip", hidden: true });
+document.body.append(tip);
+function showTip(lines, x, y) {
+  tip.replaceChildren(h("b", { text: lines[0] }), ...lines.slice(1).filter(Boolean).map(t => h("span", { text: t })));
+  tip.hidden = false;
+  const w = tip.offsetWidth, ht = tip.offsetHeight;
+  const left = Math.max(12, Math.min(innerWidth - w - 12, x - w / 2));
+  const top = y - ht - 12 < 8 ? y + 18 : y - ht - 12;
+  tip.style.left = left + "px";
+  tip.style.top = top + "px";
+}
+function hideTip() { tip.hidden = true; }
+function bindTip(el, lines) {
+  const at = e => {
+    const r = el.getBoundingClientRect();
+    const x = e && e.clientX != null && e.pointerType !== "touch" ? e.clientX : r.left + r.width / 2;
+    showTip(typeof lines === "function" ? lines() : lines, x, r.top);
+  };
+  el.addEventListener("pointerenter", at);
+  el.addEventListener("pointermove", e => { if (e.pointerType !== "touch") at(e); });
+  el.addEventListener("pointerleave", e => { if (e.pointerType !== "touch") hideTip(); });
+  el.addEventListener("click", at);
+  el.addEventListener("focus", () => at());
+  el.addEventListener("blur", hideTip);
+}
+addEventListener("scroll", hideTip, { passive: true });
+document.addEventListener("pointerdown", e => { if (!e.target.closest("[tabindex]")) hideTip(); });
+
+/* ---------------- building blocks ---------------- */
+function card(title, dek, opts, ...body) {
+  const c = h("section", { class: "card" + (opts && opts.wide ? " wide" : ""), "data-card": opts && opts.id, style: opts && opts.band ? "--band:" + opts.band : null },
+    h("h2", { text: title }), dek ? h("p", { class: "dek", text: dek }) : null, ...body);
+  return c;
+}
+function numbers(id, head, rows) {
+  return h("details", { class: "nums", "data-id": id },
+    h("summary", { text: "the numbers" }),
+    h("div", { class: "scroll" }, h("table", {},
+      h("thead", {}, h("tr", {}, head.map(t => h("th", { text: t })))),
+      h("tbody", {}, rows.map(r => h("tr", {}, r.map(c => h("td", { text: typeof c === "number" ? fmt(c) : c })))))))
+  );
+}
+const legend = (...items) => h("p", { class: "key" }, items.map(([cls, label]) => h("span", { class: cls }, h("i"), label)));
+const W = f => "width:calc((100% - var(--val) - 2px) * " + f.toFixed(4) + ")";
+
+// rows: [{ label, all, done }] -> everyone as the bar, answered-all-seven as its green part.
+// single: one series, all of it green (the words chart counts finishers only)
+function stack(rows, id, unit = "people", single = false) {
+  const max = Math.max(1, ...rows.map(r => r.all));
+  const list = h("ol", { class: "bars" });
+  for (const r of rows) {
+    const done = single ? r.all : r.done, rest = r.all - done;
+    const track = h("span", { class: "track" },
+      done ? h("span", { class: "seg done", style: W(done / max) }, single ? null : h("b", { text: fmt(done) })) : null,
+      rest ? h("span", { class: "seg rest", style: W(rest / max) }) : null,
+      h("span", { class: "val", text: fmt(r.all) }));
+    const li = h("li", { class: "bar", tabindex: 0, "aria-label": `${r.label}: ${r.all} ${unit}` + (single ? "" : `, ${r.done} answered all seven`) },
+      h("span", { class: "bar-label", text: r.label }), track);
+    bindTip(li, single ? [`${fmt(r.all)} ${unit}`, r.label] : [`${fmt(r.all)} ${unit}`, `${fmt(r.done)} answered all seven (${pct(r.done, r.all)})`, r.label]);
+    list.append(li);
+  }
+  return [list, single ? numbers(id, ["", unit], rows.map(r => [r.label, r.all]))
+    : numbers(id, ["", unit, "all seven", "share"], rows.map(r => [r.label, r.all, r.done, pct(r.done, r.all)]))];
+}
+
+// a breakdown object { value: [all, done] } -> rows in a fixed order, anything unexpected after
+function ordered(obj, order) {
+  const rows = order.map(([k, label]) => ({ label, all: pair(obj, k)[0], done: pair(obj, k)[1] }));
+  for (const k of Object.keys(obj || {})) if (!order.some(o => o[0] === k)) rows.push({ label: k, all: obj[k][0], done: obj[k][1] });
+  return rows;
+}
+// most first, the tail folded into one row
+function top(obj, n, rename = k => k, tail = "everywhere else") {
+  const rows = Object.entries(obj || {}).map(([k, [all, done]]) => ({ label: rename(k), all, done })).sort((a, b) => b.all - a.all || a.label.localeCompare(b.label));
+  if (rows.length <= n + 1) return rows;
+  const rest = rows.slice(n);
+  return [...rows.slice(0, n), { label: `${tail} (${rest.length})`, all: rest.reduce((s, r) => s + r.all, 0), done: rest.reduce((s, r) => s + r.done, 0) }];
+}
+
+// labels inside a green part only when they fit, measured, never clipped
+function fitLabels(root) {
+  root.querySelectorAll(".seg b").forEach(b => b.classList.toggle("off", b.offsetWidth + 9 > b.parentElement.clientWidth));
+}
+
+/* ---------------- the charts ---------------- */
+function funnel(reached) {
+  const topN = reached[0] || 0, max = Math.max(1, topN);
+  const list = h("ol", { class: "bars", style: "--val:5.4em;--lab:10.4em" });
+  STAGES.forEach((label, i) => {
+    const n = reached[i] || 0, last = i === STAGES.length - 1;
+    const li = h("li", { class: "bar", tabindex: 0, "aria-label": `${label}: ${n}, ${pct(n, topN)} of rsvps` },
+      h("span", { class: "bar-label", text: label }),
+      h("span", { class: "track" }, n ? h("span", { class: "seg " + (last ? "done" : "rest"), style: W(n / max) }) : null,
+        h("span", { class: "val" }, fmt(n), " ", h("small", { text: pct(n, topN) }))));
+    bindTip(li, [`${fmt(n)} people`, `${pct(n, topN)} of rsvps`, i === 0 ? "sent the rsvp" : i === 1 ? "sent their details" : `answered question ${i - 1}`]);
+    list.append(li);
+  });
+  return [list, numbers("funnel", ["", "people", "of rsvps"], STAGES.map((l, i) => [l, reached[i] || 0, pct(reached[i] || 0, topN)]))];
+}
+
+function butterfly(want) {
+  const avg = want.rank || {};
+  const rows = WANTS.map(([k, label]) => ({ k, label, first: pair(want.first, k)[0], last: pair(want.last, k)[0], avg: avg[k] }))
+    .sort((a, b) => (b.first - b.last) - (a.first - a.last) || (a.avg || 9) - (b.avg || 9));
+  const max = Math.max(1, ...rows.map(r => Math.max(r.first, r.last)));
+  const fw = f => "width:calc((100% - 2.6em) * " + f.toFixed(4) + ")";
+  const box = h("div", { class: "fly" },
+    h("div", { class: "fly-row fly-head", "aria-hidden": "true" }, h("span", {}, "could skip", h("i")), h("span"), h("span", {}, h("i"), "want most")));
+  for (const r of rows) {
+    const row = h("div", { class: "fly-row", tabindex: 0, "aria-label": `${r.label}: want most for ${r.first}, could skip for ${r.last}` },
+      h("span", { class: "arm left" }, h("span", { class: "val", text: fmt(r.last) }), r.last ? h("span", { class: "seg", style: fw(r.last / max) }) : null),
+      h("span", { class: "fly-name", text: r.label }),
+      h("span", { class: "arm right" }, r.first ? h("span", { class: "seg", style: fw(r.first / max) }) : null, h("span", { class: "val", text: fmt(r.first) })));
+    bindTip(row, [`${fmt(r.first)} want it most, ${fmt(r.last)} could skip it`, r.avg ? `average rank ${r.avg.toFixed(1)} of 5` : "", r.label]);
+    box.append(row);
+  }
+  return [box,
+    numbers("want", ["", "first", "last", "avg rank"], rows.map(r => [r.label, r.first, r.last, r.avg ? r.avg.toFixed(2) : "–"]))];
+}
+
+// vertical columns for the sharing slider: 0-9% ... 90-100%, green part = answered all seven
+function columns(bins, width, median) {
+  const H = 150, m = { l: 2, r: 2, t: 22, b: 40 };
+  const iw = width - m.l - m.r, ih = H - m.t - m.b, n = bins.length, slot = iw / n, bw = Math.min(24, slot - 4);
+  const max = Math.max(1, ...bins.map(b => b[0]));
+  const y = v => m.t + ih - (v / max) * ih;
+  const svg = sv("svg", { width, height: H, viewBox: `0 0 ${width} ${H}`, role: "img", "aria-label": "How much of their life they want to share, from separate lives to fully intertwined" });
+  const roundTop = (x, y0, w, hgt, r) => hgt <= 0 ? "" : `M${x} ${y0 + hgt}V${y0 + Math.min(r, hgt)}Q${x} ${y0} ${x + r} ${y0}H${x + w - r}Q${x + w} ${y0} ${x + w} ${y0 + Math.min(r, hgt)}V${y0 + hgt}Z`;
+  const flat = (x, y0, w, hgt) => hgt <= 0 ? "" : `M${x} ${y0}H${x + w}V${y0 + hgt}H${x}Z`;
+  bins.forEach(([all, done], i) => {
+    const x = m.l + i * slot + (slot - bw) / 2;
+    const hd = done ? Math.max(2, (done / max) * ih) : 0, hr = all - done ? Math.max(2, ((all - done) / max) * ih) : 0;
+    const base = m.t + ih, gap = hd && hr ? 2 : 0;
+    const g = sv("g", { class: "col", tabindex: 0, "aria-label": `${i * 10} to ${i === 9 ? 100 : i * 10 + 9} percent: ${all}` },
+      sv("rect", { x: m.l + i * slot, y: m.t, width: slot, height: ih, fill: "transparent" }),
+      hd ? sv("path", { d: hr ? flat(x, base - hd, bw, hd) : roundTop(x, base - hd, bw, hd, 4), fill: "var(--done)" }) : null,
+      hr ? sv("path", { d: roundTop(x, base - hd - gap - hr, bw, hr, 4), fill: "var(--rest)" }) : null,
+      sv("rect", { class: "ring", x: x - 3, y: m.t - 3, width: bw + 6, height: ih + 6, rx: 4, fill: "none" }));
+    const lines = [`${fmt(all)} ${all === 1 ? "person" : "people"}`, `${fmt(done)} answered all seven`, `${i * 10}–${i === 9 ? 100 : i * 10 + 9}%`];
+    bindTip(g, lines);
+    svg.append(g);
+  });
+  svg.append(sv("line", { class: "base", x1: m.l, x2: width - m.r, y1: m.t + ih + 0.5, y2: m.t + ih + 0.5 }));
+  if (median != null) {
+    const mx = m.l + (Math.min(median, 99.9) / 100) * iw;
+    svg.append(sv("line", { class: "cross", x1: Math.round(mx) + 0.5, x2: Math.round(mx) + 0.5, y1: m.t - 4, y2: m.t + ih }),
+      sv("text", { x: mx, y: m.t - 9, "text-anchor": mx < 70 ? "start" : mx > width - 70 ? "end" : "middle", fill: "var(--ink)" }, `median ${Math.round(median)}%`));
+  }
+  const ly = m.t + ih + 15;
+  svg.append(sv("text", { x: m.l, y: ly, class: "tick" }, "0%"), sv("text", { x: m.l + iw / 2, y: ly, "text-anchor": "middle", class: "tick" }, "50%"),
+    sv("text", { x: width - m.r, y: ly, "text-anchor": "end", class: "tick" }, "100%"),
+    sv("text", { x: m.l, y: ly + 16, fill: "var(--ink)" }, "separate lives"), sv("text", { x: width - m.r, y: ly + 16, "text-anchor": "end", fill: "var(--ink)" }, "fully intertwined"));
+  return svg;
+}
+
+// rsvps and answered-all-seven, running totals by local day
+function daySeries(hours) {
+  const byDay = new Map();
+  for (const [k, v] of Object.entries(hours || {})) {
+    const key = dayKey(new Date(k + ":00:00Z"));
+    const m = byDay.get(key) || [0, 0];
+    m[0] += v[0]; m[1] += v[1];
+    byDay.set(key, m);
+  }
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const keys = [...byDay.keys()].sort();
+  const start = new Date(today); start.setDate(start.getDate() - 6);
+  if (keys.length) { const [y, mo, d] = keys[0].split("-").map(Number); const first = new Date(y, mo - 1, d); if (first < start) start.setTime(first.getTime()); }
+  const days = [];
+  let cr = 0, cd = 0;
+  for (const d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
+    const [r, f] = byDay.get(dayKey(d)) || [0, 0];
+    cr += r; cd += f;
+    days.push({ date: new Date(d), r, f, cr, cd });
+  }
+  return days;
+}
+function niceMax(v) {
+  if (v <= 4) return 4;
+  const p = Math.pow(10, Math.floor(Math.log10(v)));
+  for (const s of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (s * p >= v) return s * p;
+  return 10 * p;
+}
+function trend(days, width) {
+  const H = width > 700 ? 250 : 196, m = { l: 30, r: 10, t: 12, b: 26 };
+  const iw = width - m.l - m.r, ih = H - m.t - m.b, n = days.length;
+  const x = i => m.l + (n === 1 ? iw / 2 : (i * iw) / (n - 1));
+  const ymax = niceMax(Math.max(1, days[n - 1].cr));
+  const y = v => m.t + ih - (v / ymax) * ih;
+  const svg = sv("svg", { width, height: H, viewBox: `0 0 ${width} ${H}`, role: "img", "aria-label": `Running total: ${days[n - 1].cr} rsvps, ${days[n - 1].cd} answered all seven` });
+  for (const t of [0, ymax / 2, ymax]) {
+    const yy = Math.round(y(t)) + 0.5;
+    svg.append(sv("line", { class: t ? "grid" : "base", x1: m.l, x2: width - m.r, y1: yy, y2: yy }),
+      sv("text", { class: "tick", x: m.l - 7, y: yy + 4, "text-anchor": "end" }, fmt(t)));
+  }
+  const line = key => days.map((d, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(d[key]).toFixed(1)).join("");
+  const area = key => line(key) + `L${x(n - 1).toFixed(1)} ${y(0)}L${x(0).toFixed(1)} ${y(0)}Z`;
+  svg.append(sv("path", { d: area("cr"), fill: "var(--rest)", "fill-opacity": ".45" }),
+    sv("path", { d: area("cd"), fill: "var(--done)", "fill-opacity": ".12" }),
+    sv("path", { d: line("cr"), fill: "none", stroke: "var(--rest-line)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }),
+    sv("path", { d: line("cd"), fill: "none", stroke: "var(--done)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+  const dot = (i, key, color) => sv("circle", { cx: x(i), cy: y(days[i][key]), r: 4, fill: color, stroke: "var(--paper)", "stroke-width": 2 });
+  svg.append(dot(n - 1, "cr", "var(--rest-line)"), dot(n - 1, "cd", "var(--done)"));
+  // x labels: the first day, the middle, today
+  const lx = [[0, "start"], [Math.floor((n - 1) / 2), "middle"], [n - 1, "end"]].filter(([i], k, a) => n > 1 || k === 0);
+  const seen = new Set();
+  for (const [i, anchor] of lx) {
+    if (seen.has(i)) continue; seen.add(i);
+    svg.append(sv("text", { class: "tick", x: x(i), y: H - 6, "text-anchor": n === 1 ? "middle" : anchor }, i === n - 1 ? "today" : shortDay.format(days[i].date)));
+  }
+  // crosshair: snaps to the nearest day
+  const cross = sv("g", { visibility: "hidden" },
+    sv("line", { class: "cross", y1: m.t, y2: m.t + ih }), sv("circle", { r: 4, fill: "var(--rest-line)", stroke: "var(--paper)", "stroke-width": 2 }),
+    sv("circle", { r: 4, fill: "var(--done)", stroke: "var(--paper)", "stroke-width": 2 }));
+  const hit = sv("rect", { class: "hit", x: m.l, y: m.t, width: iw, height: ih, tabindex: 0, "aria-label": "Move along the chart for each day" });
+  let at = n - 1;
+  const show = (i, cx) => {
+    at = i;
+    const d = days[i], X = x(i);
+    const [ln, c1, c2] = cross.children;
+    ln.setAttribute("x1", X); ln.setAttribute("x2", X);
+    c1.setAttribute("cx", X); c1.setAttribute("cy", y(d.cr)); c2.setAttribute("cx", X); c2.setAttribute("cy", y(d.cd));
+    cross.setAttribute("visibility", "visible");
+    const r = svg.getBoundingClientRect();
+    showTip([`${fmt(d.cr)} rsvps, ${fmt(d.cd)} answered all seven`, `that day: ${signed(d.r)} rsvps, ${signed(d.f)} all seven`, dayFmt.format(d.date)], cx != null ? cx : r.left + X, r.top + y(d.cr));
+  };
+  const nearest = e => { const r = svg.getBoundingClientRect(); const px = e.clientX - r.left; return Math.max(0, Math.min(n - 1, Math.round(n === 1 ? 0 : ((px - m.l) / iw) * (n - 1)))); };
+  hit.addEventListener("pointermove", e => show(nearest(e), e.clientX));
+  hit.addEventListener("pointerdown", e => show(nearest(e), e.clientX));
+  hit.addEventListener("pointerleave", e => { if (e.pointerType !== "touch") { cross.setAttribute("visibility", "hidden"); hideTip(); } });
+  hit.addEventListener("focus", () => show(at));
+  hit.addEventListener("blur", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  hit.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); show(Math.max(0, Math.min(n - 1, at + (e.key === "ArrowLeft" ? -1 : 1)))); }
+  });
+  svg.append(cross, hit);
+  return svg;
+}
+
+/* ---------------- side by side ---------------- */
+// which count the squares show, and where the age × meet table looks. kept across refreshes
+let crossWho = "all", crossWhere = "all";
+function switcher(label, options, current, set) {
+  const el = h("div", { class: "switch", role: "group", "aria-label": label }, options.map(([v, text]) =>
+    h("button", { type: "button", "aria-pressed": String(v === current), "data-v": v }, text)));
+  el.addEventListener("click", e => { const b = e.target.closest("button"); if (b && b.dataset.v !== current) set(b.dataset.v, label); });
+  return el;
+}
+// rows × cols of { row: { col: count } }: darker is more people, the count in every square
+function heat(table, rows, cols, rowNoun, who, totalsRow) {
+  const cells = rows.map(([rk]) => cols.map(([ck]) => ((table || {})[rk] || {})[ck] || 0));
+  const max = Math.max(1, ...cells.flat());
+  const rowTot = cells.map(r => r.reduce((a, b) => a + b, 0));
+  const colTot = cols.map((_, j) => cells.reduce((a, r) => a + r[j], 0));
+  const body = rows.map(([, rl], i) => h("tr", {}, h("th", { scope: "row", text: rl }),
+    cols.map(([, cl], j) => {
+      const n = cells[i][j], step = n ? Math.max(1, Math.ceil((n / max) * 5)) : 0;
+      const td = h("td", { class: "hc s" + step, tabindex: 0, "aria-label": `${rl}, ${cl}: ${n}` }, n ? fmt(n) : "·");
+      bindTip(td, [`${fmt(n)} ${who === "people" && n === 1 ? "person" : who}`, `${pct(n, rowTot[i])} of ${rowNoun}${rl}`, `${rl} · ${cl}`]);
+      return td;
+    }),
+    h("td", { class: "tot", text: fmt(rowTot[i]) })));
+  return h("div", { class: "scroll" }, h("table", { class: "heat" },
+    h("thead", {}, h("tr", {}, h("th", { scope: "col" }), cols.map(([, cl]) => h("th", { scope: "col", text: cl })), h("th", { scope: "col", text: "all" }))),
+    h("tbody", {}, body),
+    totalsRow ? h("tfoot", {}, h("tr", {}, h("th", { scope: "row", text: "all" }), colTot.map(n => h("td", { class: "tot", text: fmt(n) })), h("td", { class: "tot", text: fmt(rowTot.reduce((a, b) => a + b, 0)) }))) : null));
+}
+function crossCard(X) {
+  if (!X || !X.all) return null;
+  const V = X[crossWho === "done" ? "done" : "all"];
+  const who = crossWho === "done" ? "answered all seven" : "people";
+  const cities = V.cities.map(c => [c, c]);
+  const redraw = label => {
+    const fresh = crossCard(X);
+    board.querySelector('[data-card="cross"]').replaceWith(fresh);
+    const pressed = fresh.querySelector(`.switch[aria-label="${label}"] [aria-pressed="true"]`);
+    if (pressed) pressed.focus();
+  };
+  const set = key => (v, label) => { if (key === "who") crossWho = v; else crossWhere = v; redraw(label); };
+  const noCities = h("p", { class: "note", text: "No city has three people here yet." });
+  return card("side by side", "Two answers crossed. The darker the square, the more people in it.", { id: "cross", wide: true, band: "var(--tag)" },
+    switcher("count", [["all", "everyone"], ["done", "answered all seven"]], crossWho, set("who")),
+    h("div", { class: "cross-grid" },
+      h("div", { class: "cross-block" }, h("h3", { text: "age × would like to meet" }),
+        switcher("where", [["all", "everywhere"], ["ny", "New York"]], crossWhere, set("where")),
+        heat(crossWhere === "ny" ? V.ny_age_meet : V.age_meet, AGES, MEET, "", who, true)),
+      h("div", { class: "cross-block" }, h("h3", { text: "city × age" }), cities.length ? heat(V.city_age, cities, AGES, "", who, false) : noCities),
+      h("div", { class: "cross-block" }, h("h3", { text: "city × would like to meet" }), cities.length ? heat(V.city_meet, cities, MEET, "", who, false) : noCities.cloneNode(true))),
+    h("p", { class: "note", text: "Someone can list up to three cities, so they can count in more than one row. A city needs three people for its own row; smaller ones share elsewhere, which also waits for three." +
+      (V.unshown ? ` ${fmt(V.unshown)} ${V.unshown === 1 ? "person is" : "people are"} in cities too small to show yet.` : "") }));
+}
+
+/* ---------------- the board ---------------- */
+let S = null, prevRows = null, seenPrev = null;
+const board = $("[data-board]");
+
+function render(data) {
+  const first = !S;
+  S = data;
+  const openNums = new Set([...board.querySelectorAll("details.nums[open]")].map(d => d.dataset.id));
+  // svg charts are drawn once their card is on the page, at the width it gives them
+  const later = [];
+  const slot = draw => { const d = h("div", { class: "chart" }); later.push([d, draw]); return d; };
+  const rsvps = S.rows, done = S.reached[8] || 0, ny = pair(S.cities, "New York");
+  const now = Date.parse(S.at) || Date.now();
+  let day = [0, 0];
+  for (const [k, v] of Object.entries(S.hours || {})) if (Date.parse(k + ":00:00Z") + 3600e3 > now - 864e5) { day[0] += v[0]; day[1] += v[1]; }
+
+  // 1. the pulse
+  const grew = prevRows != null && rsvps > prevRows;
+  const tiles = h("div", { class: "tiles" },
+    h("div", { class: "tile" }, h("span", { class: "n" }, fmt(rsvps), grew && !reduced ? penUnder() : null), h("span", { class: "l", text: "rsvps" }), h("span", { class: "s", text: `${signed(day[0])} in 24 h` })),
+    h("div", { class: "tile" }, h("span", { class: "n", text: fmt(done) }), h("span", { class: "l", text: "answered all seven" }), h("span", { class: "s", text: `${pct(done, rsvps)} of rsvps` })),
+    h("div", { class: "tile" }, h("span", { class: "n" }, fmt(ny[1]), first && !reduced ? penCircle(true) : penCircle(false)), h("span", { class: "l", text: "ready to match" }), h("span", { class: "s", text: "all seven, New York" })));
+  const pulse = h("div", { class: "pulse" },
+    h("p", { text: [S.last.rsvp ? `Last rsvp ${ago(S.last.rsvp)}` : "No rsvps yet", S.last.done ? `last to answer all seven ${ago(S.last.done)}` : ""].filter(Boolean).join(", ") + "." }),
+    seenPrev ? h("p", { text: sinceText(seenPrev) }) : null);
+  const cards = [card("the pulse", null, { id: "pulse", wide: true, band: "var(--tag)" }, tiles, pulse)];
+
+  // 2. rsvps by day
+  const days = daySeries(S.hours);
+  const lastDay = days[days.length - 1];
+  cards.push(card("rsvps by day", "Running totals. The green line is who answered all seven.", { id: "trend", wide: true },
+    legend(["line", `rsvps (${fmt(lastDay.cr)})`], ["line done", `answered all seven (${fmt(lastDay.cd)})`]),
+    slot(w => trend(days, w)),
+    numbers("trend", ["day", "rsvps", "all seven", "so far"], days.slice().reverse().map(d => [shortDay.format(d.date), d.r, d.f, `${fmt(d.cr)} / ${fmt(d.cd)}`]))));
+
+  // 3. how far they get
+  cards.push(card("how far they get", "The drop-off is the filter working, not a leak. The last bar is the one that counts.", { id: "funnel", band: "var(--clay)" }, ...funnel(S.reached)));
+
+  // 4. who
+  const ageRows = ordered(S.age, AGES), meetRows = ordered(S.meet, MEET);
+  cards.push(card("who's coming", null, { id: "who" },
+    legend(["done", "answered all seven"], ["", "not yet"]),
+    h("h3", { text: "age" }), ...stack(ageRows, "age"),
+    h("h3", { text: "would like to meet" }), ...stack(meetRows, "meet"),
+    h("p", { class: "note", text: "The form never asks anyone's own gender, only who they'd like to meet. So this is demand, not supply." })));
+
+  // 4b. side by side
+  cards.push(crossCard(S.cross));
+
+  // 5. what a date is worth
+  const priceRows = ordered(S.price, PRICES);
+  const high = rows => rows.slice(2).reduce((s, r) => [s[0] + r.all, s[1] + r.done], [0, 0]);
+  const [hiAll, hiDone] = high(priceRows), allN = priceRows.reduce((s, r) => s + r.all, 0), doneN = priceRows.reduce((s, r) => s + r.done, 0);
+  cards.push(card("what a planned date is worth", "What they'd pay, asked before we say it's free.", { id: "price" },
+    legend(["done", "answered all seven"], ["", "not yet"]), ...stack(priceRows, "price"),
+    h("p", { class: "note" }, "$50 or more: ", h("b", { text: pct(hiDone, doneN) }), " of those who answered all seven, ", h("b", { text: pct(hiAll, allN) }), " of everyone.")));
+
+  // 6. what they want most
+  cards.push(card("what they want most", "Question one, the thesis: what a relationship should add to their life.", { id: "want", band: "var(--tag)" },
+    ...butterfly(S.want),
+    S.want.n ? h("p", { class: "note" }, h("b", { text: fmt(S.want.untouched) }), ` of ${fmt(S.want.n)} full rankings kept the starting order, chemistry first and building last.`) : null));
+
+  // 7. how serious
+  const lookRows = ordered(S.looking.first, LOOKING);
+  const shareBins = S.sharing.bins.map(b => (Array.isArray(b) ? b : [b, 0]));
+  cards.push(card("how serious", "Three reads on commitment: what they say, how close they want it, and how much they wrote.", { id: "serious" },
+    legend(["done", "answered all seven"], ["", "not yet"]),
+    h("h3", { text: "what they're looking for, ranked first" }), ...stack(lookRows, "looking"),
+    S.looking.n ? h("p", { class: "note" }, h("b", { text: fmt(S.looking.untouched) }), ` of ${fmt(S.looking.n)} left this list in its starting order, which puts "a date" first.`) : null,
+    h("h3", { text: "how much of a life to share" }), slot(w => columns(shareBins, w, S.sharing.median)),
+    numbers("sharing", ["", "people", "all seven"], shareBins.map(([a, d], i) => [`${i * 10}–${i === 9 ? 100 : i * 10 + 9}%`, a, d])),
+    S.sharing.n ? h("p", { class: "note" }, h("b", { text: fmt(S.sharing.at50) }), ` of ${fmt(S.sharing.n)} answered exactly 50%, where the slider starts.`) : null,
+    h("h3", { text: "words written, all seven answered" }),
+    ...stack(WORDS.map((label, i) => ({ label, all: S.words.bins[i] || 0, done: 0 })), "words", "people", true),
+    S.words.n ? h("p", { class: "note" }, "Median ", h("b", { text: fmt(Math.round(S.words.median)) }), " words across the five written answers.") : null));
+
+  // 8. where they come from
+  cards.push(card("where they come from", null, { id: "where" },
+    legend(["done", "answered all seven"], ["", "not yet"]),
+    h("h3", { text: "cities" }), ...stack(top(S.cities, 7), "cities"),
+    h("h3", { text: "our links (src)" }), ...stack(top(S.src, 7), "src"),
+    h("h3", { text: "apps (via)" }), ...stack(top(S.via, 7), "via")));
+
+  // 9. reaching them
+  cards.push(card("reaching them", null, { id: "reach" },
+    legend(["done", "answered all seven"], ["", "not yet"]),
+    h("h3", { text: "verified with" }), ...stack(ordered(S.verify, VERIFY), "verify"),
+    h("h3", { text: "text me on" }), ...stack(ordered(S.reach, REACH), "reach")));
+
+  board.hidden = false;
+  board.replaceChildren(...cards);
+  for (const [d, draw] of later) d.replaceChildren(draw(Math.max(200, d.clientWidth)));
+  board.querySelectorAll("details.nums").forEach(d => { if (openNums.has(d.dataset.id)) d.open = true; });
+  fitLabels(board);
+  prevRows = rsvps;
+
+  $("[data-foot-notes]").textContent = `${fmt(S.notes || 0)} ${S.notes === 1 ? "note" : "notes"} left, on the ${TAB === "test" ? "notes_test" : "notes"} tab.` + (S.skipped ? ` ${fmt(S.skipped)} test ${S.skipped === 1 ? "row" : "rows"} not counted.` : "");
+  $("[data-foot-meta]").textContent = `Updated ${timeFmt.format(new Date(now))}. Refreshes every minute while open.`;
+}
+function penCircle(draw) {
+  return sv("svg", { class: "circle" + (draw ? " pen" : ""), viewBox: "0 0 100 100", preserveAspectRatio: "none", "aria-hidden": "true" },
+    sv("path", { pathLength: 1, filter: "url(#pen)", d: "M70 14C47 6 14 18 9 48C5 78 33 94 58 90C82 86 96 62 91 36C86 20 70 10 48 14" }));
+}
+function penUnder() {
+  return sv("svg", { class: "under pen", viewBox: "0 0 100 8", preserveAspectRatio: "none", "aria-hidden": "true" },
+    sv("path", { pathLength: 1, filter: "url(#pen)", d: "M2 5C30 2 66 7 98 3" }));
+}
+function sinceText(prev) {
+  const dr = S.rows - prev.rows, dd = (S.reached[8] || 0) - prev.done;
+  if (!dr && !dd) return `Nothing new since you last looked, ${when(prev.t)}.`;
+  return `${signed(dr)} rsvps and ${signed(dd)} answered all seven since you last looked, ${when(prev.t)}.`;
+}
+function saveSeen() {
+  if (!S) return;
+  store.set(SEEN_STORE, JSON.stringify({ t: Date.now(), rows: S.rows, done: S.reached[8] || 0 }));
+}
+
+/* ---------------- the sheet ---------------- */
+// the password goes in the body, never the URL. text/plain keeps it a "simple" request, so
+// there's no preflight for Apps Script to fail; unlike the rsvp form, this one reads the reply
+async function fetchStats(auth) {
+  const body = JSON.stringify({ kind: "stats", ...auth, tab: TAB === "test" ? "test" : undefined });
+  const r = await fetch(CONFIG.endpoint, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body, cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer" });
+  const data = JSON.parse(await r.text());
+  if (!data || typeof data.ok !== "boolean") throw new Error("unexpected reply");
+  return data;
+}
+
+const statusEl = $("[data-status]"), statusText = $("[data-status-text]");
+let lastOk = 0;
+function setStatus(state) {
+  statusEl.className = "status " + state;
+  if (state === "busy" && S) return;
+  statusText.textContent = DEMO ? "made-up numbers, not real sign-ups"
+    : state === "busy" ? "opening the sheet"
+    : state === "stale" ? `can't reach the sheet${lastOk ? `, showing ${timeFmt.format(new Date(lastOk))}` : ""}. Trying again in a minute.`
+    : state === "locked" ? "locked"
+    : `live, updated ${timeFmt.format(new Date(lastOk))}` + (TAB === "test" ? " · test tab" : "");
+}
+
+let token = DEMO ? "" : (store.get(TOKEN_STORE) || "");
+let timer = 0;
+function schedule() { clearTimeout(timer); timer = setTimeout(load, CONFIG.every); }
+async function load() {
+  clearTimeout(timer);
+  if (document.visibilityState === "hidden") return;
+  setStatus("busy");
+  try {
+    const data = DEMO ? demoStats() : await fetchStats({ token });
+    if (!data.ok) {
+      if (data.error === "locked") { store.del(TOKEN_STORE); token = ""; return lock("The password changed. Enter the new one."); }
+      throw new Error(data.error);
+    }
+    if (!S) { const raw = store.get(SEEN_STORE); try { seenPrev = raw ? JSON.parse(raw) : null; } catch { seenPrev = null; } if (DEMO) seenPrev = { t: Date.now() - 9 * 3600e3, rows: data.rows - 4, done: data.reached[8] - 2 }; }
+    lastOk = Date.now();
+    render(data);
+    setStatus("live");
+  } catch {
+    setStatus("stale");
+  }
+  schedule();
+}
+
+function lock(msg) {
+  clearTimeout(timer);
+  board.hidden = true;
+  $("[data-intro]").hidden = true;
+  $("[data-lock]").hidden = false;
+  $("[data-forget]").hidden = true;
+  $("[data-foot-notes]").textContent = $("[data-foot-meta]").textContent = "";
+  $("[data-lock-err]").textContent = msg || "";
+  setStatus("locked");
+}
+function unlocked() {
+  $("[data-lock]").hidden = true;
+  $("[data-intro]").hidden = false;
+  $("[data-forget]").hidden = DEMO;
+}
+$("[data-lock-form]").addEventListener("submit", async e => {
+  e.preventDefault();
+  const input = e.target.elements.password, err = $("[data-lock-err]"), btn = e.target.querySelector("button");
+  const password = input.value.trim();
+  if (!password) return;
+  btn.disabled = true; err.textContent = "";
+  try {
+    const data = await fetchStats({ password });
+    if (!data.ok) { err.textContent = data.error === "locked" ? "That password doesn't open it." : "The sheet didn't answer. Try again in a minute."; return; }
+    token = data.token || "";
+    if (token) store.set(TOKEN_STORE, token);
+    input.value = "";
+    unlocked();
+    const raw = store.get(SEEN_STORE); try { seenPrev = raw ? JSON.parse(raw) : null; } catch { seenPrev = null; }
+    lastOk = Date.now();
+    render(data);
+    setStatus("live");
+    schedule();
+  } catch { err.textContent = "Couldn't reach the sheet. Check the connection and try again."; }
+  finally { btn.disabled = false; }
+});
+$("[data-forget]").addEventListener("click", () => { store.del(TOKEN_STORE); location.replace(location.pathname + location.search); });
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") { clearTimeout(timer); if (!DEMO) saveSeen(); }
+  else if (DEMO || token) load();
+});
+addEventListener("pagehide", () => { if (!DEMO) saveSeen(); });
+let resizeT = 0, lastW = innerWidth;
+addEventListener("resize", () => {
+  if (innerWidth === lastW) return;
+  lastW = innerWidth;
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => { if (S && !board.hidden) render(S); }, 150);
+});
+
+/* ---------------- ?demo: made-up people, tallied the way the Apps Script tallies ---------------- */
+let demoPeople = null;
+function demoStats() {
+  let a = 20260928;
+  const rnd = () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const pick = (opts, w) => { let r = rnd() * w.reduce((s, x) => s + x, 0); for (let i = 0; i < opts.length; i++) if ((r -= w[i]) < 0) return opts[i]; return opts[opts.length - 1]; };
+  const person = t => {
+    const level = pick([0, 1, 2, 3, 4, 5, 6, 7, 8], [6, 5, 5, 3, 3, 2, 2, 3, 26]);
+    const done = level === 8;
+    const cities = [pick(["New York", "London", "Tokyo", "Paris", "Tbilisi", "Los Angeles", "Mexico City"], [70, 9, 5, 5, 4, 4, 3])];
+    if (rnd() < .3) cities.push(pick(["London", "Paris", "Hong Kong", "Tokyo", "Berlin"], [4, 3, 2, 2, 1]));
+    const moved = rnd() > .22;
+    const looking = moved ? pick([["relationship", "date", "community", "friends"], ["relationship", "community", "date", "friends"], ["date", "relationship", "friends", "community"], ["community", "relationship", "friends", "date"], ["friends", "community", "relationship", "date"]], [10, 5, 4, 2, 1]) : ["date", "relationship", "friends", "community"];
+    const wantOrder = rnd() > .18 ? [...WANTS.map(w => w[0])].sort(() => rnd() - .5).sort((x, y) => ({ building: 1.6, chemistry: 2.4, ease: 2.9, ambition: 3.3, play: 3.8 }[x] + rnd() * 2.6) - ({ building: 1.6, chemistry: 2.4, ease: 2.9, ambition: 3.3, play: 3.8 }[y] + rnd() * 2.6)) : WANTS.map(w => w[0]);
+    const src = pick(["ig", "@maya", "qr", "direct", "tt", "invite", "friend", "@itgirlmovement_"], [14, 11, 8, 7, 6, 5, 4, 3]);
+    return { t, level, done, cities, looking, wantOrder, src,
+      via: src === "qr" || src === "invite" ? "none" : src === "tt" ? "tiktok" : src === "direct" ? pick(["google", "ai-chatgpt", "none"], [3, 2, 2]) : pick(["instagram", "tiktok", "whatsapp"], [7, 3, 1]),
+      age: pick(["21 to 24", "25 to 29", "30 to 34", "35 to 39", "40+"], [5, 16, 13, 5, 2]),
+      meet: pick(["women", "men", "anyone"], [11, 10, 2]),
+      price: done ? pick(["0", "25", "50", "100+"], [1, 4, 7, 5]) : pick(["0", "25", "50", "100+"], [3, 6, 5, 2]),
+      share: rnd() < .15 ? 50 : Math.max(0, Math.min(100, Math.round(62 + (rnd() + rnd() + rnd() - 1.5) * 44))),
+      words: Math.round(Math.exp(4.9 + (rnd() + rnd() - 1) * 1.2)),
+      verify: rnd() < .9 ? "ig" : "photo", reach: pick(["imessage", "whatsapp", "sms"], [9, 5, 1]) };
+  };
+  if (!demoPeople) {
+    demoPeople = [];
+    const dayW = [2, 3, 3, 4, 5, 5, 14, 7, 6, 7, 8];
+    for (let i = 0; i < 64; i++) {
+      const back = 10 - pick([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dayW);
+      demoPeople.push(person(Date.now() - back * 864e5 - rnd() * (back ? 864e5 : 6 * 3600e3)));
+    }
+  } else if (rnd() < .5) demoPeople.push(person(Date.now()));
+  const out = { ok: true, v: 1, at: new Date().toISOString(), tab: "demo", rows: 0, skipped: 0, notes: 5, reached: [0, 0, 0, 0, 0, 0, 0, 0, 0], hours: {}, last: { rsvp: "", done: "" },
+    age: {}, meet: {}, price: {}, cities: {}, src: {}, via: {}, verify: {}, reach: {},
+    looking: { first: {}, rank: {}, n: 0, untouched: 0 }, want: { first: {}, last: {}, rank: {}, n: 0, untouched: 0 },
+    sharing: { bins: Array.from({ length: 10 }, () => [0, 0]), n: 0, at50: 0, median: null }, words: { bins: [0, 0, 0, 0, 0, 0, 0], n: 0, median: null } };
+  const count = (obj, k, done) => { obj[k] = obj[k] || [0, 0]; obj[k][0]++; if (done) obj[k][1]++; };
+  const lookSum = {}, wantSum = {}, shares = [], words = [], crossPeople = [];
+  const med = l => { const s = l.slice().sort((x, y) => x - y), m = Math.floor(s.length / 2); return s.length ? (s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2) : null; };
+  for (const p of demoPeople) {
+    out.rows++;
+    for (let k = 0; k <= p.level; k++) out.reached[k]++;
+    const hk = new Date(p.t).toISOString().slice(0, 13);
+    (out.hours[hk] = out.hours[hk] || [0, 0])[0]++;
+    const iso = new Date(p.t).toISOString();
+    if (iso > out.last.rsvp) out.last.rsvp = iso;
+    if (p.done) { const f = Math.min(Date.now(), p.t + 40 * 60e3); const fk = new Date(f).toISOString().slice(0, 13); (out.hours[fk] = out.hours[fk] || [0, 0])[1]++; if (new Date(f).toISOString() > out.last.done) out.last.done = new Date(f).toISOString(); }
+    p.cities.forEach(c => count(out.cities, c, p.done));
+    crossPeople.push({ cities: p.cities, age: p.level >= 1 ? p.age : "", meet: p.level >= 1 ? p.meet : "", done: p.done });
+    count(out.src, p.src, p.done); count(out.via, p.via, p.done); count(out.verify, p.verify, p.done);
+    out.looking.n++; count(out.looking.first, p.looking[0], p.done); p.looking.forEach((k, i) => lookSum[k] = (lookSum[k] || 0) + i + 1);
+    if (p.looking.join() === "date,relationship,friends,community") out.looking.untouched++;
+    if (p.level < 1) continue;
+    count(out.age, p.age, p.done); count(out.meet, p.meet, p.done); count(out.price, p.price, p.done); count(out.reach, p.reach, p.done);
+    if (p.level < 2) continue;
+    out.want.n++; count(out.want.first, p.wantOrder[0], p.done); count(out.want.last, p.wantOrder[4], p.done);
+    p.wantOrder.forEach((k, i) => wantSum[k] = (wantSum[k] || 0) + i + 1);
+    if (p.wantOrder.join() === WANTS.map(w => w[0]).join()) out.want.untouched++;
+    if (p.level < 5) continue;
+    out.sharing.n++; out.sharing.bins[Math.min(9, Math.floor(p.share / 10))][0]++; if (p.done) out.sharing.bins[Math.min(9, Math.floor(p.share / 10))][1]++;
+    if (p.share === 50) out.sharing.at50++;
+    shares.push(p.share);
+    if (!p.done) continue;
+    out.words.n++; out.words.bins[[50, 100, 150, 200, 300, 500].filter(e => p.words >= e).length]++; words.push(p.words);
+  }
+  for (const k in lookSum) out.looking.rank[k] = Math.round(lookSum[k] / out.looking.n * 100) / 100;
+  for (const k in wantSum) out.want.rank[k] = Math.round(wantSum[k] / out.want.n * 100) / 100;
+  out.sharing.median = med(shares); out.words.median = med(words);
+  // cross tables, by the rule in crossOf_() in Code.js
+  const crossOf = list => {
+    const ppl = list.filter(q => q.age && q.meet), size = {};
+    ppl.forEach(q => q.cities.forEach(c => { size[c] = (size[c] || 0) + 1; }));
+    const shown = Object.keys(size).filter(c => size[c] >= 3).sort((x, y) => size[y] - size[x] || (x < y ? -1 : 1));
+    const rowsOf = q => [...new Set(q.cities.map(c => (shown.includes(c) ? c : "elsewhere")))];
+    const elsewhere = ppl.filter(q => rowsOf(q).includes("elsewhere")).length;
+    const X = { cities: shown.slice(), city_age: {}, city_meet: {}, age_meet: {}, ny_age_meet: {}, unshown: 0 };
+    const cell = (t, r, c) => { t[r] = t[r] || {}; t[r][c] = (t[r][c] || 0) + 1; };
+    for (const q of ppl) {
+      rowsOf(q).forEach(r => { if (r !== "elsewhere" || elsewhere >= 3) { cell(X.city_age, r, q.age); cell(X.city_meet, r, q.meet); } });
+      cell(X.age_meet, q.age, q.meet);
+      if (q.cities.includes("New York")) cell(X.ny_age_meet, q.age, q.meet);
+    }
+    if (elsewhere >= 3) X.cities.push("elsewhere"); else X.unshown = elsewhere;
+    return X;
+  };
+  out.cross = { all: crossOf(crossPeople), done: crossOf(crossPeople.filter(q => q.done)) };
+  return out;
+}
+
+/* ---------------- start ---------------- */
+if (DEMO) { $("[data-where]").textContent = "admin / demo"; unlocked(); load(); }
+else {
+  if (TAB === "test") $("[data-where]").textContent = "admin / test tab";
+  if (token) { unlocked(); load(); }
+  else lock();
+}
+})();
+</script>
+</body>
+</html>

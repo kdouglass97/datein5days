@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-26
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-28
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -457,7 +457,8 @@ on push to `main`. Google Apps Script Web App as the form backend, writing to a 
 Sheet. No build step, no framework, nothing external except the PostHog snippet and
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
-**Repo, flat at root:** the pages (`index.html`, `involved.html`, `privacy.html`, `404.html`),
+**Repo, flat at root:** the pages (`index.html`, `involved.html`, `privacy.html`, `404.html`,
+and `admin.html`, the team dashboard),
 `note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
 `.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
 `CLAUDE.md`), `apps-script/` and `share/` live here too but never reach the site.
@@ -473,6 +474,7 @@ The QR code is printed. Its target can never change.
 /rsvp      307 →  /c/01?go=rsvp
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
+/admin     rewrite → /admin.html   the team dashboard, password only, §8
 
 /ig /tt /invite /@<name>   307 →  /c/01?src=…   the link book, §9
 ```
@@ -572,6 +574,28 @@ via
 - A **`sources`** tab sits beside `leads`: formulas that total rsvps and finished
   questionnaires per link, per link and app (`@maya · tiktok`), and per app. It's built on
   the first real sign-up. The sheet holds sign-ups only: visits belong in PostHog (§9).
+- **`/admin`** (`admin.html`, added 2026-09-28) is the team dashboard over `leads`, and it is
+  not public: nothing on the site links to it, it's `noindex` and out of the sitemap, and
+  until the password is in it shows the wordmark and a password box, nothing else. Behind
+  it: sign-ups by day, how far people get, age, who they'd like to meet, what a date is
+  worth, what they're looking for, the sharing slider, words written, question one's
+  want-most/could-skip, cities, links and apps, each split into everyone and those who
+  answered all seven. "side by side" crosses city, age and who they'd like to meet (age ×
+  meet also for New York alone), for everyone or only those who answered all seven. A city
+  needs three people in a view for its own row; smaller ones share "elsewhere", which also
+  waits for three, so a city row never points at one or two people. Own gender isn't
+  asked, so "meet" is the only gender axis there is (§10). The page refreshes every minute
+  while open and says what's new since you last looked.
+  The password is the **`ADMIN_PASSWORD` repo secret** (8+ characters; unset means locked).
+  The Apps Script deploy writes it into `apps-script/secret.js` just before `clasp push`;
+  that file is in `.gitignore` and must never be committed, and the password never goes in
+  the Sheet either. To change it, update the secret and run the Deploy Apps Script workflow
+  by hand (a secret change alone doesn't trigger it). Devices keep a token derived from the
+  password, never the password, and a new password signs them all out. The page asks the Apps Script by POST
+  (`{ kind: "stats" }`, `stats_()`), so the password never sits in a URL. `?tab=test` counts
+  the `test` tab; `?demo` shows made-up numbers on a local copy or a preview, never on the
+  live domain. Don't put `/admin` in `robots.txt`: a Disallow line advertises the path, and
+  `noindex` already keeps it out of search.
 
 - `email` holds the fallback contact **only** when `verify == "photo"`. There is no email
   field on the Instagram path.
@@ -607,7 +631,9 @@ These are commitments, not preferences. Do not trade them for convenience.
 - The face check **stays in the browser**. No photo is transmitted for detection.
 - **No lead payloads in `console.log`.** Removed deliberately.
 - Any future admin view shows **totals only.** No names, no answers, no handles. A
-  hard-to-guess URL is not access control.
+  hard-to-guess URL is not access control. `/admin` is built to this: the Apps Script
+  aggregates before anything leaves Google, and the page opens only with the password. Keep
+  it that way. A per-person feed (even "a 25–29 finished at 14:02") breaks this promise.
 - We do not post, comment, message, or follow from the Instagram account. The page says so.
 
 ---
@@ -713,6 +739,7 @@ one of our links. Location-specific QR codes (`/qr/<spot>`) were considered and 
   carries `src` and `via`, so `landing_viewed` broken down by either is visits per link or
   per app. But capture is off for regular visitors (the ⚠️ above), so until a consent
   flow ships, PostHog sees team devices only and the sheet's sign-ups are the only numbers.
+  `/admin` shows those numbers per link and per app, split by who answered all seven.
 
 Read the `sources` tab with §3 in mind. Whether a creator was worth it is in `finished`,
 not in `rsvps`.
@@ -732,7 +759,18 @@ not in `rsvps`.
 - [x] Kai founder photo added (`kai.jpg`, same 360x480 treatment as `ruby.jpg`)
 - [ ] Delete only the rows whose `src` is `claude-test`, and the one corrupted row (id repeated across every column). **Everything else in `leads` is a real sign-up.**
 - [ ] Delete the `Sheet1` tab (empty decoy) and the test photo from Drive
-- [ ] Share Sheet and Drive folder with Ruby; invite Ruby to PostHog
+- [ ] Share Sheet and Drive folder with Ruby; invite Ruby to PostHog. (`/admin` is separate:
+      it takes the team password, the `ADMIN_PASSWORD` repo secret.)
+- [ ] Own gender isn't asked. `meet` is who someone wants to meet, not who they are, so
+      nobody can count how many people each person could be matched with, and `/admin` can
+      only show demand. Adding it is a form change and touches sensitive data (the privacy
+      notice). Kai and Ruby.
+- [ ] Both ranked lists (`looking`, question one) start in a fixed order and the sharing
+      slider starts at 50, so an untouched answer reads like a chosen one. `/admin` counts
+      how many kept the starting order. Shuffling each person's starting order would remove
+      the bias. A product call, not a bug fix.
+- [ ] "testing test" isn't routed to the `test` tab: `isTestName_()` matches "test" only as a
+      whole first word, though §8 and the Code.js comments say it does. Decide which is right.
 - [ ] Rename the PostHog project from "Default project" and fix its app URL
 - [ ] Two polaroid collisions left (§5): iPad Pro in portrait (821–1050px, desktop placement) slides the top-left polaroid under the "five days" wordmark, and landscape phones 700–820px wide put the bottom-left one on "WE HANDLE THE ADMIN".
 
