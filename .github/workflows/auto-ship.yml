@@ -27,6 +27,16 @@ jobs:
             echo "::error file=admin.html::/admin must not load analytics (context.md §9)"
             exit 1
           fi
+      - name: No keys in the repo
+        run: bash .github/scripts/leak-check.sh keys
+      - name: Every Apps Script name defined once
+        run: |
+          # one global scope across apps-script/*.js: a second function with the same name silently wins
+          dups=$(cat apps-script/*.js | grep -oE "^(function|const|let|var) [A-Za-z0-9_$]+" | awk '{print $2}' | sort | uniq -d)
+          if [ -n "$dups" ]; then
+            echo "::error file=apps-script/Code.js::Defined more than once: $(echo $dups). Rename one (context.md, landmines)."
+            exit 1
+          fi
       - name: Merge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -516,6 +516,46 @@ so a handle change is a find-and-replace across all three files. Anchor jumps la
 `html{scroll-padding-top}`, which is built from `--fh-top` and `--fh-h`: change the header's
 height there, not in the padding.
 
+### What a stranger can see, and what they can't
+
+Everything a browser downloads is public: the page source, `note.js`, `attr.js`, `CONFIG`. So
+the site holds no secrets, by design. The two things in it that look like keys aren't:
+
+- **PostHog's `phc_…` key** can send events, never read them (§9).
+- **The Apps Script `/exec` URL** has to be in the page for the form to post to it. Anyone can
+  post anything to it, which is why `Code.js` treats every field as hostile (landmines, below).
+
+What is private, and what keeps it that way (checked 2026-09-28):
+
+- **The sheet** is shared with two named accounts, no link sharing. Its ID was public from
+  2026-09-18 to 09-26, while `apps-script/Code.js` was a URL, so that sharing setting is the
+  whole defense. Never turn on "anyone with the link".
+- **The photo folder** is owner-only, and a promise (§8).
+- **`CLASPRC_JSON`**, the repo secret that deploys the script, is a Google login that can
+  rewrite the backend and so read everything. `apps-script.yml` pins clasp to an exact version
+  with install scripts off, so only a known clasp runs next to it.
+- **`ADMIN_PASSWORD`**, the `/admin` password, lives in GitHub's secret store and the Apps
+  Script project, never the repo (§8). The deploy writes it to disk beside clasp too, one more
+  reason for the pin. Nothing limits guesses at it, so keep it long and random.
+- **The repo** is private. Old deployments, which did serve `context.md`, sit behind Vercel
+  Authentication (Standard Protection); only the custom domains are public.
+
+The guards:
+
+- **`.github/workflows/leak-check.yml`** fetches the live site like a stranger: every repo file
+  `.vercelignore` leaves out must 404, the site must serve exactly `main`, nothing served may
+  look like a secret key, and the headers must be on. It runs after every auto-ship merge
+  (through `workflow_run`: those merges can't trigger push workflows), daily, and on demand.
+  Its key scan also runs in `auto-ship.yml` before every merge, so a key can't ship. A
+  failure shows red in the Actions tab.
+- **`vercel.json` headers**, on every path: no framing (`frame-ancestors`, `X-Frame-Options`)
+  except by PostHog's heatmaps, no MIME sniffing, a referrer policy, `form-action 'none'` (a
+  form that ever submitted natively would put a name and number in a URL), and a
+  `Permissions-Policy`. Vercel adds HSTS itself.
+- **No `script-src` in the CSP, on purpose.** Every page is inline script, so it would need
+  `'unsafe-inline'`, which cancels most of its value, and a wrong allowlist breaks PostHog or
+  the face check without a sound. Hashing the inline scripts needs a build step (see Stack).
+
 ### ☠️ Landmines, each one already stepped on
 
 - **Never add `"cleanUrls": true` to `vercel.json`.** It strips `.html` at build time, which
@@ -524,7 +564,21 @@ height there, not in the padding.
 - **`.vercelignore` is an allowlist.** A new file the site serves (a page, an image, a
   script) must be added to it, or it 404s in production while working fine locally. It
   exists because, with no build step, Vercel served the whole repo root: until 2026-09-26
-  this file and `apps-script/` were public URLs.
+  this file and `apps-script/` were public URLs. The leak check fails either way: a served
+  file that isn't live, or a private one that is.
+- **`Permissions-Policy` keeps the microphone at `(self)`.** Voice answers use it. A copied
+  "secure headers" template with `microphone=()` kills them without an error (tested
+  2026-09-28), and the leak check fails if it's dropped. Camera, geolocation and payments are
+  off: a live selfie capture or an on-page Apple Pay button has to be allowed there first.
+- **Every value bound for the sheet goes through `cellValue_()`** in `Code.js`, old values too.
+  `getValues()` hands text back without the apostrophe that kept it inert, so an upsert that
+  skipped it would re-arm a formula someone typed as their name. Before 2026-09-28 only notes
+  were guarded, so a sign-up "name" like `=IMPORTXML("https://…", …)` became a live formula.
+- **Apps Script files share one global scope, and a second function with the same name
+  silently replaces the first.** On 2026-09-28 a merge brought two `cell_()`s together (the
+  dashboard's counter and the sheet guard) and every sign-up would have failed, while the page,
+  which can't read the reply (`no-cors`), told people they were in. `auto-ship.yml` now refuses
+  a merge that defines any name twice.
 - **Never set `keepalive: true` unconditionally** on the lead `fetch`. Browsers cap keepalive
   bodies near 64KB and compressed photos are ~150KB, so uploads vanished silently. The
   guard is `keepalive: body.length < 60000`.

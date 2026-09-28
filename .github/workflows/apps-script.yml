@@ -42,7 +42,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm install -g @google/clasp@3
+      # Pinned, and no install scripts: the next step puts the Google login that can rewrite the
+      # live script on this machine, so only a known clasp runs next to it. Bump on purpose.
+      - run: npm install -g --ignore-scripts @google/clasp@3.4.1
       - name: Load clasp credentials
         env:
           CLASPRC: ${{ secrets.CLASPRC_JSON }}

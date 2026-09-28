@@ -1,5 +1,17 @@
 {
   "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' https://us.posthog.com; base-uri 'self'; object-src 'none'; form-action 'none'" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(self), geolocation=(), payment=(), usb=()" }
+      ]
+    }
+  ],
   "redirects": [
     { "source": "/", "destination": "/c/01", "permanent": false },
     { "source": "/c", "destination": "/c/01", "permanent": false },
