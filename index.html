@@ -104,6 +104,11 @@ background:linear-gradient(177deg,var(--grass) 0 calc(49% - 5.5px),var(--line) c
 .topbar .soc a{padding:12px 7px;margin:-12px -7px}
 /* narrow screens drop the cohort number before the glyphs: they're how a stranger checks we're real */
 @media (max-width:640px){.topbar .tb-page{display:none}}
+/* phones: the topbar opens the header's menu, so the pages are reachable before any scroll */
+.tb-menu{display:none;align-items:center;gap:6px;margin:-12px 0 -12px 18px;padding:12px 0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.tb-menu i{font:normal 18px/.6 var(--type)}
+@media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
+@media (max-width:360px){.topbar > span > a{display:none}}
 @media (max-width:560px){.topbar .xp{display:none}}
 @media (max-width:440px){.topbar .no{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0;perspective:calc(var(--w)*4.1);perspective-origin:50% 72%}
@@ -394,7 +399,7 @@ footer .soc a{padding:8px;margin:-8px}
 /* phones: the links wrap, so they drop their slashes rather than strand one at a line end */
 .foot-links{display:flex;flex-wrap:wrap;justify-content:center;column-gap:1.1em}
 @media (max-width:480px){.foot-links{column-gap:22px}.foot-links .sep{display:none}}
-.mk{position:relative;white-space:nowrap}
+.mk{position:relative;display:inline-block;white-space:nowrap}
 .mk svg{position:absolute;overflow:visible;pointer-events:none}
 .mk.circle svg{left:-8%;top:-20%;width:116%;height:140%}
 .mk.under svg{left:-2%;bottom:-9px;width:104%;height:10px}
@@ -703,7 +708,7 @@ section{padding:56px 16px}
 </div>
 </nav>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#" aria-current="page"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq" data-track="nav_faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#" aria-current="page"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq" data-track="nav_faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="stage">
 <div class="env-shadow" aria-hidden="true"></div>
 <div class="env"><div class="env-tilt">
@@ -1428,8 +1433,10 @@ if (!cur) here.remove();
 else if (here.parentNode !== cur.firstElementChild) cur.firstElementChild.append(here);
 };
 const onMenuScroll = () => { if (!hereRaf) hereRaf = requestAnimationFrame(markHere); };
+let atTop = true;
 const setMenu = open => {
 if (open === !fmenu.hidden) return;
+if (!open && atTop) { fhead.classList.remove("on"); fhead.inert = true; }
 fmenu.hidden = !open;
 fhead.classList.toggle("open", open);
 fmenuBtn.setAttribute("aria-expanded", open);
@@ -1458,9 +1465,12 @@ typingT = setTimeout(() => { if (!typesIn(document.activeElement)) fhead.classLi
 });
 new IntersectionObserver(([e]) => {
 const on = !e.isIntersecting;
+atTop = !on;
 fhead.classList.toggle("on", on); fhead.inert = !on;
 if (!on) setMenu(false);
 }).observe($(".topbar"));
+// phones: "menu" in the topbar drops the strip in with its menu open
+$(".tb-menu").addEventListener("click", () => { fhead.classList.add("on"); fhead.inert = false; setMenu(true); track("nav_menu", { from: "top" }); fmenuBtn.focus(); });
 const once = new Set();
 const trackOnce = (name, props) => { if (!once.has(name)) { once.add(name); track(name, props); } };
 new IntersectionObserver(([e]) => {

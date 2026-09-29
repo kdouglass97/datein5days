@@ -333,6 +333,13 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   rsvp was one too many, so don't bring the dock back. The strip carries **no social glyphs**
   either: it follows the reader through the questionnaire, and a standing way off the page
   beside rsvp competes with the one thing the strip is for. They wait in the menu card's foot.
+  **On phones the hero topbar carries a "menu" button** (added 2026-09-29) that drops the strip in
+  with its menu card open, so the pages are reachable before any scroll; closing it while the
+  topbar is still on screen puts the strip away again. Below 360px the topbar's page link goes
+  too (the menu has it), after the cohort number, never the glyphs.
+- **`.mk` pen underlines are `inline-block`.** As plain inline boxes, iOS Safari anchored the
+  absolutely placed stroke to the wrong line when the phrase sat at a line end: on `/faq` it
+  drew under the next line and ran off the screen.
 - **Instagram and TikTok glyphs** (added 2026-09-26) are the printed form: monoline outlines at
   the typewriter's stroke weight, one `<symbol>` each (`#i-ig`, `#i-tt`) in every page's hidden
   defs, never the brands' colors. The hand is the pen loop (`#i-ring`) that circles one on

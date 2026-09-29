@@ -66,6 +66,11 @@ h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 .topbar .soc a{padding:12px 7px;margin:-12px -7px}
 /* narrow screens drop the cohort number before the glyphs: they're how a stranger checks we're real */
 @media (max-width:640px){.topbar .tb-page{display:none}}
+/* phones: the topbar opens the header's menu, so the pages are reachable before any scroll */
+.tb-menu{display:none;align-items:center;gap:6px;margin:-12px 0 -12px 18px;padding:12px 0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.tb-menu i{font:normal 18px/.6 var(--type)}
+@media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
+@media (max-width:360px){.topbar > span > a{display:none}}
 @media (max-width:560px){.topbar .xp{display:none}}
 @media (max-width:440px){.topbar .no{display:none}}
 
@@ -118,8 +123,8 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .kicker{margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
 .intro h1{color:var(--line);font-size:clamp(44px,9vw,76px);line-height:.98;letter-spacing:-.04em;margin:0 0 22px}
 .intro p{margin:0 auto;max-width:42ch}
-.mk{position:relative;white-space:nowrap}
-.mk svg{position:absolute;left:-2%;bottom:-8px;width:104%;height:10px;overflow:visible;pointer-events:none}
+.mk{position:relative;display:inline-block;white-space:nowrap}
+.mk svg{position:absolute;left:-2%;bottom:-6px;width:104%;height:10px;overflow:visible;pointer-events:none}
 .mk path{fill:none;stroke:#F2C38F;stroke-width:2;stroke-linecap:round}
 
 .paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
@@ -269,7 +274,7 @@ html:has(.sheet[open]){overflow:hidden}
 </nav>
 
 <header class="hero">
-<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" aria-current="page">get involved</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" aria-current="page">get involved</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="intro">
 <p class="kicker">get involved</p>
 <h1>help us seat the right people together.</h1>
@@ -408,8 +413,10 @@ if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
 document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
 
 const fhead = document.querySelector(".fhead"), fmenu = document.getElementById("fmenu"), fmenuBtn = fhead.querySelector(".fmenu-btn");
+let atTop = true;
 const setMenu = open => {
 if (open === !fmenu.hidden) return;
+if (!open && atTop) { fhead.classList.remove("on"); fhead.inert = true; }
 fmenu.hidden = !open;
 fhead.classList.toggle("open", open);
 fmenuBtn.setAttribute("aria-expanded", open);
@@ -421,9 +428,12 @@ document.addEventListener("pointerdown", e => { if (e.target === fhead || !fhead
 fhead.addEventListener("focusout", e => { if (e.relatedTarget && !fhead.contains(e.relatedTarget)) setMenu(false); });
 new IntersectionObserver(([e]) => {
 const on = !e.isIntersecting;
+atTop = !on;
 fhead.classList.toggle("on", on); fhead.inert = !on;
 if (!on) setMenu(false);
 }).observe(document.querySelector(".topbar"));
+// phones: "menu" in the topbar drops the strip in with its menu open
+document.querySelector(".tb-menu").addEventListener("click", () => { fhead.classList.add("on"); fhead.inert = false; setMenu(true); fmenuBtn.focus(); });
 
 const sheet = document.getElementById("reach");
 if (!sheet.showModal) return;
