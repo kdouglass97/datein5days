@@ -81,7 +81,9 @@ h1,h2,.slider-value,.front .ph{--opsz:18}
 .hero h1{--opsz:24}
 [hidden]{display:none!important}
 .hero{position:relative;overflow:hidden;padding:calc(22px + env(safe-area-inset-top)) 0 72px;
-background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var(--line) 67.7% 69.2%,var(--clay) 69.3%)}
+/* the same straight diagonal as the other pages' arc: about 3deg, rising to the right, a 10px cream rule.
+   the one-pixel ramps keep the edges from stepping */
+background:linear-gradient(177deg,var(--grass) 0 calc(49% - 5.5px),var(--line) calc(49% - 4.5px) calc(49% + 4.5px),var(--clay) calc(49% + 5.5px))}
 .topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
 .topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
 .topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
@@ -101,6 +103,12 @@ background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var
 .topbar .soc{margin-left:18px}
 .topbar .soc a{padding:12px 7px;margin:-12px -7px}
 /* narrow screens drop the cohort number before the glyphs: they're how a stranger checks we're real */
+@media (max-width:640px){.topbar .tb-page{display:none}}
+/* phones: the topbar opens the header's menu, so the pages are reachable before any scroll */
+.tb-menu{display:none;align-items:center;gap:6px;margin:-12px 0 -12px 18px;padding:12px 0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.tb-menu i{font:normal 18px/.6 var(--type)}
+@media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
+@media (max-width:360px){.topbar > span > a{display:none}}
 @media (max-width:560px){.topbar .xp{display:none}}
 @media (max-width:440px){.topbar .no{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0;perspective:calc(var(--w)*4.1);perspective-origin:50% 72%}
@@ -378,7 +386,7 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .faq details[open] summary::after{transform:rotate(45deg)}
 .faq p{margin:0 0 20px;max-width:58ch}
 .faq-more{margin:18px 0 8px;padding-top:16px;border-top:1px dashed rgba(70,85,58,.55);font-size:15px}
-.faq-more a{font-weight:700;text-underline-offset:3px}
+.faq-more a,.faq p a{font-weight:700;text-underline-offset:3px}
 footer{color:var(--line);text-align:center;padding:24px 20px 60px;font-size:14px}
 footer .brand{display:block;margin-bottom:6px;font-size:30px}
 footer p{margin:4px 0}
@@ -391,7 +399,7 @@ footer .soc a{padding:8px;margin:-8px}
 /* phones: the links wrap, so they drop their slashes rather than strand one at a line end */
 .foot-links{display:flex;flex-wrap:wrap;justify-content:center;column-gap:1.1em}
 @media (max-width:480px){.foot-links{column-gap:22px}.foot-links .sep{display:none}}
-.mk{position:relative;white-space:nowrap}
+.mk{position:relative;display:inline-block;white-space:nowrap}
 .mk svg{position:absolute;overflow:visible;pointer-events:none}
 .mk.circle svg{left:-8%;top:-20%;width:116%;height:140%}
 .mk.under svg{left:-2%;bottom:-9px;width:104%;height:10px}
@@ -463,6 +471,7 @@ transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3
 .fhead.at-rsvp .fbar .btn{opacity:0;visibility:hidden}
 /* phones: rsvp is the strip's one call to action; get involved waits in the menu */
 @media (max-width:640px){.fbar > a:not(.brand,.btn){display:none}}
+@media (max-width:900px){.fbar .xp{display:none}}
 @media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
 .fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
 padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
@@ -679,6 +688,8 @@ section{padding:56px 16px}
 <nav class="fhead" aria-label="Site" inert>
 <div class="fbar">
 <a class="brand" href="#" data-brand>five days</a>
+<a href="#" aria-current="page" data-track="nav_float_home"><span class="xp">experiment </span>no. 01</a>
+<a href="/faq" data-track="nav_float_faq">faq</a>
 <a href="/involved" data-track="nav_float_involved">get involved</a>
 <button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
 <div class="fmenu" id="fmenu" hidden>
@@ -690,14 +701,14 @@ section{padding:56px 16px}
 <li><a href="#faq"><span>questions</span></a></li>
 <li><a href="#team"><span>who's setting you up</span></a></li>
 </ol>
-<p class="fmenu-foot"><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></span></p>
+<p class="fmenu-foot"><a href="/faq">faq</a><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></span></p>
 <svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true" data-here><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg>
 </div>
 <a class="btn" href="#rsvp" data-track="cta_float">rsvp</a>
 </div>
 </nav>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#" aria-current="page"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq" data-track="nav_faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="stage">
 <div class="env-shadow" aria-hidden="true"></div>
 <div class="env"><div class="env-tilt">
@@ -992,14 +1003,16 @@ section{padding:56px 16px}
 <div class="paper kraft faq-card">
 <h2 id="faq-h">questions</h2>
 <div class="faq">
-<details><summary>what does it cost?</summary><p data-cost-long>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
 <details><summary>who picks my match?</summary><p>We do, by hand, from your answers. No feed, no swiping.</p></details>
+<details><summary>what does it cost?</summary><p data-cost-long>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
 <details><summary>do i have to get on a call?</summary><p>Not always. We call when your answers make us curious, and it takes 15 minutes.</p></details>
 <details><summary>why do you need my instagram?</summary><p>To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it.</p></details>
 <details><summary>what does my match see?</summary><p>Your first name and the plan. The rest is for the date.</p></details>
 <details><summary>what if you miss the 5 days?</summary><p>Then it didn't work for you, and we'll say so. That's what the experiment is for.</p></details>
-<details><summary>which cities?</summary><p>New York first. More soon, in order of RSVPs, and whoever asked first goes first. Somewhere else? RSVP anyway.</p></details>
 <details><summary>why my number?</summary><p>To tell you when your city opens, and to set up the date. Nothing else, and your match never sees it.</p></details>
+<details><summary>which cities?</summary><p>New York first. We plan every date ourselves, so we open one city at a time, where we can be there.</p></details>
+<details><summary>what if my city isn't on the list?</summary><p>RSVP anyway, and tell us where you are. Those RSVPs decide which city opens next, and whoever asked first goes first.</p></details>
+<details><summary>how do i bring this to my city?</summary><p>RSVP, then send it to the people you'd want there too. Every RSVP from a city moves it up the list. If you know the good bars and the people who'd actually show up, <a href="/involved">help us run one there.</a></p></details>
 </div>
 <p class="faq-more">Didn't see your question, or something made you hesitate? <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>Leave us a note.</a></p>
 </div>
@@ -1054,7 +1067,7 @@ section{padding:56px 16px}
 <a class="brand" href="#" data-brand>five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
 <p class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_foot"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_foot"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></p>
-<p class="foot-links"><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy">privacy</a></p>
+<p class="foot-links"><a href="/faq">faq</a><span class="sep" aria-hidden="true">/</span><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy">privacy</a></p>
 </footer>
 <script src="/attr.js"></script>
 <script>
@@ -1420,8 +1433,10 @@ if (!cur) here.remove();
 else if (here.parentNode !== cur.firstElementChild) cur.firstElementChild.append(here);
 };
 const onMenuScroll = () => { if (!hereRaf) hereRaf = requestAnimationFrame(markHere); };
+let atTop = true;
 const setMenu = open => {
 if (open === !fmenu.hidden) return;
+if (!open && atTop) { fhead.classList.remove("on"); fhead.inert = true; }
 fmenu.hidden = !open;
 fhead.classList.toggle("open", open);
 fmenuBtn.setAttribute("aria-expanded", open);
@@ -1450,9 +1465,12 @@ typingT = setTimeout(() => { if (!typesIn(document.activeElement)) fhead.classLi
 });
 new IntersectionObserver(([e]) => {
 const on = !e.isIntersecting;
+atTop = !on;
 fhead.classList.toggle("on", on); fhead.inert = !on;
 if (!on) setMenu(false);
 }).observe($(".topbar"));
+// phones: "menu" in the topbar drops the strip in with its menu open
+$(".tb-menu").addEventListener("click", () => { fhead.classList.add("on"); fhead.inert = false; setMenu(true); track("nav_menu", { from: "top" }); fmenuBtn.focus(); });
 const once = new Set();
 const trackOnce = (name, props) => { if (!once.has(name)) { once.add(name); track(name, props); } };
 new IntersectionObserver(([e]) => {

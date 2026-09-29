@@ -27,6 +27,7 @@
     { "source": "/c/01", "destination": "/index.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/involved", "destination": "/involved.html" },
+    { "source": "/faq", "destination": "/faq.html" },
     { "source": "/admin", "destination": "/admin.html" }
   ]
 }
