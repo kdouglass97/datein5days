@@ -507,7 +507,18 @@ read, quoted, and repeated, by search engines and AI tools alike.
 - `index.html` carries JSON-LD (`WebSite` + `Organization`) naming the founders. Keep it in
   step with `#team`.
 
-**The header menu is hand-listed in three places.** Its targets are the section ids `#idea`
+**`/story`** (`story.html`, added 2026-09-29; `/why` 307s to it) is the mission and founder
+page, in the `/involved` frame. Its interactive parts: a profile/answers toggle (the thesis as one
+person read two ways), flip cards for the founders, a timeline the pen inks down as you scroll,
+a "what we crossed out" list struck through on reveal (tap for what replaced each), and
+**Haven**, the pigeon from `note.js`, in a yard: tap the yard to drop crumbs and Haven walks
+over and pecks; tap Haven for a line. A small Haven perches on the mission card. Haven is the
+hand, never the printed form: same pen filter, same ink. Its copy makes no claims beyond
+§1–§3; the founders' letter is where a real origin anecdote from Kai and Ruby would go.
+On desktop, "our story" sits in every topbar and floating strip; on phones (≤720px topbar,
+≤640px strip) it lives in the menu card's list and the footer.
+
+**The header menu is hand-listed in four places** (index, involved, privacy, story). Its targets are the section ids `#idea`
 `#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
 `privacy.html` link to the same ones as `/#faq` (the fragment survives the `/` redirect).
 Rename a section and update all three menus. The social glyphs are hand-copied the same way
