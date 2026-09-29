@@ -35,8 +35,10 @@
 { "@type": "Question", "name": "Why do you need my Instagram?", "acceptedAnswer": { "@type": "Answer", "text": "To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it." } },
 { "@type": "Question", "name": "What does my match see?", "acceptedAnswer": { "@type": "Answer", "text": "Your first name and the plan. The rest is for the date." } },
 { "@type": "Question", "name": "What if you miss the 5 days?", "acceptedAnswer": { "@type": "Answer", "text": "Then it didn't work for you, and we'll say so. That's what the experiment is for." } },
-{ "@type": "Question", "name": "Which cities?", "acceptedAnswer": { "@type": "Answer", "text": "New York first. More soon, in order of RSVPs, and whoever asked first goes first. Somewhere else? RSVP anyway." } },
-{ "@type": "Question", "name": "Why my number?", "acceptedAnswer": { "@type": "Answer", "text": "To tell you when your city opens, and to set up the date. Nothing else, and your match never sees it." } }
+{ "@type": "Question", "name": "Why my number?", "acceptedAnswer": { "@type": "Answer", "text": "To tell you when your city opens, and to set up the date. Nothing else, and your match never sees it." } },
+{ "@type": "Question", "name": "Which cities?", "acceptedAnswer": { "@type": "Answer", "text": "New York first. We plan every date ourselves, so we open one city at a time, where we can be there." } },
+{ "@type": "Question", "name": "What if my city isn't on the list?", "acceptedAnswer": { "@type": "Answer", "text": "RSVP anyway, and tell us where you are. Those RSVPs decide which city opens next, and whoever asked first goes first." } },
+{ "@type": "Question", "name": "How do I bring this to my city?", "acceptedAnswer": { "@type": "Answer", "text": "RSVP, then send it to the people you'd want there too. Every RSVP from a city moves it up the list. If you know the good bars and the people who'd actually show up, help us run one there: datein5days.com/involved." } }
 ]
 }
 </script>
@@ -243,7 +245,7 @@ mark{color:inherit;background:linear-gradient(100deg,transparent 2%,rgba(242,195
 .none{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;padding:18px 0 8px}
 .none[hidden]{display:none}
 .none p{margin:0;font-size:15px}
-.none a,.faq-more a{font-weight:700;text-underline-offset:3px}
+.none a,.faq-more a,.qs details p a{font-weight:700;text-underline-offset:3px}
 .none svg{width:96px;height:auto;overflow:visible}
 .none path,.none circle,.still path,.still circle{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .none .thin,.still .thin{stroke-width:1.2}
@@ -375,10 +377,10 @@ footer .soc a{padding:8px;margin:-8px}
 </div>
 <p class="hint" aria-hidden="true">this is haven. tap to say hi</p>
 <h1>fair questions.</h1>
-<p class="draw" data-reveal>What people ask before they RSVP, <span class="mk">answered plainly.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span> Anything we missed, Haven carries to us.</p>
+<p class="draw" data-reveal>What it costs, who picks, and why we ask for what we ask, <span class="mk">answered plainly.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span> Anything we missed, Haven carries to us.</p>
 </div>
 </header>
-<svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16C820 24 400 48 0 70Z" fill="#4F6B45"/><path d="M0 70C400 48 820 24 1200 16" fill="none" stroke="#EDEAE1" stroke-width="8" vector-effect="non-scaling-stroke"/></svg>
+<svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16L0 70Z" fill="#4F6B45"/><path d="M0 70L1200 16" fill="none" stroke="#EDEAE1" stroke-width="10" vector-effect="non-scaling-stroke"/></svg>
 
 <main class="wrap">
 <section class="paper kraft faq-card tape" aria-labelledby="faq-h">
@@ -414,18 +416,20 @@ footer .soc a{padding:8px;margin:-8px}
 <button type="button" class="chip" data-topic="" aria-pressed="true">all</button>
 <button type="button" class="chip" data-topic="date" aria-pressed="false">the date</button>
 <button type="button" class="chip" data-topic="you" aria-pressed="false">about you</button>
-<button type="button" class="chip" data-topic="experiment" aria-pressed="false">the experiment</button>
+<button type="button" class="chip" data-topic="cities" aria-pressed="false">cities</button>
 </div>
-<p class="tally"><span data-count role="status">8 questions</span><button type="button" class="all" data-all>open all</button></p>
+<p class="tally"><span data-count role="status">10 questions</span><button type="button" class="all" data-all>open all</button></p>
 <div class="qs">
 <details id="who-picks" data-topic="date"><summary><span class="qn">no.01<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">who picks my match?</span><i aria-hidden="true">+</i></summary><p>We do, by hand, from your answers. No feed, no swiping.</p></details>
-<details id="cost" data-topic="experiment"><summary><span class="qn">no.02<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what does it cost?</span><i aria-hidden="true">+</i></summary><p>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
+<details id="cost" data-topic="date"><summary><span class="qn">no.02<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what does it cost?</span><i aria-hidden="true">+</i></summary><p>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
 <details id="call" data-topic="you"><summary><span class="qn">no.03<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">do i have to get on a call?</span><i aria-hidden="true">+</i></summary><p>Not always. We call when your answers make us curious, and it takes 15 minutes.</p></details>
 <details id="instagram" data-topic="you"><summary><span class="qn">no.04<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">why do you need my instagram?</span><i aria-hidden="true">+</i></summary><p>To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it.</p></details>
 <details id="match-sees" data-topic="date"><summary><span class="qn">no.05<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what does my match see?</span><i aria-hidden="true">+</i></summary><p>Your first name and the plan. The rest is for the date.</p></details>
 <details id="five-days" data-topic="date"><summary><span class="qn">no.06<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what if you miss the 5 days?</span><i aria-hidden="true">+</i></summary><p>Then it didn't work for you, and we'll say so. That's what the experiment is for.</p></details>
-<details id="cities" data-topic="experiment"><summary><span class="qn">no.07<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">which cities?</span><i aria-hidden="true">+</i></summary><p>New York first. More soon, in order of RSVPs, and whoever asked first goes first. Somewhere else? RSVP anyway.</p></details>
-<details id="number" data-topic="you"><summary><span class="qn">no.08<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">why my number?</span><i aria-hidden="true">+</i></summary><p>To tell you when your city opens, and to set up the date. Nothing else, and your match never sees it.</p></details>
+<details id="number" data-topic="you"><summary><span class="qn">no.07<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">why my number?</span><i aria-hidden="true">+</i></summary><p>To tell you when your city opens, and to set up the date. Nothing else, and your match never sees it.</p></details>
+<details id="cities" data-topic="cities"><summary><span class="qn">no.08<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">which cities?</span><i aria-hidden="true">+</i></summary><p>New York first. We plan every date ourselves, so we open one city at a time, where we can be there.</p></details>
+<details id="my-city" data-topic="cities"><summary><span class="qn">no.09<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what if my city isn't on the list?</span><i aria-hidden="true">+</i></summary><p>RSVP anyway, and tell us where you are. Those RSVPs decide which city opens next, and whoever asked first goes first.</p></details>
+<details id="bring-it" data-topic="cities"><summary><span class="qn">no.10<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">how do i bring this to my city?</span><i aria-hidden="true">+</i></summary><p>RSVP, then send it to the people you'd want there too. Every RSVP from a city moves it up the list. If you know the good bars and the people who'd actually show up, <a href="/involved">help us run one there.</a></p></details>
 </div>
 <div class="none" hidden>
 <svg viewBox="0 0 130 80" aria-hidden="true"><g filter="url(#pen)">
@@ -438,7 +442,7 @@ footer .soc a{padding:8px;margin:-8px}
 <p class="faq-more">Didn't see your question, or something made you hesitate? <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>Leave us a note.</a></p>
 </section>
 
-<section class="paper still" aria-labelledby="still-h">
+<section class="paper still tape" aria-labelledby="still-h">
 <h2 id="still-h">still wondering?</h2>
 <p>Write it down. Haven carries it to us, and it's the two of us reading.</p>
 <div class="walkway">
@@ -554,15 +558,24 @@ new IntersectionObserver(([e], o) => { if (e.isIntersecting) { o.disconnect(); s
 const q = $("#q"), clear = $(".clear"), count = $("[data-count]"), allBtn = $("[data-all]"), none = $(".none");
 const items = $$(".qs details").map(d => {
 const qt = $(".qt", d), p = $("p", d);
-return { d, qt, p, q: qt.textContent, a: p.textContent, hay: (qt.textContent + " " + p.textContent).toLowerCase() };
+return { d, qt, p, q: qt.innerHTML, a: p.innerHTML, at: p.textContent, hay: (qt.textContent + " " + p.textContent).toLowerCase() };
 });
 const total = items.length;
 let topic = "";
-const esc = s => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const hl = (text, words) => {
-if (!words.length) return esc(text);
+// restore the markup, then mark matches in its text nodes only, so a link in an answer survives
+const hl = (el, html, words) => {
+el.innerHTML = html;
+if (!words.length) return;
 const re = new RegExp("(" + words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")", "gi");
-return text.split(re).map((s, i) => i % 2 ? `<mark>${esc(s)}</mark>` : esc(s)).join("");
+const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), texts = [];
+while (walk.nextNode()) texts.push(walk.currentNode);
+for (const t of texts) {
+const parts = t.data.split(re);
+if (parts.length < 2) continue;
+const frag = document.createDocumentFragment();
+parts.forEach((s, i) => { if (!s) return; if (i % 2) { const m = document.createElement("mark"); m.textContent = s; frag.append(m); } else frag.append(s); });
+t.replaceWith(frag);
+}
 };
 const syncAll = () => {
 const shown = items.filter(it => !it.d.hidden);
@@ -576,10 +589,10 @@ let n = 0;
 for (const it of items) {
 const hit = (!topic || it.d.dataset.topic === topic) && words.every(w => it.hay.includes(w));
 it.d.hidden = !hit;
-it.qt.innerHTML = hl(it.q, words);
-it.p.innerHTML = hl(it.a, words);
+hl(it.qt, it.q, words);
+hl(it.p, it.a, words);
 // an answer that holds the word opens, so the highlight shows where it is
-if (hit && words.length) it.d.open = words.some(w => it.a.toLowerCase().includes(w));
+if (hit && words.length) it.d.open = words.some(w => it.at.toLowerCase().includes(w));
 if (hit) n++;
 }
 none.hidden = n > 0;

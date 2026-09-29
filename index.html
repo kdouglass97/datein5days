@@ -81,7 +81,9 @@ h1,h2,.slider-value,.front .ph{--opsz:18}
 .hero h1{--opsz:24}
 [hidden]{display:none!important}
 .hero{position:relative;overflow:hidden;padding:calc(22px + env(safe-area-inset-top)) 0 72px;
-background:radial-gradient(ellipse 400% 140% at 0% -45%,var(--grass) 0 67.6%,var(--line) 67.7% 69.2%,var(--clay) 69.3%)}
+/* the same straight diagonal as the other pages' arc: about 3deg, rising to the right, a 10px cream rule.
+   the one-pixel ramps keep the edges from stepping */
+background:linear-gradient(177deg,var(--grass) 0 calc(49% - 5.5px),var(--line) calc(49% - 4.5px) calc(49% + 4.5px),var(--clay) calc(49% + 5.5px))}
 .topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
 .topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
 .topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
@@ -379,7 +381,7 @@ background-image:linear-gradient(to right,var(--rule) 1px,transparent 1px);backg
 .faq details[open] summary::after{transform:rotate(45deg)}
 .faq p{margin:0 0 20px;max-width:58ch}
 .faq-more{margin:18px 0 8px;padding-top:16px;border-top:1px dashed rgba(70,85,58,.55);font-size:15px}
-.faq-more a{font-weight:700;text-underline-offset:3px}
+.faq-more a,.faq p a{font-weight:700;text-underline-offset:3px}
 footer{color:var(--line);text-align:center;padding:24px 20px 60px;font-size:14px}
 footer .brand{display:block;margin-bottom:6px;font-size:30px}
 footer p{margin:4px 0}
@@ -1002,8 +1004,10 @@ section{padding:56px 16px}
 <details><summary>why do you need my instagram?</summary><p>To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it.</p></details>
 <details><summary>what does my match see?</summary><p>Your first name and the plan. The rest is for the date.</p></details>
 <details><summary>what if you miss the 5 days?</summary><p>Then it didn't work for you, and we'll say so. That's what the experiment is for.</p></details>
-<details><summary>which cities?</summary><p>New York first. More soon, in order of RSVPs, and whoever asked first goes first. Somewhere else? RSVP anyway.</p></details>
 <details><summary>why my number?</summary><p>To tell you when your city opens, and to set up the date. Nothing else, and your match never sees it.</p></details>
+<details><summary>which cities?</summary><p>New York first. We plan every date ourselves, so we open one city at a time, where we can be there.</p></details>
+<details><summary>what if my city isn't on the list?</summary><p>RSVP anyway, and tell us where you are. Those RSVPs decide which city opens next, and whoever asked first goes first.</p></details>
+<details><summary>how do i bring this to my city?</summary><p>RSVP, then send it to the people you'd want there too. Every RSVP from a city moves it up the list. If you know the good bars and the people who'd actually show up, <a href="/involved">help us run one there.</a></p></details>
 </div>
 <p class="faq-more">Didn't see your question, or something made you hesitate? <a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>Leave us a note.</a></p>
 </div>

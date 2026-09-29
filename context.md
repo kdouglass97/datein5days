@@ -352,7 +352,7 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   read stays level, and the page peeking out beneath it takes the tilt. The pen marks only two
   promises, "do not sell" and "no later than 7 days". The notice's words are legal text:
   restyle them, never reword them (headings are lowercased, nothing else changed).
-- **`/faq` wears the `/involved` frame too** (added 2026-09-29): the same eight questions as the
+- **`/faq` wears the `/involved` frame too** (added 2026-09-29): the same ten questions as the
   landing page's `#faq`, on their own page for anyone who wants answers before the pitch. It's
   linked as "faq" in every header strip and hero topbar and every footer. **Desktop headers
   read the same on every page: experiment no. 01 / faq / get involved** (plus privacy, on
@@ -370,7 +370,14 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   question has an id (`/faq#cities`) that opens it. **The questions are hand-copied in three
   places**: `index.html`'s `#faq`, `faq.html`'s list, and `faq.html`'s `FAQPage` JSON-LD. Change
   one, change all three. The cost answer on `/faq` is static: flipping `paywall` needs it
-  edited by hand.
+  edited by hand. The last three are about cities and end on "how do i bring this to my city?",
+  which hands off to `/involved`: an out-of-town reader should leave with something to do, not
+  just a no. Answers may hold a link; the find field marks text nodes only, so links survive.
+- **The divider under every hero is one straight diagonal**: about 3°, rising to the right, a
+  10px cream rule. Subpages draw it as the `.arc` SVG; the landing page draws it as a hard-stop
+  `linear-gradient(177deg…)` on `.hero`, because the envelope sits across it. Until 2026-09-29
+  the landing page used an ellipse (`radial-gradient`), so its line curved and its thickness
+  grew with the hero's height while the subpages held 8px. Keep the two in step.
 - **The favicon is the envelope's wax seal**: clay, an italic Bodoni 5, the inner ring
   (`share/icon.html`, rendered with the OG card by `node share/render.js`; added 2026-09-26).
   Below 48px the 5 goes heavier and the ring goes, the same hairline problem as above at its
