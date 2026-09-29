@@ -352,6 +352,18 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   read stays level, and the page peeking out beneath it takes the tilt. The pen marks only two
   promises, "do not sell" and "no later than 7 days". The notice's words are legal text:
   restyle them, never reword them (headings are lowercased, nothing else changed).
+- **`/faq` wears the `/involved` frame too** (added 2026-09-29): the same eight questions as the
+  landing page's `#faq`, on their own page for anyone who wants answers before the pitch. It's
+  linked as "faq" in every header strip and hero topbar (hidden ≤640px, where it lives in the
+  menu card's foot) and every footer. The printed form is the numbered list, the find field and
+  the topic chips; the hand is the clay pen loop that circles the number of an open question and
+  the highlighter pass over a search hit. **Haven**, our pigeon (the same sketch `note.js` uses),
+  stands on the sealed envelope in the hero: the head follows the pointer, a tap gets a line typed
+  into a paper scrap, and at the foot Haven paces with a letter and opens "leave us a note". Each
+  question has an id (`/faq#cities`) that opens it. **The questions are hand-copied in three
+  places**: `index.html`'s `#faq`, `faq.html`'s list, and `faq.html`'s `FAQPage` JSON-LD. Change
+  one, change all three. The cost answer on `/faq` is static: flipping `paywall` needs it
+  edited by hand.
 - **The favicon is the envelope's wax seal**: clay, an italic Bodoni 5, the inner ring
   (`share/icon.html`, rendered with the OG card by `node share/render.js`; added 2026-09-26).
   Below 48px the 5 goes heavier and the ring goes, the same hairline problem as above at its
@@ -458,7 +470,7 @@ on push to `main`. Google Apps Script Web App as the form backend, writing to a 
 Sheet. No build step, no framework, nothing external except the PostHog snippet and
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
-**Repo, flat at root:** the pages (`index.html`, `involved.html`, `privacy.html`, `404.html`,
+**Repo, flat at root:** the pages (`index.html`, `faq.html`, `involved.html`, `privacy.html`, `404.html`,
 and `admin.html`, the team dashboard),
 `note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
 `.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
@@ -475,6 +487,7 @@ The QR code is printed. Its target can never change.
 /rsvp      307 →  /c/01?go=rsvp
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
+/faq       rewrite → /faq.html
 /admin     rewrite → /admin.html   the team dashboard, password only, §8
 
 /ig /tt /invite /@<name>   307 →  /c/01?src=…   the link book, §9
@@ -497,7 +510,7 @@ As of 2026-09-26 the site invites crawlers in. The invitation is marketing: we w
 read, quoted, and repeated, by search engines and AI tools alike.
 
 - `robots.txt` allows everyone, AI training and search crawlers included, and points to
-  `sitemap.xml`, which lists `/c/01` and `/involved`. A new public page goes in the sitemap.
+  `sitemap.xml`, which lists `/c/01`, `/faq` and `/involved`. A new public page goes in the sitemap.
 - `/privacy` is `noindex` by design. Never `Disallow` it in `robots.txt`: a blocked page
   can't show Google its `noindex`, and the bare URL can get indexed anyway.
 - `/c/01` and `/involved` carry a canonical tag, which folds every `?src=` tag, `?go=rsvp`,
