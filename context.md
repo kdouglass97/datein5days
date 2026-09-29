@@ -354,10 +354,17 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   restyle them, never reword them (headings are lowercased, nothing else changed).
 - **`/faq` wears the `/involved` frame too** (added 2026-09-29): the same eight questions as the
   landing page's `#faq`, on their own page for anyone who wants answers before the pitch. It's
-  linked as "faq" in every header strip and hero topbar (hidden ≤640px, where it lives in the
-  menu card's foot) and every footer. The printed form is the numbered list, the find field and
+  linked as "faq" in every header strip and hero topbar and every footer. **Desktop headers
+  read the same on every page: experiment no. 01 / faq / get involved** (plus privacy, on
+  `/privacy`), in that order: the thing, the questions about it, then going further. On phones
+  the topbar keeps only the cohort number and the page you're on; the rest are in the menu card.
+  "leave us a note" stays out of the headers: it opens a sheet rather than going somewhere, and
+  rsvp is the header's one action. The printed form is the numbered list, the find field and
   the topic chips; the hand is the clay pen loop that circles the number of an open question and
-  the highlighter pass over a search hit. **Haven**, our pigeon (the same sketch `note.js` uses),
+  the highlighter pass over a search hit, and beside the "questions" heading a **tin-can
+  telephone** (a "?" rides the string over, a "!" comes back: asking, answered by hand; it
+  plays once on arrival and on every tap). **"who picks my match?" is always question one**,
+  on both pages: it is the whole proposition in one answer. **Haven**, our pigeon (the same sketch `note.js` uses),
   stands on the sealed envelope in the hero: the head follows the pointer, a tap gets a line typed
   into a paper scrap, and at the foot Haven paces with a letter and opens "leave us a note". Each
   question has an id (`/faq#cities`) that opens it. **The questions are hand-copied in three

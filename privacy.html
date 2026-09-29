@@ -88,6 +88,7 @@ transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3
 .fbar .btn{padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag)}
 /* phones: rsvp is the strip's one call to action; privacy waits in the menu */
 @media (max-width:640px){.fbar > a:not(.brand,.btn){display:none}}
+.fbar .xp{display:none}
 @media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
 .fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
 padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
@@ -203,7 +204,9 @@ footer .soc a{padding:8px;margin:-8px}
 <nav class="fhead" aria-label="Site" inert>
 <div class="fbar">
 <a class="brand" href="/">five days</a>
+<a href="/"><span class="xp">experiment </span>no. 01</a>
 <a href="/faq">faq</a>
+<a href="/involved">get involved</a>
 <a href="/privacy" aria-current="page"><span class="here">privacy<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></a>
 <button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
 <div class="fmenu" id="fmenu" hidden>
@@ -222,7 +225,7 @@ footer .soc a{padding:8px;margin:-8px}
 </nav>
 
 <header class="hero">
-<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><a href="/privacy" aria-current="page">privacy</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/involved">get involved</a> &nbsp;/&nbsp; </span><a href="/privacy" aria-current="page">privacy</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="intro">
 <svg class="sk sealed draw" data-reveal viewBox="0 0 180 124" aria-hidden="true">
 <g class="washes" filter="url(#wash)">

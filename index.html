@@ -464,6 +464,7 @@ transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3
 .fhead.at-rsvp .fbar .btn{opacity:0;visibility:hidden}
 /* phones: rsvp is the strip's one call to action; get involved waits in the menu */
 @media (max-width:640px){.fbar > a:not(.brand,.btn){display:none}}
+@media (max-width:900px){.fbar .xp{display:none}}
 @media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
 .fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
 padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
@@ -680,6 +681,7 @@ section{padding:56px 16px}
 <nav class="fhead" aria-label="Site" inert>
 <div class="fbar">
 <a class="brand" href="#" data-brand>five days</a>
+<a href="#" aria-current="page" data-track="nav_float_home"><span class="xp">experiment </span>no. 01</a>
 <a href="/faq" data-track="nav_float_faq">faq</a>
 <a href="/involved" data-track="nav_float_involved">get involved</a>
 <button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
@@ -699,7 +701,7 @@ section{padding:56px 16px}
 </div>
 </nav>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq" data-track="nav_faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#" aria-current="page"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq" data-track="nav_faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="stage">
 <div class="env-shadow" aria-hidden="true"></div>
 <div class="env"><div class="env-tilt">
@@ -994,8 +996,8 @@ section{padding:56px 16px}
 <div class="paper kraft faq-card">
 <h2 id="faq-h">questions</h2>
 <div class="faq">
-<details><summary>what does it cost?</summary><p data-cost-long>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
 <details><summary>who picks my match?</summary><p>We do, by hand, from your answers. No feed, no swiping.</p></details>
+<details><summary>what does it cost?</summary><p data-cost-long>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
 <details><summary>do i have to get on a call?</summary><p>Not always. We call when your answers make us curious, and it takes 15 minutes.</p></details>
 <details><summary>why do you need my instagram?</summary><p>To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it.</p></details>
 <details><summary>what does my match see?</summary><p>Your first name and the plan. The rest is for the date.</p></details>

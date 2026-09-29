@@ -29,8 +29,8 @@
 "@type": "FAQPage",
 "url": "https://datein5days.com/faq",
 "mainEntity": [
-{ "@type": "Question", "name": "What does it cost?", "acceptedAnswer": { "@type": "Answer", "text": "Nothing while we test it. If we keep going, you'll see the price before you ever pay." } },
 { "@type": "Question", "name": "Who picks my match?", "acceptedAnswer": { "@type": "Answer", "text": "We do, by hand, from your answers. No feed, no swiping." } },
+{ "@type": "Question", "name": "What does it cost?", "acceptedAnswer": { "@type": "Answer", "text": "Nothing while we test it. If we keep going, you'll see the price before you ever pay." } },
 { "@type": "Question", "name": "Do I have to get on a call?", "acceptedAnswer": { "@type": "Answer", "text": "Not always. We call when your answers make us curious, and it takes 15 minutes." } },
 { "@type": "Question", "name": "Why do you need my Instagram?", "acceptedAnswer": { "@type": "Answer", "text": "To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it." } },
 { "@type": "Question", "name": "What does my match see?", "acceptedAnswer": { "@type": "Answer", "text": "Your first name and the plan. The rest is for the date." } },
@@ -106,6 +106,7 @@ transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3
 .fbar .btn{padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag)}
 /* phones: rsvp is the strip's one call to action; faq and get involved wait in the menu */
 @media (max-width:640px){.fbar > a:not(.brand,.btn){display:none}}
+@media (max-width:900px){.fbar .xp{display:none}}
 @media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
 .fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
 padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
@@ -181,7 +182,7 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 /* the questions: the printed form. numbered, ruled, and a pen circles the number of whatever you open */
 .wrap{padding:26px 16px 0}
 .faq-card{max-width:680px;margin:0 auto;padding:40px clamp(20px,6vw,52px) 22px;transform:rotate(-.5deg)}
-.faq-card h2{font-size:clamp(38px,6vw,52px);letter-spacing:-.03em;line-height:1;margin:0 0 18px}
+.faq-card h2{font-size:clamp(38px,6vw,52px);letter-spacing:-.03em;line-height:1}
 .find{display:flex;align-items:center;gap:10px;border-bottom:1.5px solid rgba(70,85,58,.55);padding:2px 0 6px;transition:border-color .2s}
 .find:focus-within{border-color:var(--tag)}
 .find label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;opacity:.75}
@@ -216,6 +217,27 @@ details[open] .qn svg{opacity:1;stroke-dashoffset:0;transition:stroke-dashoffset
 @media (max-width:420px){.qs summary{grid-template-columns:2.6em 1fr 22px}.qs details p{margin-left:2.6em}.qt{font-size:21px}}
 .qs details.fresh p{animation:fadeDown .3s ease-out}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}}
+/* beside the heading, the hand: a tin-can telephone. a question rides the string over, an answer rides back */
+.card-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 18px}
+.card-head h2{margin:0}
+.line{flex:none;width:clamp(128px,34vw,236px);margin:0 -10px -2px 0;padding:0;border:0;background:none;cursor:pointer;color:inherit}
+.line:focus-visible{outline-offset:2px}
+.line svg{display:block;width:100%;height:auto;overflow:visible}
+.line path,.line ellipse{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.line .thin{stroke-width:1.5}
+.line .glyph{font:italic 500 26px/1 var(--serif);fill:var(--clay);--opsz:18}
+.line .str,.line .wv{transform-box:view-box}
+.line .str{transform-origin:80px 40px}
+.line .wv{opacity:0}
+.line.twang .str{animation:twang .9s cubic-bezier(.3,.7,.4,1)}
+.line.twang .wv-l{animation:pulse 1s ease-out}
+.line.twang .wv-r{animation:pulse 1s 1.5s ease-out}
+.line .can-r{transform-box:view-box;transform-origin:138px 40px}
+.line.twang .can-r{animation:jiggle .5s 1.4s ease-in-out}
+@keyframes twang{0%,100%{transform:scaleY(1)}20%{transform:scaleY(1.9)}40%{transform:scaleY(.5)}60%{transform:scaleY(1.3)}80%{transform:scaleY(.9)}}
+@keyframes pulse{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+@keyframes jiggle{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg)}65%{transform:rotate(5deg)}}
+@media (max-width:360px){.line{width:108px}}
 /* a search result gets a highlighter pass: the hand, over the printed matter */
 mark{color:inherit;background:linear-gradient(100deg,transparent 2%,rgba(242,195,143,.9) 6%,rgba(242,195,143,.75) 92%,transparent 98%);padding:0 .1em;margin:0 -.1em;border-radius:3px}
 .none{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;padding:18px 0 8px}
@@ -300,6 +322,7 @@ footer .soc a{padding:8px;margin:-8px}
 <nav class="fhead" aria-label="Site" inert>
 <div class="fbar">
 <a class="brand" href="/">five days</a>
+<a href="/"><span class="xp">experiment </span>no. 01</a>
 <a href="/faq" aria-current="page"><span class="here">faq<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></a>
 <a href="/involved">get involved</a>
 <button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
@@ -319,7 +342,7 @@ footer .soc a{padding:8px;margin:-8px}
 </nav>
 
 <header class="hero">
-<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><a href="/faq" aria-current="page">faq</a><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><a href="/faq" aria-current="page">faq</a><span class="tb-page"> &nbsp;/&nbsp; <a href="/involved">get involved</a></span><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="intro">
 <div class="perch">
 <button type="button" class="haven" aria-label="Haven, our pigeon. Tap to say hello." aria-describedby="haven-says">
@@ -359,7 +382,29 @@ footer .soc a{padding:8px;margin:-8px}
 
 <main class="wrap">
 <section class="paper kraft faq-card tape" aria-labelledby="faq-h">
+<div class="card-head">
 <h2 id="faq-h">questions</h2>
+<button type="button" class="line" aria-label="Send a question down the line">
+<svg class="draw" data-reveal viewBox="0 0 160 76" aria-hidden="true">
+<g class="washes" filter="url(#wash)">
+<ellipse cx="22" cy="42" rx="16" ry="14" style="fill:#A9B89A;opacity:.5"/>
+<ellipse cx="138" cy="42" rx="16" ry="14" style="fill:#E7B48C;opacity:.55"/>
+</g>
+<g filter="url(#pen)">
+<path class="ink" pathLength="1" d="M10 29L27 32V48L10 51ZM14 30V50"/>
+<ellipse class="ink" pathLength="1" style="--dl:.25s" cx="28" cy="40" rx="3.6" ry="8.6"/>
+<g class="can-r"><path class="ink" pathLength="1" style="--dl:.35s" d="M150 29L133 32V48L150 51ZM146 30V50"/>
+<ellipse class="ink" pathLength="1" style="--dl:.55s" cx="132" cy="40" rx="3.6" ry="8.6"/></g>
+<g class="str"><path class="ink thin" pathLength="1" style="--dl:.7s" d="M31 40C60 56 100 56 129 40"/></g>
+<path class="wv wv-l thin" d="M5 34C2 38 2 42 5 46M1 31C-3 37-3 43 1 49"/>
+<path class="wv wv-r thin" d="M155 34C158 38 158 42 155 46M159 31C163 37 163 43 159 49"/>
+</g>
+<path id="wire" d="M31 36C60 52 100 52 129 36" fill="none" stroke="none"/>
+<text class="glyph" text-anchor="middle" dy="-4" opacity="0">?<animateMotion id="ask" dur="1.3s" begin="indefinite" calcMode="spline" keyTimes="0;1" keySplines=".45 0 .35 1"><mpath href="#wire"/></animateMotion><animate attributeName="opacity" dur="1.3s" begin="ask.begin" values="0;1;1;0" keyTimes="0;.15;.8;1"/></text>
+<text class="glyph" text-anchor="middle" dy="-4" opacity="0">!<animateMotion id="reply" dur="1.1s" begin="ask.end+.35s" keyPoints="1;0" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .35 1"><mpath href="#wire"/></animateMotion><animate attributeName="opacity" dur="1.1s" begin="reply.begin" values="0;1;1;0" keyTimes="0;.15;.8;1"/></text>
+</svg>
+</button>
+</div>
 <div class="find" role="search">
 <label for="q">find</label>
 <input id="q" type="search" placeholder="cost, instagram, cities…" autocomplete="off" spellcheck="false" enterkeyhint="search">
@@ -373,8 +418,8 @@ footer .soc a{padding:8px;margin:-8px}
 </div>
 <p class="tally"><span data-count role="status">8 questions</span><button type="button" class="all" data-all>open all</button></p>
 <div class="qs">
-<details id="cost" data-topic="experiment"><summary><span class="qn">no.01<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what does it cost?</span><i aria-hidden="true">+</i></summary><p>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
-<details id="who-picks" data-topic="date"><summary><span class="qn">no.02<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">who picks my match?</span><i aria-hidden="true">+</i></summary><p>We do, by hand, from your answers. No feed, no swiping.</p></details>
+<details id="who-picks" data-topic="date"><summary><span class="qn">no.01<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">who picks my match?</span><i aria-hidden="true">+</i></summary><p>We do, by hand, from your answers. No feed, no swiping.</p></details>
+<details id="cost" data-topic="experiment"><summary><span class="qn">no.02<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what does it cost?</span><i aria-hidden="true">+</i></summary><p>Nothing while we test it. If we keep going, you'll see the price before you ever pay.</p></details>
 <details id="call" data-topic="you"><summary><span class="qn">no.03<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">do i have to get on a call?</span><i aria-hidden="true">+</i></summary><p>Not always. We call when your answers make us curious, and it takes 15 minutes.</p></details>
 <details id="instagram" data-topic="you"><summary><span class="qn">no.04<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">why do you need my instagram?</span><i aria-hidden="true">+</i></summary><p>To make sure everyone you meet is a real person. We look at your profile to confirm, and that's all we do with it. No Instagram? A clear photo of your face works too, and only the two of us see it.</p></details>
 <details id="match-sees" data-topic="date"><summary><span class="qn">no.05<svg aria-hidden="true"><use href="#i-loop"/></svg></span><span class="qt">what does my match see?</span><i aria-hidden="true">+</i></summary><p>Your first name and the plan. The rest is for the date.</p></details>
@@ -494,6 +539,16 @@ look.style.transform = `rotate(${dx < 0 ? -turn - 4 : turn}deg)`;
 addEventListener("pointermove", e => { px = e.clientX; py = e.clientY; if (!raf) raf = requestAnimationFrame(aim); }, { passive: true });
 document.documentElement.addEventListener("pointerleave", () => { look.style.transform = ""; });
 }
+
+// the tin-can telephone: a question goes over, an answer comes back. once on arrival, then on every tap
+const line = $(".line"), ask = $("#ask");
+const ring = () => {
+if (still || !ask.beginElement) return;
+line.classList.remove("twang"); void line.offsetWidth; line.classList.add("twang");
+ask.beginElement();
+};
+line.addEventListener("click", ring);
+new IntersectionObserver(([e], o) => { if (e.isIntersecting) { o.disconnect(); setTimeout(ring, 1500); } }, { threshold: .6 }).observe(line);
 
 // the questions: search, topics, open all, and a link for each
 const q = $("#q"), clear = $(".clear"), count = $("[data-count]"), allBtn = $("[data-all]"), none = $(".none");
