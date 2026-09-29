@@ -167,12 +167,12 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 @keyframes hop{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px) rotate(-5deg)}55%{transform:translateY(0)}72%{transform:translateY(-4px) rotate(2deg)}}
 @keyframes float{0%{opacity:0;transform:translateY(8px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-18px) scale(1.15)}}
 /* her line: a scrap of paper, typed as it's said */
-.bubble{position:absolute;left:calc(100% - 26px);top:-4px;width:max-content;max-width:min(200px,40vw);margin:0;padding:9px 12px 10px;background:var(--paper);color:var(--ink);font:13px/1.35 var(--type);text-align:left;transform:rotate(2deg);transform-origin:0 100%;box-shadow:0 10px 20px -12px rgba(0,0,0,.6);opacity:0;transition:opacity .2s,transform .25s cubic-bezier(.3,1.5,.5,1)}
+.perch .bubble{position:absolute;left:calc(100% - 26px);top:-4px;width:max-content;max-width:min(200px,40vw);margin:0;padding:9px 12px 10px;background:var(--paper);color:var(--ink);font:13px/1.35 var(--type);text-align:left;transform:rotate(2deg);transform-origin:0 100%;box-shadow:0 10px 20px -12px rgba(0,0,0,.6);opacity:0;transition:opacity .2s,transform .25s cubic-bezier(.3,1.5,.5,1)}
 .bubble::before{content:"";position:absolute;left:-7px;bottom:10px;border:7px solid transparent;border-right-color:var(--paper);border-left:0}
 .bubble.on{opacity:1;transform:rotate(-1.5deg)}
 .bubble:empty{display:none}
 .hint{margin:4px 0 22px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
-@media (max-width:520px){.bubble{left:-8px;top:4px;max-width:min(150px,40vw);transform-origin:100% 100%}.bubble::before{left:auto;right:-7px;border:7px solid transparent;border-left-color:var(--paper);border-right:0}}
+@media (max-width:520px){.perch .bubble{left:-8px;top:4px;max-width:min(150px,40vw);transform-origin:100% 100%}.bubble::before{left:auto;right:-7px;border:7px solid transparent;border-left-color:var(--paper);border-right:0}}
 
 .paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
 .kraft{background-color:var(--kraft)}
