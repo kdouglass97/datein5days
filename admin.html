@@ -733,11 +733,11 @@ function lean(R, older) {
     (a >= bar ? "clear of the noise." : `inside the noise (at ${fmt(R.n)} people it takes ${bar.toFixed(2)} to count).`);
 }
 // tier one against elsewhere: the medians and the share under 50, side by side
-function tierLean(G) {
+function tierLean(G, tiers) {
   if (!G.rows.includes("tier") || !G.rows.includes("other")) return "Needs three people on each side to compare.";
   const under = k => { const c = G.cells[k] || {}, n = SHARE_BANDS.reduce((s, [b]) => s + (c[b] || 0), 0); return pct((c["0-24"] || 0) + (c["25-49"] || 0), n); };
   const d = Math.round(G.median.tier) - Math.round(G.median.other);
-  return `Median ${Math.round(G.median.tier)}% in tier-one cities, ${Math.round(G.median.other)}% elsewhere; under 50, ${under("tier")} against ${under("other")}. ` +
+  return `Median ${Math.round(G.median.tier)}% in tier-one cities (${tiers}), ${Math.round(G.median.other)}% elsewhere; under 50, ${under("tier")} against ${under("other")}. ` +
     (Math.abs(d) < 5 ? "No real gap in the medians." : d < 0 ? "Tier one leans the hunch's way." : "Tier one leans against the hunch.");
 }
 // age × what a date is worth, the median share in each square: lighter is more independent.
@@ -769,8 +769,9 @@ function shareCard(X) {
   const setWhere = (v, label) => { shareWhere = v; redrawCrosses("share", label); };
   const label = list => k => [(list.find(([key]) => key === k) || [k, k])[1]];
   const under = ["under 50", ["0-24", "25-49"]];
+  const tiers = Sh.tier_one.join(", ");
   const unshown = G => G.unshown ? ` ${fmt(G.unshown)} ${G.unshown === 1 ? "person is" : "people are"} in rows too small to show yet.` : "";
-  return card("who keeps their own life", "The hunch: older people in tier-one cities who'd pay more for a date want to share less of their life. Question four's slider, read three ways. Each row adds up to 100%; the more of it to the left, the more independent.", { id: "share", wide: true, band: "var(--grass)" },
+  return card("who keeps their own life", `The hunch: older people in tier-one cities (${tiers}) who'd pay more for a date want to share less of their life. Question four's slider, read three ways. Each row adds up to 100%; the more of it to the left, the more independent.`, { id: "share", wide: true, band: "var(--grass)" },
     switcher("count", [["all", "everyone"], ["done", "answered all seven"]], crossWho, set),
     h("div", { class: "cross-grid" },
       h("div", { class: "cross-block" }, h("h3", { text: "age × how much of a life to share" }),
@@ -780,15 +781,15 @@ function shareCard(X) {
         ...across(Sh.price, SHARE_BANDS, label(PRICES), done, "share-price", under, "No price has three people here yet."),
         h("p", { class: "note" }, h("b", { text: "Pays more, less? " }), lean(Sh.rho.price, "Bigger spenders") + unshown(Sh.price))),
       h("div", { class: "cross-block" }, h("h3", { text: "tier-one city × how much to share" }),
+        h("p", { class: "note", text: `Tier one: ${tiers}. Listing any of them counts, whatever else someone lists.` }),
         ...across(Sh.tier, SHARE_BANDS, k => [k === "tier" ? "tier one" : k === "other" ? "elsewhere" : k], done, "share-tier", under, "Neither side has three people here yet."),
-        h("p", { class: "note" }, h("b", { text: "Big city, less? " }), tierLean(Sh.tier) + unshown(Sh.tier))),
+        h("p", { class: "note" }, h("b", { text: "Big city, less? " }), tierLean(Sh.tier, tiers) + unshown(Sh.tier))),
       h("div", { class: "cross-block" }, h("h3", { text: "all three: median share, age × what a date is worth" }),
         switcher("where, median share", [["all", "everywhere"], ["tier", "tier one"], ["other", "elsewhere"]], shareWhere, setWhere),
         medianHeat(Sh.grid[shareWhere]),
         h("p", { class: "ramp", "aria-hidden": "true" }, h("span", { text: "own life" }), [1, 2, 3, 4, 5].map(i => h("i", { class: "hc s" + i })), h("span", { text: "intertwined" })),
-        h("p", { class: "note", text: "Each square is its median, and needs three people to show one. If the hunch holds, the squares lighten toward the bottom right, and more so in tier one." }))),
-    h("p", { class: "note", text: `Tier one is ${Sh.tier_one.join(", ")}; listing any of them counts, whatever else someone lists. ` +
-      "The slider starts at 50, so the 50 column holds the untouched along with the chosen: under 50 is the cleaner read on independence. " +
+        h("p", { class: "note", text: `Each square is its median, and needs three people to show one. If the hunch holds, the squares lighten toward the bottom right, and more so in tier one (${tiers}).` }))),
+    h("p", { class: "note", text: "The slider starts at 50, so the 50 column holds the untouched along with the chosen: under 50 is the cleaner read on independence. " +
       "Only people who reached question four have an answer here. An age or price needs three people for its own row." }));
 }
 
