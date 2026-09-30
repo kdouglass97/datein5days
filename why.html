@@ -175,9 +175,17 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .memo dd{margin:0}
 .body p{margin:0 0 16px;font:400 19px/1.5 var(--serif);letter-spacing:-.005em}
 .body .open{font-size:clamp(24px,4.4vw,28px);line-height:1.2;letter-spacing:-.015em;margin-bottom:20px}
+/* the saying Ruby brought home: set off like a quote in the margin of a letter */
+.saying{margin:6px 0 22px;padding:4px 0 4px 18px;border-left:2px solid var(--clay)}
+.saying p{margin:0 0 4px!important;font:italic 400 clamp(23px,4vw,27px)/1.2 var(--serif)!important;letter-spacing:-.015em;--opsz:18}
+.saying .en{margin:0;font:14px/1.4 var(--type);opacity:.8}
+.body p.pair{font-style:italic;font-size:21px}
+.body .last{margin:4px 0 0;font:italic 400 clamp(24px,4.4vw,28px)/1.2 var(--serif);letter-spacing:-.015em;--opsz:18}
+.turn{border:0;border-top:1px dashed rgba(70,85,58,.55);margin:26px 0 26px}
+.sig.one{margin:6px 0 0}
+.sig .pola[hidden]{display:none}
+.sig:not(.one) .amp{padding-bottom:10px}
 .body .mk path{stroke:var(--clay)}
-/* a pencil note from us to us: it has to be replaced before this ships, so it can't be missed */
-.todo{display:block;margin:-4px 0 18px;padding:10px 12px;border:1.5px dashed rgba(70,85,58,.6);font:italic 14px/1.45 var(--type);color:var(--ink);opacity:.8;transform:rotate(-1deg)}
 .sig{display:flex;justify-content:flex-end;align-items:flex-end;gap:clamp(12px,4vw,22px);margin:22px 0 0}
 .sig figure{margin:0;text-align:center}
 .pola{display:block;width:74px;padding:5px 5px 14px;background:#F4F3EF;box-shadow:0 8px 16px -8px rgba(0,0,0,.55);transform:rotate(var(--r))}
@@ -342,23 +350,47 @@ footer .soc a{padding:8px;margin:-8px}
 </ol>
 </section>
 
-<article class="paper letter draw" data-reveal aria-label="A letter from Kai and Ruby">
+<article class="paper letter draw" data-reveal aria-label="A letter from the founders">
 <dl class="memo">
 <dt>to:</dt><dd>whoever's wondering</dd>
-<dt>from:</dt><dd>Kai &amp; Ruby</dd>
-<dt>re:</dt><dd>the longer version</dd>
+<dt>from:</dt><dd>Ruby &amp; Kai</dd>
+<dt>re:</dt><dd>a letter from the founders</dd>
 </dl>
 <div class="body">
-<p class="open">The best introductions we've seen didn't come from an app.</p>
-<p>They came from a friend who knew two people well enough to say: <span class="mk">you two, Thursday, this place.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.7s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
-<p class="todo" data-todo>[Kai &amp; Ruby: one or two true sentences about the introduction, or the evening, that made you start this.]</p>
-<p>So we do it by hand. We read every answer, then pick the person, the place and the time. You get a text, and a table.</p>
-<p>If the dates land, there's something here. If they don't, we'd rather know in six weeks than in two years.</p>
+<p>Many years ago, I moved to the Netherlands for a legal internship. It was my first time living away from home, and I didn’t know anyone besides my coworkers.</p>
+<p>So, naturally, I downloaded the dating apps.</p>
+<p>While I was there, I learned a Dutch saying:</p>
+<blockquote class="saying" lang="nl"><p>“Op ieder potje past een dekseltje.”</p><p class="en" lang="en">There’s a lid for every pot.</p></blockquote>
+<p>I don’t know why, but it stuck with me. I liked the idea that there isn’t one type of person everyone is supposed to want. Some lids might look more impressive than others, but the point isn’t to find the “best” lid. It’s to find <span class="mk">the one that fits.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.4s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
+<p>Over time, I started thinking about how different that felt from the way we date. We have more choice than ever, but somehow more choice doesn’t always make choosing easier.</p>
+<p>Before law school, I studied Sociology. I’ve always been curious about why we choose the people we do and why someone can look perfect on paper but feel completely wrong in real life.</p>
+<p>I don’t think there’s a formula for love. But I do think shared values matter, wanting similar things out of life matters, and some things still have to be figured out face-to-face.</p>
+</div>
+<div class="sig one"><figure><span class="pola" style="--r:3deg"><img src="/ruby.jpg" alt="Ruby" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Ruby</text></svg></figure></div>
+<hr class="turn">
+<div class="body">
+<p>I came to this from a different place.</p>
+<p>I went to school in New York, and honestly, most of what I heard from my friends about dating apps was terrible.</p>
+<p>Bad dates. Weird messages. People disappearing. Weeks of talking that never turned into anything. Obviously there were success stories too, but it felt like there were a lot more horror stories and mediocre outcomes in between.</p>
+<p>After a while, I started wondering why this had become normal.</p>
+<p>Most people just wanted to meet someone they actually liked. Somehow getting to a good date had become the hardest part.</p>
+<p>That’s what interested me about building 5days.</p>
+<p class="pair">Not another way to keep people looking.<br>A better way to help them actually meet.</p>
+</div>
+<div class="sig one"><figure><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="Kai" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Kai</text></svg></figure></div>
+<hr class="turn">
+<div class="body">
+<p>That’s really where 5days started.</p>
+<p>We ask the questions that usually come later: what matters to you, what you want your life to look like, what kind of relationship you want, and what you’re looking for in another person.</p>
+<p>Then we find someone we think might fit and plan the date.</p>
+<p>You just show up.</p>
+<p>We can help with fit. Whether you actually click is something you have to find out in person.</p>
+<p class="last">That part is yours.</p>
 </div>
 <div class="sig">
-<figure><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="Kai" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" style="--dl:1.2s">Kai</text></svg></figure>
+<figure><span class="pola" hidden style="--r:3deg"><img src="/ruby.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Ruby</text></svg></figure>
 <span class="amp" aria-hidden="true">&amp;</span>
-<figure><span class="pola" style="--r:3deg"><img src="/ruby.jpg" alt="Ruby" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" style="--dl:1.5s">Ruby</text></svg></figure>
+<figure><span class="pola" hidden style="--r:-4deg"><img src="/kai.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Kai</text></svg></figure>
 </div>
 </article>
 

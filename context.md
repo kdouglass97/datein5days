@@ -384,16 +384,19 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   preview link, 307s to it). The landing page covers what happens to you; `/why` answers the one
   thing it doesn't: who is doing this, and why trust them. It must **never re-run the pitch**:
   no thesis diagram, no founder flip cards, no timeline of the five days, since each of those
-  already has its landing section. Five blocks, under 400 words: the hero ("dating means going
+  already has its landing section. Five blocks: the hero ("dating means going
   on dates."), **"the short version"**, the letter, "what we crossed out", and "pull up a chair.".
   The short version (added 2026-09-30, because the letter alone didn't say where we're going at a
   glance) is four paper cards, one line each, with a typed label and a pen glyph: *where we're
   going* (a world where people meet, not match), *what we do* (the mission, word for word, its one
   appearance), *why* (matching interests isn't the same as matching lives) and *what's next* (New
   York first, then every major walkable city, with a pen-drawn route). The labels are plain words,
-  never "Mission", "Vision" or "Values". The letter is now the personal part only: its `re:` is
-  "the longer version", the pen underlines "you two, Thursday, this place.", and the signatures are
-  the hand (`#pen` on the names, small polaroids beside them). On this page we set up, seat and
+  never "Mission", "Vision" or "Values". The letter is the founders' own (Kai and Ruby's draft, set
+  2026-09-30, their wording kept): Ruby's part (the Netherlands, "Op ieder potje past een
+  dekseltje", set off as a quote; the pen underlines "the one that fits."), signed with her
+  polaroid; Kai's part (New York, what friends went through on the apps), signed with his; then a
+  shared close ending "That part is yours.", signed by both. Its `re:` is "a letter from the
+  founders". With it the page runs past the 400-word budget, by the founders' choice. On this page we set up, seat and
   introduce; "match" only ever describes what the apps do. "what we crossed out" is the values
   section written as refusals: the pen strikes each line on reveal, a tap shows what took its place,
   and every line must be a promise that outlives cohort 01 (so no "a subscription": free is a beta
@@ -913,8 +916,11 @@ not in `rsvps`.
 - [ ] "testing test" isn't routed to the `test` tab: `isTestName_()` matches "test" only as a
       whole first word, though §8 and the Code.js comments say it does. Decide which is right.
 - [ ] Rename the PostHog project from "Default project" and fix its app URL
-- [ ] **Kai & Ruby: write the origin sentence in `/why`'s letter.** It's the pencil note in the
-      margin (`data-todo` in `why.html`). Don't ship the page until it's replaced.
+- [ ] Kai & Ruby: the letter says "5days"; everywhere else the site says "Five Days" (or "five days"
+      in headings). Pick one before shipping `/why`.
+- [ ] Kai & Ruby: Kai's paragraph ("Bad dates. Weird messages. People disappearing.") is the kind
+      of app grievance §1 cut from the landing page on 09-24. It's fine in a personal letter, far
+      from the opening, but it's your call.
 - [ ] Kai & Ruby: your notes give "purpose" and "vision" the same two lines. The page doesn't need
       both. If you keep a purpose, it should be the why behind the vision, not a repeat of it.
 - [ ] Kai & Ruby: "meet, not match" collides with the site calling the person "your match", on
