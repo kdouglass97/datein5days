@@ -495,6 +495,12 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .fmenu li span{position:relative}
 .fmenu li svg{position:absolute;left:-3%;bottom:-6px;width:106%;height:9px;overflow:visible;pointer-events:none}
 .fmenu li path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
+/* the menu is a table of contents: the pages in the header's order, the landing page's parts typed under it */
+.fmenu ol ol{margin:-3px 0 10px;padding:0 0 0 14px;border-left:1px dashed rgba(70,85,58,.55)}
+.fmenu li li{border:0}
+.fmenu li li a{padding:7px 0;font:14px/1.25 var(--type);letter-spacing:0}
+.fmenu li [aria-current="page"]{color:var(--tag)}
+.fmenu li [aria-current="page"] > span{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:5px}
 .fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
 .fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
 .fmenu-foot .soc-row{justify-content:flex-start;padding:12px 0;font-size:13px}
@@ -706,15 +712,20 @@ section{padding:56px 16px}
 <button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
 <div class="fmenu" id="fmenu" hidden>
 <ol>
+<li><a href="#" aria-current="page"><span>experiment no. 01</span></a>
+<ol>
 <li><a href="#idea"><span>the idea</span></a></li>
 <li><a href="#how"><span>your next 5 days</span></a></li>
 <li><a href="#experiment"><span>the experiment</span></a></li>
 <li><a href="#rsvp"><span>rsvp</span></a></li>
 <li><a href="#faq"><span>questions</span></a></li>
 <li><a href="#team"><span>who's setting you up</span></a></li>
+</ol></li>
 <li><a href="/why"><span>why five days</span></a></li>
+<li><a href="/faq"><span>faq</span></a></li>
+<li><a href="/involved"><span>get involved</span></a></li>
 </ol>
-<p class="fmenu-foot"><a href="/faq">faq</a><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></span></p>
+<p class="fmenu-foot"><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></span></p>
 <svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true" data-here><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg>
 </div>
 <a class="btn" href="#rsvp" data-track="cta_float">rsvp</a>
@@ -1441,8 +1452,8 @@ const markHere = () => {
 hereRaf = 0;
 let at = "";
 for (const s of $$("main > section[id]")) if (s.getBoundingClientRect().top <= innerHeight * .35) at = "#" + s.id;
-const cur = $$("ol a", fmenu).find(a => a.getAttribute("href") === at);
-$$("ol a", fmenu).forEach(a => a === cur ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current"));
+const cur = $$("ol ol a", fmenu).find(a => a.getAttribute("href") === at);
+$$("ol ol a", fmenu).forEach(a => a === cur ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current"));
 if (!cur) here.remove();
 else if (here.parentNode !== cur.firstElementChild) cur.firstElementChild.append(here);
 };

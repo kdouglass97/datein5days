@@ -323,8 +323,14 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   393, 430 and 768. Until 2026-09-26 the top-left one covered the D on phones and tablets.
 - The **floating header** (`.fhead`, on `/c/01`, `/involved` and `/privacy`, added 2026-09-23) is the
   printed form: a paper strip that drops in once the hero's own topbar scrolls away, with a
-  "menu" card listing the page's parts. The hand is the pen underline under wherever you are
-  (live on the landing page, the current page on `/involved` and `/privacy`). On touch screens it steps aside
+  "menu" card. **The menu card is a table of contents in the header's order** (2026-09-30): the
+  four pages in italic Bodoni, *experiment no. 01 / why five days / faq / get involved*, with the
+  landing page's six parts typed small under "experiment no. 01" behind a dashed rule, like acts
+  under a title in a programme. On phones the card is the only navigation, so it must hold every
+  page in the same order as the desktop strip; don't scatter pages into its foot again. The foot
+  keeps leave us a note, privacy and the glyphs. The current page is inked in deep green and
+  underlined; on the landing page the pen underline also moves live under the part you're in
+  (the script only touches the nested list, so the page mark stays). On touch screens it steps aside
   while a text field has focus, so the questionnaire stays a clean writing surface.
   **The strip's links are typed apart with the same slash as the topbar and footer**, in a
   lighter ink, and a dashed perforation, the menu card's own rule, tears "menu +" and rsvp off
@@ -425,8 +431,8 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   ("thu, 8pm", circled by the pen) and a kraft ticket stub ("admit two", ticked). Beside the h1 on
   wide screens, in a row beneath it below 1000px. As of 2026-09-30 **it's in every header**:
   desktop topbars and strips read **experiment no. 01 / why five days / faq / get involved** (the
-  thing, why we do it, the questions, going further), and it's the last item in every menu card's
-  list. Below 860px the topbar drops the word "experiment"; on `/privacy`, which names one more
+  thing, why we do it, the questions, going further), and it's second in every menu card's
+  list, in the same order. Below 860px the topbar drops the word "experiment"; on `/privacy`, which names one more
   page, the cohort number leaves both bars below 760px. The strip is 780px wide to hold it. It's
   also in every footer, one quiet line under the landing `#team` cards ("why we're doing this →")
   and "Here's why." in the `/involved` intro.
@@ -594,8 +600,9 @@ read, quoted, and repeated, by search engines and AI tools alike.
   step with `#team`.
 
 **The header menu is hand-listed in five places** (`index.html`, `faq.html`, `involved.html`,
-`privacy.html`, `why.html`), with "why five days" as the list's last item; so are the menu card
-foot (faq, get involved, leave us a note, privacy) and the footer link row (which adds why five days). Its targets are the section ids `#idea`
+`privacy.html`, `why.html`): the four pages in header order, the six landing parts nested under
+the first; so are the menu card foot (leave us a note, privacy) and the footer link row (which
+adds why five days). Its targets are the section ids `#idea`
 `#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
 `privacy.html` link to the same ones as `/#faq` (the fragment survives the `/` redirect).
 Rename a section and update all three menus. The social glyphs are hand-copied the same way
