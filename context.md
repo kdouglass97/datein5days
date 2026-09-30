@@ -924,8 +924,8 @@ not in `rsvps`.
 - [ ] "testing test" isn't routed to the `test` tab: `isTestName_()` matches "test" only as a
       whole first word, though §8 and the Code.js comments say it does. Decide which is right.
 - [ ] Rename the PostHog project from "Default project" and fix its app URL
-- [ ] Kai & Ruby: the letter says "5days"; everywhere else the site says "Five Days" (or "five days"
-      in headings). Pick one before shipping `/why`.
+- [x] The founders' letter on `/why` says "5days", by the founders' choice (2026-09-30). The rest
+      of the site still says "Five Days" (or "five days" in headings); the letter is their voice.
 - [ ] Kai & Ruby: Kai's paragraph ("Bad dates. Weird messages. People disappearing.") is the kind
       of app grievance §1 cut from the landing page on 09-24. It's fine in a personal letter, far
       from the opening, but it's your call.
