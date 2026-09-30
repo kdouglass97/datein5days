@@ -22,7 +22,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&family=La+Belle+Aurore&family=Reenie+Beanie&display=swap" rel="stylesheet">
 <script>document.documentElement.classList.add("js")</script>
 <style>
 :root{
@@ -173,14 +173,20 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .memo{display:grid;grid-template-columns:4.2em 1fr;gap:4px 8px;margin:0 0 24px;padding:0 0 18px;border-bottom:1px dashed rgba(70,85,58,.55);font-size:14px;line-height:1.45}
 .memo dt{opacity:.7}
 .memo dd{margin:0}
-.body p{margin:0 0 16px;font:400 19px/1.5 var(--serif);letter-spacing:-.005em}
-.body .open{font-size:clamp(24px,4.4vw,28px);line-height:1.2;letter-spacing:-.015em;margin-bottom:20px}
-/* the saying Ruby brought home: set off like a quote in the margin of a letter */
-.saying{margin:6px 0 22px;padding:4px 0 4px 18px;border-left:2px solid var(--clay)}
-.saying p{margin:0 0 4px!important;font:italic 400 clamp(23px,4vw,27px)/1.2 var(--serif)!important;letter-spacing:-.015em;--opsz:18}
-.saying .en{margin:0;font:14px/1.4 var(--type);opacity:.8}
-.body p.pair{font-style:italic;font-size:21px}
-.body .last{margin:4px 0 0;font:italic 400 clamp(24px,4.4vw,28px)/1.2 var(--serif);letter-spacing:-.015em;--opsz:18}
+/* the letter is handwritten: each founder in their own hand, on ruled paper. Ruby writes in a
+   cursive (La Belle Aurore), Kai in a felt-tip print (Reenie Beanie); in the shared close they
+   pass the pen. both hands keep one line height, so the rules run through the whole letter */
+.letter{--lh:36px;--r-size:21px;--k-size:29px}
+@media (max-width:520px){.letter{--lh:32px;--r-size:18.5px;--k-size:26px}}
+.body{background:repeating-linear-gradient(to bottom,transparent 0 calc(var(--lh) - 1px),rgba(70,85,58,.16) calc(var(--lh) - 1px) var(--lh));padding-top:2px}
+.body p{margin:0;text-indent:1.4em;line-height:var(--lh)}
+.body.r p,.body p.r{font:400 var(--r-size)/var(--lh) "La Belle Aurore",cursive;color:var(--tag);letter-spacing:.005em}
+.body.k p,.body p.k{font:400 var(--k-size)/var(--lh) "Reenie Beanie",cursive;color:#34422C;letter-spacing:.01em}
+.saying{margin:0;padding:0 0 0 calc(1.4em + 4px);border:0}
+.saying p{text-indent:0!important;color:var(--clay)!important}
+.saying .en{opacity:.75}
+.body p.pair{text-indent:0}
+.body p.last{font-size:calc(var(--k-size) * 1.3);line-height:calc(var(--lh) * 1.5)}
 .turn{border:0;border-top:1px dashed rgba(70,85,58,.55);margin:26px 0 26px}
 .sig.one{margin:6px 0 0}
 .sig .pola[hidden]{display:none}
@@ -192,6 +198,8 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .pola img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center 30%}
 .sig svg{display:block;width:84px;height:40px;margin:4px auto 0;overflow:visible}
 .sig text{font:italic 400 30px/1 var(--serif);fill:var(--tag);--opsz:14}
+.sig text.r{font:400 27px/1 "La Belle Aurore",cursive}
+.sig text.k{font:400 38px/1 "Reenie Beanie",cursive;fill:#34422C}
 .sig .amp{align-self:center;font:italic 400 24px/1 var(--serif);color:var(--tag);padding-bottom:30px}
 .js .draw .sig text{opacity:0;transition:opacity .8s var(--dl,.2s)}
 .js .draw.in .sig text{opacity:1}
@@ -356,7 +364,7 @@ footer .soc a{padding:8px;margin:-8px}
 <dt>from:</dt><dd>Ruby &amp; Kai</dd>
 <dt>re:</dt><dd>a letter from the founders</dd>
 </dl>
-<div class="body">
+<div class="body r">
 <p>Many years ago, I moved to the Netherlands for a legal internship. It was my first time living away from home, and I didn’t know anyone besides my coworkers.</p>
 <p>So, naturally, I downloaded the dating apps.</p>
 <p>While I was there, I learned a Dutch saying:</p>
@@ -366,9 +374,9 @@ footer .soc a{padding:8px;margin:-8px}
 <p>Before law school, I studied Sociology. I’ve always been curious about why we choose the people we do and why someone can look perfect on paper but feel completely wrong in real life.</p>
 <p>I don’t think there’s a formula for love. But I do think shared values matter, wanting similar things out of life matters, and some things still have to be figured out face-to-face.</p>
 </div>
-<div class="sig one"><figure><span class="pola" style="--r:3deg"><img src="/ruby.jpg" alt="Ruby" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Ruby</text></svg></figure></div>
+<div class="sig one"><figure><span class="pola" style="--r:3deg"><img src="/ruby.jpg" alt="Ruby" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" class="r">Ruby</text></svg></figure></div>
 <hr class="turn">
-<div class="body">
+<div class="body k">
 <p>I came to this from a different place.</p>
 <p>I went to school in New York, and honestly, most of what I heard from my friends about dating apps was terrible.</p>
 <p>Bad dates. Weird messages. People disappearing. Weeks of talking that never turned into anything. Obviously there were success stories too, but it felt like there were a lot more horror stories and mediocre outcomes in between.</p>
@@ -377,20 +385,20 @@ footer .soc a{padding:8px;margin:-8px}
 <p>That’s what interested me about building 5days.</p>
 <p class="pair">Not another way to keep people looking.<br>A better way to help them actually meet.</p>
 </div>
-<div class="sig one"><figure><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="Kai" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Kai</text></svg></figure></div>
+<div class="sig one"><figure><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="Kai" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" class="k">Kai</text></svg></figure></div>
 <hr class="turn">
-<div class="body">
-<p>That’s really where 5days started.</p>
-<p>We ask the questions that usually come later: what matters to you, what you want your life to look like, what kind of relationship you want, and what you’re looking for in another person.</p>
-<p>Then we find someone we think might fit and plan the date.</p>
-<p>You just show up.</p>
-<p>We can help with fit. Whether you actually click is something you have to find out in person.</p>
-<p class="last">That part is yours.</p>
+<div class="body both">
+<p class="r">That’s really where 5days started.</p>
+<p class="k">We ask the questions that usually come later: what matters to you, what you want your life to look like, what kind of relationship you want, and what you’re looking for in another person.</p>
+<p class="r">Then we find someone we think might fit and plan the date.</p>
+<p class="k">You just show up.</p>
+<p class="r">We can help with fit. Whether you actually click is something you have to find out in person.</p>
+<p class="k last">That part is yours.</p>
 </div>
 <div class="sig">
-<figure><span class="pola" hidden style="--r:3deg"><img src="/ruby.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Ruby</text></svg></figure>
+<figure><span class="pola" hidden style="--r:3deg"><img src="/ruby.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" class="r">Ruby</text></svg></figure>
 <span class="amp" aria-hidden="true">&amp;</span>
-<figure><span class="pola" hidden style="--r:-4deg"><img src="/kai.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)">Kai</text></svg></figure>
+<figure><span class="pola" hidden style="--r:-4deg"><img src="/kai.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" class="k">Kai</text></svg></figure>
 </div>
 </article>
 
