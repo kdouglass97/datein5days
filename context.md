@@ -329,20 +329,25 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   **The strip's links are typed apart with the same slash as the topbar and footer**, in a
   lighter ink, and a dashed perforation, the menu card's own rule, tears "menu +" and rsvp off
   as the stub: the pages are places, the stub is what you do (added 2026-09-30; before it the
-  row read as one sentence). The strip is 780px wide and the wordmark never wraps. It fits four
-  page links from 681px up; a fifth link (like `/why`) needs the phone breakpoint that hides
-  the links raised from 640px to 680px.
+  row read as one sentence). The strip is 780px wide and the wordmark never wraps. Its page links
+  leave at 680px (700px on `/privacy`, which names five); below that it's the wordmark, the
+  stub, and nothing else. A new header link means re-measuring that breakpoint.
   Its one button is **rsvp, at every width**; on the landing page it fades while the form
-  itself is on screen. On phones (≤640px) the strip's text link (get involved; privacy on
-  `/privacy`) lives only in the menu. The strip
+  itself is on screen. The strip
   replaced a phone-only bottom dock on 2026-09-24: with rsvp in the strip, a second sticky
   rsvp was one too many, so don't bring the dock back. The strip carries **no social glyphs**
   either: it follows the reader through the questionnaire, and a standing way off the page
   beside rsvp competes with the one thing the strip is for. They wait in the menu card's foot.
   **On phones the hero topbar carries a "menu" button** (added 2026-09-29) that drops the strip in
   with its menu card open, so the pages are reachable before any scroll; closing it while the
-  topbar is still on screen puts the strip away again. Below 360px the topbar's page link goes
-  too (the menu has it), after the cohort number, never the glyphs.
+  topbar is still on screen puts the strip away again.
+  **On phones the landing topbar holds no page link** (decided 2026-09-30): `five days · no. 01 ¦
+  menu + · glyphs`. It used to keep "get involved", and a lone link up there reads as the site's
+  headline: whichever page it names looks like the most important thing, and every candidate
+  (get involved, faq, why) is a detour away from rsvp at the moment of highest intent. The menu
+  has them all. "no. 01" stays because it's where you are, the edition number on the invitation,
+  not a choice. The same cream perforation as the strip sits before "menu +", so the two don't
+  read as one phrase. Below 340px the cohort number goes too, never the glyphs.
 - **`.mk` pen underlines are `inline-block`.** As plain inline boxes, iOS Safari anchored the
   absolutely placed stroke to the wrong line when the phrase sat at a line end: on `/faq` it
   drew under the next line and ran off the screen.
@@ -354,8 +359,8 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
     people with a public history are behind this before handing over their own Instagram. The
     glyphs sit static, small and cream in the top corner, which is the hardest spot to reach
     one-handed, so they read as proof without pulling taps from rsvp. When the topbar runs out
-    of room the cohort number goes first (`.xp` at 560px, then `.no` at 440px; 480/380 on
-    `/privacy`, whose topbar is shorter), never the glyphs.
+    of room the cohort number goes first (`.xp` at 860px, then `.no` at 340px on the landing
+    page; 480/380 on `/privacy`, whose topbar is shorter), never the glyphs.
   - **the footer is for being clicked.** Larger glyphs plus the handle: the follow is the
     second-best outcome for someone who read to the end and isn't ready to rsvp.
   - **the menu card** holds them for anyone who goes looking.
@@ -370,7 +375,8 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   linked as "faq" in every header strip and hero topbar and every footer. **Desktop headers
   read the same on every page: experiment no. 01 / why five days / faq / get involved** (plus privacy, on
   `/privacy`), in that order: the thing, the questions about it, then going further. On phones
-  the topbar keeps only the cohort number and the page you're on; the rest are in the menu card.
+  the topbar keeps only the page you're on (on the landing page, the cohort number); the rest
+  are in the menu card.
   "leave us a note" stays out of the headers: it opens a sheet rather than going somewhere, and
   rsvp is the header's one action. The printed form is the numbered list, the find field and
   the topic chips; the hand is the clay pen loop that circles the number of an open question and
