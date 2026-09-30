@@ -1,6 +1,7 @@
 ## Shipping workflow (always follow)
 - Work only on your own claude/ branch. Never push to main.
 - Push after each meaningful change so a preview deploy builds. Share the preview link if you can find it.
+- After every UI or copy change, reply with just the preview link and screenshots (desktop ~1440px and mobile ~390px) of the changed section. Keep commentary to a line or two. If the preview link can't be found, say so in one line and still send the screenshots.
 - When I say "ship it":
   1. git fetch origin && git merge origin/main   (merge, not rebase, no force-push)
   2. Resolve conflicts yourself, keeping the intent of both sides
