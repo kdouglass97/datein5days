@@ -362,7 +362,7 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
 - **`/faq` wears the `/involved` frame too** (added 2026-09-29): the same ten questions as the
   landing page's `#faq`, on their own page for anyone who wants answers before the pitch. It's
   linked as "faq" in every header strip and hero topbar and every footer. **Desktop headers
-  read the same on every page: experiment no. 01 / faq / get involved** (plus privacy, on
+  read the same on every page: experiment no. 01 / why five days / faq / get involved** (plus privacy, on
   `/privacy`), in that order: the thing, the questions about it, then going further. On phones
   the topbar keeps only the cohort number and the page you're on; the rest are in the menu card.
   "leave us a note" stays out of the headers: it opens a sheet rather than going somewhere, and
@@ -380,6 +380,45 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   edited by hand. The last three are about cities and end on "how do i bring this to my city?",
   which hands off to `/involved`: an out-of-town reader should leave with something to do, not
   just a no. Answers may hold a link; the find field marks text nodes only, so links survive.
+- **`/why` is the letter inside the envelope** (`why.html`, added 2026-09-30; `/story`, an older
+  preview link, 307s to it). The landing page covers what happens to you; `/why` answers the one
+  thing it doesn't: who is doing this, and why trust them. It must **never re-run the pitch**:
+  no thesis diagram, no founder flip cards, no timeline of the five days, since each of those
+  already has its landing section. Five blocks: the hero ("dating means going
+  on dates."), **"the short version"**, the letter, "what we crossed out", and "pull up a chair.".
+  The short version (added 2026-09-30, because the letter alone didn't say where we're going at a
+  glance) is four paper cards, one line each, with a typed label and a pen glyph: *where we're
+  going* (a world where people meet, not match), *what we do* (the mission, word for word, its one
+  appearance), *why* (matching interests isn't the same as matching lives) and *what's next* (New
+  York first, then every major walkable city, with a pen-drawn route). The labels are plain words,
+  never "Mission", "Vision" or "Values". The letter is the founders' own (Kai and Ruby's draft, set
+  2026-09-30, their wording kept): Ruby's part (the Netherlands, "Op ieder potje past een
+  dekseltje", set off as a quote; the pen underlines "the one that fits."), signed with her
+  polaroid; Kai's part (New York, what friends went through on the apps), signed with his; then a
+  shared close ending "That part is yours.", signed by both. Its `re:` is "a letter from the
+  founders". The letter is set in the serif (a handwritten-font version was tried on
+  2026-09-30 and set aside). Each part is signed with **the founders' real signatures**, traced
+  from ink on paper into two `<symbol>`s (`#sig-ruby`, `#sig-kai`) and wiped in left to right on
+  reveal, with the name typed small beneath, since neither signature is legible. The shared sign-off
+  pairs the two signatures (tilted a few degrees, so they read dashed off, not notarized) with a
+  **postage stamp** on the left: perforated edge, a clay 5, "NEW YORK", and inside it a pen-and-wash
+  dusk scene, Haven on a bench with a letter in his beak, water towers, a flickering street lamp,
+  the moon; a clay "NYC 01" postmark cancels its corner. Tap it and Haven hops. It exists because
+  two signatures alone read as a presidential sign-off, not the site's playful register. With it the page runs past the 400-word budget, by the founders' choice. On this page we set up, seat and
+  introduce; "match" only ever describes what the apps do. "what we crossed out" is the values
+  section written as refusals: the pen strikes each line on reveal, a tap shows what took its place,
+  and every line must be a promise that outlives cohort 01 (so no "a subscription": free is a beta
+  condition). Haven paces with a letter at the foot, as on
+  `/faq`. The hero's line sits between two paper props that land on load: a calendar leaf
+  ("thu, 8pm", circled by the pen) and a kraft ticket stub ("admit two", ticked). Beside the h1 on
+  wide screens, in a row beneath it below 1000px. As of 2026-09-30 **it's in every header**:
+  desktop topbars and strips read **experiment no. 01 / why five days / faq / get involved** (the
+  thing, why we do it, the questions, going further), and it's the last item in every menu card's
+  list. Below 860px the topbar drops the word "experiment"; on `/privacy`, which names one more
+  page, the cohort number leaves both bars below 760px. The strip is 780px wide to hold it. It's
+  also in every footer, one quiet line under the landing `#team` cards ("why we're doing this →")
+  and "Here's why." in the `/involved` intro.
+  Never beside the RSVP form: the form is the page's one action.
 - **The divider under every hero is one straight diagonal**: about 3°, rising to the right, a
   10px cream rule. Subpages draw it as the `.arc` SVG; the landing page draws it as a hard-stop
   `linear-gradient(177deg…)` on `.hero`, because the envelope sits across it. Until 2026-09-29
@@ -491,7 +530,7 @@ on push to `main`. Google Apps Script Web App as the form backend, writing to a 
 Sheet. No build step, no framework, nothing external except the PostHog snippet and
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
-**Repo, flat at root:** the pages (`index.html`, `faq.html`, `involved.html`, `privacy.html`, `404.html`,
+**Repo, flat at root:** the pages (`index.html`, `faq.html`, `why.html`, `involved.html`, `privacy.html`, `404.html`,
 and `admin.html`, the team dashboard),
 `note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
 `.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
@@ -509,6 +548,7 @@ The QR code is printed. Its target can never change.
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
 /faq       rewrite → /faq.html
+/why       rewrite → /why.html   (/story 307s here)
 /admin     rewrite → /admin.html   the team dashboard, password only, §8
 
 /ig /tt /invite /@<name>   307 →  /c/01?src=…   the link book, §9
@@ -531,7 +571,7 @@ As of 2026-09-26 the site invites crawlers in. The invitation is marketing: we w
 read, quoted, and repeated, by search engines and AI tools alike.
 
 - `robots.txt` allows everyone, AI training and search crawlers included, and points to
-  `sitemap.xml`, which lists `/c/01`, `/faq` and `/involved`. A new public page goes in the sitemap.
+  `sitemap.xml`, which lists `/c/01`, `/faq`, `/involved` and `/why`. A new public page goes in the sitemap.
 - `/privacy` is `noindex` by design. Never `Disallow` it in `robots.txt`: a blocked page
   can't show Google its `noindex`, and the bare URL can get indexed anyway.
 - `/c/01` and `/involved` carry a canonical tag, which folds every `?src=` tag, `?go=rsvp`,
@@ -541,7 +581,9 @@ read, quoted, and repeated, by search engines and AI tools alike.
 - `index.html` carries JSON-LD (`WebSite` + `Organization`) naming the founders. Keep it in
   step with `#team`.
 
-**The header menu is hand-listed in three places.** Its targets are the section ids `#idea`
+**The header menu is hand-listed in five places** (`index.html`, `faq.html`, `involved.html`,
+`privacy.html`, `why.html`), with "why five days" as the list's last item; so are the menu card
+foot (faq, get involved, leave us a note, privacy) and the footer link row (which adds why five days). Its targets are the section ids `#idea`
 `#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
 `privacy.html` link to the same ones as `/#faq` (the fragment survives the `/` redirect).
 Rename a section and update all three menus. The social glyphs are hand-copied the same way
@@ -900,6 +942,18 @@ not in `rsvps`.
 - [ ] "testing test" isn't routed to the `test` tab: `isTestName_()` matches "test" only as a
       whole first word, though §8 and the Code.js comments say it does. Decide which is right.
 - [ ] Rename the PostHog project from "Default project" and fix its app URL
+- [x] The founders' letter on `/why` says "5days", by the founders' choice (2026-09-30). The rest
+      of the site still says "Five Days" (or "five days" in headings); the letter is their voice.
+- [ ] Kai & Ruby: Kai's paragraph ("Bad dates. Weird messages. People disappearing.") is the kind
+      of app grievance §1 cut from the landing page on 09-24. It's fine in a personal letter, far
+      from the opening, but it's your call.
+- [ ] Kai & Ruby: your notes give "purpose" and "vision" the same two lines. The page doesn't need
+      both. If you keep a purpose, it should be the why behind the vision, not a repeat of it.
+- [ ] Kai & Ruby: "meet, not match" collides with the site calling the person "your match", on
+      the landing page and in the FAQ (hand-copied in three places, plus the JSON-LD). If the line
+      sticks, change "your match" to "your date" everywhere, in a separate PR.
+- [ ] Kai & Ruby: confirm every line in "what we crossed out" is a promise you'll keep for good.
+- [ ] Haven's yard (from the old /story: tap to drop crumbs, Haven walks over and pecks) could live on 404.
 - [ ] Two polaroid collisions left (§5): iPad Pro in portrait (821–1050px, desktop placement) slides the top-left polaroid under the "five days" wordmark, and landscape phones 700–820px wide put the bottom-left one on "WE HANDLE THE ADMIN".
 
 ---

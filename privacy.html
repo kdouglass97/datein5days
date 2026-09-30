@@ -71,12 +71,16 @@ h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 .tb-menu i{font:normal 18px/.6 var(--type)}
 @media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
 @media (max-width:360px){.topbar > span > a{display:none}}
+/* tablets: "why five days" joins the topbar, so the cohort number sheds "experiment" first */
+@media (max-width:860px){.topbar .xp{display:none}}
+/* privacy names one more page than the rest, so below 760 the cohort number steps out of both bars (the wordmark still goes home) */
+@media (max-width:760px){.topbar .no{display:none}.fbar > a[href="/"]:not(.brand){display:none}}
 @media (max-width:480px){.topbar .xp{display:none}}
 @media (max-width:440px){.topbar .no{display:none}}
 
 /* floating header: drops in once the hero's own topbar scrolls away */
 :root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
-.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:680px;margin:0 auto;
+.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:780px;margin:0 auto;
 transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .fhead.on{transform:none}
 .fbar{display:flex;align-items:center;gap:18px;height:var(--fh-h);padding:0 10px 0 16px;background:var(--paper);box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
@@ -210,6 +214,7 @@ footer .soc a{padding:8px;margin:-8px}
 <div class="fbar">
 <a class="brand" href="/">five days</a>
 <a href="/"><span class="xp">experiment </span>no. 01</a>
+<a href="/why">why five days</a>
 <a href="/faq">faq</a>
 <a href="/involved">get involved</a>
 <a href="/privacy" aria-current="page"><span class="here">privacy<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></a>
@@ -222,6 +227,7 @@ footer .soc a{padding:8px;margin:-8px}
 <li><a href="/rsvp"><span>rsvp</span></a></li>
 <li><a href="/#faq"><span>questions</span></a></li>
 <li><a href="/#team"><span>who's setting you up</span></a></li>
+<li><a href="/why"><span>why five days</span></a></li>
 </ol>
 <p class="fmenu-foot"><a href="/faq">faq</a><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy" aria-current="page">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></span></p>
 </div>
@@ -230,7 +236,7 @@ footer .soc a{padding:8px;margin:-8px}
 </nav>
 
 <header class="hero">
-<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/involved">get involved</a> &nbsp;/&nbsp; </span><a href="/privacy" aria-current="page">privacy</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/why">why five days</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/involved">get involved</a> &nbsp;/&nbsp; </span><a href="/privacy" aria-current="page">privacy</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="intro">
 <svg class="sk sealed draw" data-reveal viewBox="0 0 180 124" aria-hidden="true">
 <g class="washes" filter="url(#wash)">
@@ -325,7 +331,7 @@ footer .soc a{padding:8px;margin:-8px}
 <a class="brand" href="/">five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
 <p class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></p>
-<p class="foot-links"><a href="/">experiment no. 01</a><span class="sep" aria-hidden="true">/</span><a href="/faq">faq</a><span class="sep" aria-hidden="true">/</span><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy" aria-current="page">privacy</a></p>
+<p class="foot-links"><a href="/">experiment no. 01</a><span class="sep" aria-hidden="true">/</span><a href="/faq">faq</a><span class="sep" aria-hidden="true">/</span><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="/why">why five days</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy" aria-current="page">privacy</a></p>
 </footer>
 
 <script>
