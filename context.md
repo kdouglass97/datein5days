@@ -399,7 +399,12 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   founders". The letter is set in the serif (a handwritten-font version was tried on
   2026-09-30 and set aside). Each part is signed with **the founders' real signatures**, traced
   from ink on paper into two `<symbol>`s (`#sig-ruby`, `#sig-kai`) and wiped in left to right on
-  reveal, with the name typed small beneath, since neither signature is legible. With it the page runs past the 400-word budget, by the founders' choice. On this page we set up, seat and
+  reveal, with the name typed small beneath, since neither signature is legible. The shared sign-off
+  pairs the two signatures (tilted a few degrees, so they read dashed off, not notarized) with a
+  **postage stamp** on the left: perforated edge, a clay 5, "NEW YORK", and inside it a pen-and-wash
+  dusk scene, Haven on a bench with a letter in his beak, water towers, a flickering street lamp,
+  the moon; a clay "NYC 01" postmark cancels its corner. Tap it and Haven hops. It exists because
+  two signatures alone read as a presidential sign-off, not the site's playful register. With it the page runs past the 400-word budget, by the founders' choice. On this page we set up, seat and
   introduce; "match" only ever describes what the apps do. "what we crossed out" is the values
   section written as refusals: the pen strikes each line on reveal, a tap shows what took its place,
   and every line must be a promise that outlives cohort 01 (so no "a subscription": free is a beta
