@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4F6B45">
+<title>five days: why five days</title>
+<meta name="description" content="Who's behind Five Days, and why two people plan every date by hand. A short letter from Kai and Ruby.">
+<link rel="canonical" href="https://datein5days.com/why">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/icon.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="five days">
+<meta property="og:title" content="five days: why five days">
+<meta property="og:description" content="Who's behind Five Days, and why two people plan every date by hand. A short letter from Kai and Ruby.">
+<meta property="og:url" content="https://datein5days.com/why">
+<meta property="og:image" content="https://datein5days.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="An envelope that reads: you're invited to a date in 5 days.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
+<style>
+:root{
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
+--serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+--type:"Courier Prime","Courier New",Courier,monospace;
+--opsz:10;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--clay);color:var(--ink);font:17px/1.6 var(--type);-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:var(--noise);opacity:.2;mix-blend-mode:multiply;z-index:50}
+a{color:inherit}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
+h1,h2{font-family:var(--serif);font-weight:400;margin:0}
+/* bodoni's auto optical size keeps hairlines ~0.2px at every size: print-thin, invisible on screens. pin it per tier (!important: font shorthands reset it) */
+*{font-variation-settings:"opsz" var(--opsz)!important}
+.intro h1,.chair h2,.x-head{--opsz:18}
+html{scroll-padding-top:calc(var(--fh-top) + var(--fh-h) + 24px)}
+
+.hero{position:relative;padding:calc(22px + env(safe-area-inset-top)) 0 30px;background:var(--grass)}
+.arc{display:block;width:100%;height:clamp(44px,7vw,84px);margin-top:-1px}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
+.topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
+@media (max-width:360px){.topbar{font-size:12.5px}}
+.brand{font-family:var(--serif);font-size:29px;text-decoration:none;letter-spacing:-.02em}
+.topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
+@media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
+.topbar a:not(.brand):focus-visible{text-decoration:underline}
+/* social links: glyphs set like type in the masthead, the menu card and the colophon; the pen circles one on hover */
+.soc{--g:18px;--r:34px;display:inline-flex;align-items:center;gap:14px;vertical-align:middle}
+.soc a{display:grid;place-items:center;color:inherit}
+.soc a>*{grid-area:1/1}
+.soc svg{width:var(--g);height:var(--g);overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.soc .ring{width:var(--r);height:var(--r);margin:calc((var(--g) - var(--r)) / 2);stroke-width:3.4;stroke-dasharray:1;stroke-dashoffset:1;opacity:0;transition:stroke-dashoffset 0s .2s,opacity .2s}
+@media (hover:hover){.soc a:hover .ring{opacity:1;stroke-dashoffset:0;transition:stroke-dashoffset .4s cubic-bezier(.5,.1,.3,1)}}
+.soc a:active svg:first-child{transform:translateY(1px)}
+.topbar .soc{margin-left:18px}
+.topbar .soc a{padding:12px 7px;margin:-12px -7px}
+/* phones: faq waits in the menu; then the cohort number goes before the glyphs, which are how a stranger checks we're real */
+@media (max-width:640px){.topbar .tb-page{display:none}}
+/* phones: the topbar opens the header's menu, so the pages are reachable before any scroll */
+.tb-menu{display:none;align-items:center;gap:6px;margin:-12px 0 -12px 18px;padding:12px 0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.tb-menu i{font:normal 18px/.6 var(--type)}
+@media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
+/* "why five days" is the longest page name, so on phones it waits in the menu sooner than the others do */
+@media (max-width:420px){.topbar > span > a{display:none}}
+/* tablets: "why five days" joins the topbar, so the cohort number sheds "experiment" first */
+@media (max-width:860px){.topbar .xp{display:none}}
+@media (max-width:560px){.topbar .xp{display:none}}
+@media (max-width:440px){.topbar .no{display:none}}
+
+/* floating header: drops in once the hero's own topbar scrolls away */
+:root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
+.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:780px;margin:0 auto;
+transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.fhead.on{transform:none}
+.fbar{display:flex;align-items:center;gap:18px;height:var(--fh-h);padding:0 10px 0 16px;background:var(--paper);box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
+.fbar .brand{margin-right:auto;font-size:24px;line-height:1}
+.fbar > a:not(.brand,.btn),.fmenu-btn{font:14px/1 var(--type);color:var(--ink);text-decoration:none;text-underline-offset:3px;padding:18px 0;white-space:nowrap}
+.fmenu-btn{display:flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer}
+.fmenu-btn i{font:normal 20px/.6 var(--type);transition:transform .25s}
+.fmenu-btn[aria-expanded="true"] i{transform:rotate(45deg)}
+@media (hover:hover){.fbar > a:not(.brand,.btn,[aria-current]):hover,.fmenu-btn:hover span{text-decoration:underline}}
+.fbar > a:not(.brand,.btn,[aria-current]):focus-visible,.fmenu-btn:focus-visible span{text-decoration:underline}
+.fbar .here{position:relative}
+.fbar .here svg{position:absolute;left:-3%;bottom:-7px;width:106%;height:8px;overflow:visible;pointer-events:none}
+.fbar .here path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
+.fbar .btn{padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag)}
+/* phones: rsvp is the strip's one call to action; faq and get involved wait in the menu */
+@media (max-width:640px){.fbar > a:not(.brand,.btn){display:none}}
+@media (max-width:900px){.fbar .xp{display:none}}
+@media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
+.fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
+padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
+box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18px rgba(0,0,0,.6)}
+.fmenu[hidden]{display:none}
+@media (max-width:640px){.fmenu{left:0;width:auto}.fhead.open::before{content:"";position:fixed;inset:0;z-index:-1;background:rgba(31,40,26,.4)}}
+.fmenu ol{list-style:none;margin:0;padding:0}
+.fmenu li{border-bottom:1px dashed rgba(70,85,58,.55)}
+.fmenu li [aria-current]{color:var(--tag);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:5px}
+.fmenu li a{display:block;padding:10px 0 11px;font:italic 400 24px/1.15 var(--serif);letter-spacing:-.01em;text-decoration:none}
+@media (hover:hover){.fmenu li a:hover{color:var(--tag)}}
+.fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
+.fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
+.fmenu-foot [aria-current]{font-weight:700}
+.fmenu-foot .soc-row{justify-content:flex-start;padding:12px 0;font-size:13px}
+.fmenu-foot .soc a{padding:9px 7px;margin:-9px -7px}
+.fmenu .ring{stroke:var(--tag)}
+@media (prefers-reduced-motion:no-preference){
+.fmenu:not([hidden]){animation:menuDrop .3s cubic-bezier(.2,.8,.25,1.15)}
+@keyframes menuDrop{from{opacity:0;transform:translateY(-12px) rotate(-2.4deg)}}
+.fhead.open::before{animation:fadeIn .25s ease-out}
+@keyframes fadeIn{from{opacity:0}}
+.fbar .here path{stroke-dasharray:1;stroke-dashoffset:1}
+.fhead.on .here path{animation:ink .6s .35s cubic-bezier(.5,.1,.3,1) forwards}
+}
+
+.intro{max-width:620px;margin:0 auto;padding:clamp(44px,8vw,72px) 24px 0;text-align:center;color:var(--line)}
+.kicker{margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+.intro h1{color:var(--line);font-size:clamp(44px,9vw,76px);line-height:.98;letter-spacing:-.04em;margin:0 0 22px}
+.intro{position:relative}
+.mk.ring svg{left:-12%;top:-10%;bottom:auto;width:124%;height:124%}
+.mk.ring path{stroke-width:2.4}
+/* the evening itself, pinned either side of the line: a calendar leaf (printed) circled by the pen (the hand), and a ticket stub, ticked */
+.props{display:flex;justify-content:center;gap:22px;margin:30px 0 4px}
+.prop{position:relative;display:flex;flex-direction:column;align-items:center;padding:0;border:0;font:inherit;color:var(--ink);cursor:default;box-shadow:0 16px 26px -14px rgba(0,0,0,.6);transform:rotate(var(--r));transition:transform .4s cubic-bezier(.2,.8,.2,1.4)}
+@media (hover:hover){.prop:hover{transform:rotate(0deg) translateY(-6px) scale(1.04)}}
+.cal{--r:-7deg;width:112px;background:var(--paper);padding:0 0 12px}
+.cal-m{display:block;width:100%;padding:6px 0 5px;background:var(--clay);color:var(--line);font:700 12px/1 var(--type);letter-spacing:.14em;text-transform:uppercase}
+.cal-d{display:block;margin:8px 0 0;font:400 50px/1 var(--serif);letter-spacing:-.03em;--opsz:18}
+.cal-d small{font:italic 400 17px/1 var(--serif);margin-left:2px}
+.cal-w{display:block;margin-top:6px;font-size:10px;letter-spacing:.06em;opacity:.75}
+.cal-ring{position:absolute;left:10%;top:22%;width:80%;height:52%;overflow:visible;pointer-events:none}
+.cal-ring path{fill:none;stroke:var(--clay);stroke-width:2.2;stroke-linecap:round}
+.tix{--r:5deg;width:132px;align-self:center;background:var(--kraft);padding:12px 14px 12px 18px;border-left:2px dashed rgba(70,85,58,.55);text-align:left;align-items:flex-start}
+.tix-k{font:700 11px/1 var(--type);letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.tix-n{font:italic 400 38px/1 var(--serif);margin:2px 0 4px;--opsz:18}
+.tix-t{font-size:11px;letter-spacing:.04em;padding-top:5px;border-top:1px solid rgba(70,85,58,.35);width:100%}
+.tix-tick{position:absolute;right:8px;top:10px;width:34px;height:26px;overflow:visible}
+.tix-tick path{fill:none;stroke:var(--tag);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+@media (min-width:1000px){
+.props{margin:0}
+.prop{position:absolute}
+.cal{left:-190px;top:96px}
+.tix{right:-200px;top:170px}
+}
+@media (prefers-reduced-motion:no-preference){
+.js .props:not(.in) .prop{opacity:0}
+.js .props.in .cal{animation:land .9s .3s cubic-bezier(.2,.8,.25,1.25) backwards}
+.js .props.in .tix{animation:land .9s .55s cubic-bezier(.2,.8,.25,1.25) backwards}
+@keyframes land{from{opacity:0;transform:translateY(-40px) rotate(calc(var(--r) * -2.5))}}
+}
+.mk{position:relative;display:inline-block;white-space:nowrap}
+.mk svg{position:absolute;left:-2%;bottom:-6px;width:104%;height:10px;overflow:visible;pointer-events:none}
+.mk path{fill:none;stroke:#F2C38F;stroke-width:2;stroke-linecap:round}
+.js .draw .ink{stroke-dasharray:1;stroke-dashoffset:1}
+.js .draw.in .ink{animation:ink 1.2s var(--dl,.2s) cubic-bezier(.5,.1,.3,1) forwards}
+@keyframes ink{to{stroke-dashoffset:0}}
+.paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
+.tape::before{content:"";position:absolute;top:-14px;left:50%;width:110px;height:28px;transform:translateX(-50%) rotate(-3deg);background:rgba(223,214,190,.85);z-index:2}
+
+/* the letter: the header is the printed form, typed; the body is set in the serif; the signatures are the hand */
+.wrap{padding:26px 16px 0}
+.letter{max-width:540px;margin:72px auto 0;padding:38px clamp(22px,6vw,44px) 30px;transform:rotate(-.6deg);box-shadow:inset 0 9px 0 var(--tag),0 18px 36px -20px rgba(0,0,0,.6)}
+.memo{display:grid;grid-template-columns:4.2em 1fr;gap:4px 8px;margin:0 0 24px;padding:0 0 18px;border-bottom:1px dashed rgba(70,85,58,.55);font-size:14px;line-height:1.45}
+.memo dt{opacity:.7}
+.memo dd{margin:0}
+.body p{margin:0 0 16px;font:400 19px/1.5 var(--serif);letter-spacing:-.005em}
+.body .open{font-size:clamp(24px,4.4vw,28px);line-height:1.2;letter-spacing:-.015em;margin-bottom:20px}
+/* the saying Ruby brought home: set off like a quote in the margin of a letter */
+.saying{margin:6px 0 22px;padding:4px 0 4px 18px;border-left:2px solid var(--clay)}
+.saying p{margin:0 0 4px!important;font:italic 400 clamp(23px,4vw,27px)/1.2 var(--serif)!important;letter-spacing:-.015em;--opsz:18}
+.saying .en{margin:0;font:14px/1.4 var(--type);opacity:.8}
+.body p.pair{font-style:italic;font-size:21px}
+.body .last{margin:4px 0 0;font:italic 400 clamp(24px,4.4vw,28px)/1.2 var(--serif);letter-spacing:-.015em;--opsz:18}
+.turn{border:0;border-top:1px dashed rgba(70,85,58,.55);margin:26px 0 26px}
+.sig.one{margin:6px 0 0}
+.body .mk path{stroke:var(--clay)}
+.sig{display:flex;justify-content:flex-end;align-items:flex-end;gap:clamp(12px,4vw,22px);margin:22px 0 0}
+.sig figure{margin:0;text-align:center}
+/* real signatures, traced from ink on paper; the typed name beneath says whose, since neither is legible */
+.signed{display:flex;align-items:flex-end;gap:12px}
+/* sized to the polaroid, not to fill space: about half its height, so the photo leads and the
+   signature reads as a mark beside it. the stroke is fixed at screen weight, so ink stays even at any size */
+.sgn{display:block;width:var(--w);height:auto;aspect-ratio:var(--ar);color:var(--tag);fill:currentColor;stroke:currentColor;stroke-width:.6px;vector-effect:non-scaling-stroke;overflow:visible}
+.signed.ruby .sgn{--ar:381/293;--w:64px}
+.signed.kai .sgn{--ar:613/411;--w:80px}
+.ink-sig{padding-bottom:10px}
+.signed figcaption{margin-top:4px;font:10px/1 var(--type);letter-spacing:.14em;text-transform:uppercase;opacity:.65}
+.sig.both{justify-content:space-between;align-items:center;gap:14px}
+/* the stamp: the letter's postage, and a playful counterweight to two signatures. printed form
+   (perforations, the 5, NEW YORK) with the hand over it (the scene in pen and wash, the clay postmark) */
+.stamp{flex:none;width:clamp(128px,34vw,204px);transform:rotate(-4deg);transition:transform .35s cubic-bezier(.2,.8,.2,1.4);cursor:pointer}
+@media (hover:hover){.stamp:hover{transform:rotate(0deg) scale(1.05)}}
+.st{display:block;width:100%;height:auto;overflow:visible}
+.st .st-paper{fill:#F4F3EF;stroke:rgba(70,85,58,.3);stroke-width:.7;filter:drop-shadow(0 6px 8px rgba(0,0,0,.28))}
+.st-frame{fill:none;stroke:var(--clay);stroke-width:1.2}
+.st path,.st circle{fill:none;stroke:#34422C;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.st .thin{stroke-width:1.1}
+.st .haven-st path{stroke-width:2.9}
+.st .haven-st .thin{stroke-width:2.1}
+.st .haven-st .eye{fill:#34422C}
+.st .eye{fill:#34422C;stroke:none}
+.st-mark circle,.st-mark path{stroke:var(--clay);stroke-width:1.6;opacity:.85}
+.st-5{font:italic 400 22px/1 var(--serif);fill:var(--clay);--opsz:18}
+.st-ny{font:700 6.5px/1 var(--type);letter-spacing:.2em;fill:#34422C}
+.st-pm{font:700 8px/1 var(--type);letter-spacing:.12em;fill:var(--clay)}
+.st .st-head,.st .st-bod{transform-box:view-box}
+.st .st-head{transform-origin:92px 31px}
+.st .st-bod{transform-origin:70px 72px}
+.stamp.hop .st-bod{animation:st-hop .7s cubic-bezier(.3,.7,.4,1)}
+@media (prefers-reduced-motion:no-preference){
+.stamp.in .st-head{animation:st-bob 3.2s 2s ease-in-out infinite}
+.stamp.in .st-glow{animation:st-glow 2.6s 1.5s ease-in-out infinite}
+}
+@keyframes st-bob{0%,60%,100%{transform:rotate(0)}68%{transform:rotate(-10deg)}78%{transform:rotate(5deg)}88%{transform:rotate(0)}}
+@keyframes st-glow{0%,100%{opacity:.8}45%{opacity:.35}55%{opacity:.75}62%{opacity:.5}}
+@keyframes st-hop{0%,100%{transform:translateY(0)}35%{transform:translateY(-18px) rotate(-6deg)}65%{transform:translateY(0)}80%{transform:translateY(-6px)}}
+.both-sigs{display:flex;gap:clamp(14px,5vw,40px);align-items:flex-end}
+.sig.both .signed.ruby .sgn{transform:rotate(-6deg)}
+.sig.both .signed.kai .sgn{transform:rotate(4deg) translateY(-4px)}
+@media (max-width:420px){.sig.both .signed.ruby .sgn{--w:54px}.sig.both .signed.kai .sgn{--w:66px}}
+.sig.both{margin-top:26px}
+/* signed on arrival: the ink wipes in left to right, the way a pen crosses the page */
+@media (prefers-reduced-motion:no-preference){
+.js .draw .sgn{clip-path:inset(-10% 100% -10% 0)}
+.js .draw.in .sgn{animation:sign 1.3s var(--dl,.3s) cubic-bezier(.45,.05,.4,1) forwards}
+@keyframes sign{to{clip-path:inset(-10% -5% -10% 0)}}
+}.pola{display:block;width:74px;padding:5px 5px 14px;background:#F4F3EF;box-shadow:0 8px 16px -8px rgba(0,0,0,.55);transform:rotate(var(--r))}
+.pola img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center 30%}
+.js .draw.in .sig text{opacity:1}
+
+/* what we crossed out: the printed list, corrected by hand */
+.x-head{color:var(--line);text-align:center;font:400 clamp(38px,6vw,52px)/1 var(--serif);letter-spacing:-.03em;margin:72px 0 10px}
+.x-head.first{margin:14px 0 26px}
+/* the short version: four cards, one line each, readable at a glance. typed label (the form), a pen glyph (the hand) */
+.glance{max-width:760px;margin:0 auto}
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:22px}
+@media (min-width:640px){.cards{grid-template-columns:1fr 1fr;gap:26px 24px}}
+.card{padding:20px 22px 24px;transform:rotate(var(--r));transition:transform .35s cubic-bezier(.2,.8,.2,1.25),box-shadow .35s}
+@media (hover:hover){.card:hover{transform:rotate(0deg) translateY(-5px);box-shadow:0 26px 40px -20px rgba(0,0,0,.65)}}
+.card-k{display:flex;align-items:center;gap:10px;margin:0 0 10px;font:700 12px/1 var(--type);letter-spacing:.1em;text-transform:uppercase;color:var(--clay)}
+.gl{flex:none;width:30px;height:30px;overflow:visible}
+.gl path,.route path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card-l{margin:0;font:400 clamp(23px,3.2vw,27px)/1.18 var(--serif);letter-spacing:-.015em;--opsz:18;text-wrap:balance}
+.route{display:block;width:100%;max-width:280px;height:auto;margin:14px 0 0;overflow:visible}
+.route .stop{fill:var(--paper);stroke:var(--tag);stroke-width:1.6}
+.route .ny{fill:var(--clay);stroke:none}
+.route text{font:700 10px/1 var(--type);fill:var(--clay);letter-spacing:.08em}
+@media (prefers-reduced-motion:no-preference){
+.js .cards:not(.in) .card{opacity:0}
+.js .cards.in .card{animation:deal .7s calc(var(--i) * .12s) cubic-bezier(.2,.8,.25,1.2) backwards}
+@keyframes deal{from{opacity:0;transform:translateY(24px) rotate(calc(var(--r) * -3))}}
+}
+.x-sub{color:var(--line);text-align:center;margin:0 auto 32px;max-width:36ch}
+.crossed{max-width:540px;margin:0 auto;padding:22px clamp(20px,5vw,36px) 16px;transform:rotate(.5deg)}
+.crossed ul{list-style:none;margin:0;padding:0}
+.crossed li{border-bottom:1px dashed rgba(70,85,58,.5)}
+.crossed li:last-child{border-bottom:0}
+.x-item{display:flex;align-items:baseline;justify-content:space-between;gap:14px;width:100%;padding:14px 0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.x-item .t{position:relative;white-space:nowrap;font:700 clamp(15px,4.4vw,18px)/1.35 var(--type);letter-spacing:.01em;color:var(--ink)}
+.x-item .t svg{position:absolute;left:-3%;top:54%;width:106%;height:14px;margin-top:-7px;overflow:visible;pointer-events:none}
+.x-item .t path{fill:none;stroke:var(--clay);stroke-width:1.5;stroke-linecap:round;opacity:.8}
+.x-item .plus{flex:none;font-size:20px;line-height:1;transition:transform .25s;color:var(--tag)}
+.x-item[aria-expanded="true"] .plus{transform:rotate(45deg)}
+.x-note{margin:-4px 0 16px;padding-left:14px;border-left:2px solid var(--clay);font:italic 400 20px/1.3 var(--serif);color:var(--tag)}
+.x-note[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.x-note:not([hidden]){animation:noteIn .35s cubic-bezier(.2,.8,.2,1)}}
+@keyframes noteIn{from{opacity:0;transform:translateY(-6px)}}
+.x-note a{text-underline-offset:3px}
+.crossed .hint{margin:8px 0 0;font-size:13px;opacity:.65;text-align:center}
+
+/* pull up a chair */
+.chair{max-width:540px;margin:72px auto 0;padding:clamp(36px,7vw,52px) clamp(24px,6vw,44px) 30px;outline:1px solid var(--ink);outline-offset:-12px;text-align:center;transform:rotate(-.4deg)}
+.chair h2{font-size:clamp(40px,8vw,56px);letter-spacing:-.03em;line-height:1;margin:0 0 12px}
+.chair > p{margin:0 auto 24px;max-width:36ch}
+.chair path,.chair circle{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chair .thin{stroke-width:1.2}
+.chair .eye{fill:var(--ink);stroke:none}
+.note-line{margin:0;font-size:15px}
+.note-line a{font-weight:700;text-underline-offset:3px}
+
+.walkway{position:relative;height:96px;margin:18px -8px 4px;overflow:hidden}
+.walkway::after{content:"";position:absolute;left:0;right:0;bottom:22px;border-top:1.5px dashed rgba(70,85,58,.45)}
+.walker{position:absolute;bottom:15px;left:0;width:104px;height:64px;padding:0;border:0;background:none;cursor:pointer;animation:pace 16s linear infinite}
+.walker svg{width:100%;height:100%;overflow:visible;animation:face 16s steps(1,end) infinite}
+.walker .bod{transform-box:view-box;transform-origin:70px 72px;animation:waddle .4s ease-in-out infinite alternate}
+.walker .head{transform-box:view-box;transform-origin:92px 31px;animation:thrust .4s infinite}
+.walker .l1,.walker .l2{transform-box:view-box}
+.walker .l1{transform-origin:65px 63px;animation:step .4s ease-in-out infinite alternate}
+.walker .l2{transform-origin:75px 63px;animation:step .4s ease-in-out infinite alternate-reverse}
+.walkway:hover .walker,.walkway:hover .walker *,.walker:focus-visible,.walker:focus-visible *{animation-play-state:paused}
+@keyframes pace{0%{left:-4px}46%{left:calc(100% - 100px)}50%{left:calc(100% - 100px)}96%{left:-4px}100%{left:-4px}}
+@keyframes face{0%{transform:none}48%{transform:scaleX(-1)}98%{transform:none}}
+@keyframes waddle{0%{transform:translateY(2px) rotate(-5deg) scaleY(.96)}50%{transform:translateY(-3px) rotate(0) scaleY(1.02)}100%{transform:translateY(2px) rotate(5deg) scaleY(.96)}}
+@keyframes thrust{0%{transform:translateX(-3px);animation-timing-function:cubic-bezier(.2,.9,.3,1)}22%{transform:translateX(4px);animation-timing-function:linear}100%{transform:translateX(-3px)}}
+@keyframes step{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.acts{display:grid;gap:16px;max-width:360px;margin:0 auto}
+@media (min-width:520px){.acts{grid-template-columns:1fr 1fr;max-width:none}}
+
+.btn{display:block;text-align:center;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 20px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
+@media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
+.btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
+.btn.solid{background:var(--tag);color:var(--line)}
+footer{color:var(--line);text-align:center;padding:56px 20px 64px;font-size:14px}
+footer .brand{display:block;margin-bottom:6px;font-size:30px}
+footer p{margin:4px 0}
+.soc-row{display:flex;justify-content:center;align-items:center;gap:14px}
+footer .soc-row{margin:22px 0 16px}
+footer .soc{--g:24px;--r:44px;gap:16px}
+footer .soc svg{stroke-width:1.5}
+footer .soc .ring{stroke-width:3}
+footer .soc a{padding:8px;margin:-8px}
+/* phones: the links wrap, so they drop their slashes rather than strand one at a line end */
+.foot-links{display:flex;flex-wrap:wrap;justify-content:center;column-gap:1.1em}
+@media (max-width:480px){.foot-links{column-gap:22px}.foot-links .sep{display:none}}
+@media (prefers-reduced-motion:reduce){
+*{animation:none!important;transition:none!important}
+.js .draw .ink{stroke-dashoffset:0}
+.walker{left:calc(50% - 52px)}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<filter id="pen" x="-10%" y="-10%" width="120%" height="120%">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/>
+<feDisplacementMap in="SourceGraphic" scale="2.4"/>
+</filter>
+<symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.2" cy="6.8" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-tt" viewBox="0 0 24 24"><path d="M11.5 2.6H15.2A5.6 5.6 0 0 0 20.8 8.2V11.8A9.5 9.5 0 0 1 15.2 10.1V15.6A6 6 0 1 1 8 9.72V13.64A2.3 2.3 0 1 0 11.5 15.6Z"/></symbol>
+<symbol id="i-ring" viewBox="0 0 100 100"><path pathLength="1" filter="url(#pen)" d="M68 15C45 8 15 22 12 50C10 78 35 93 58 88C80 83 93 60 86 35C80 20 65 12 45 17"/></symbol>
+<symbol id="sig-ruby" viewBox="0 0 381 293"><path vector-effect="non-scaling-stroke" transform="translate(-25.995020,322.924680) scale(1 -1)" d="M367 312c-8-6-16-12-18-15-21-19-19-18-20-14-3 10-41 0-74-20-4-2-10-5-12-6-8-4-45-29-58-39-6-5-26-22-33-28-8-6-8-6-6-3 2 2 19 25 20 27 14 17 5 23-15 10-3-2-6-3-7-4-5-3-23-19-35-30-6-6-15-14-20-19-10-8-12-10-8-11 2-1 5 1 11 6 1 1 3 3 5 4 2 1 8 8 15 14 19 19 22 22 34 30 10 7 17 11 18 10 0-1-3-9-5-11 0-1-2-2-2-3-8-16-45-58-59-69-5-3-13-9-18-13-6-4-12-8-13-9-9-4-1-7 9-3 2 1 1-2-7-11-7-9-15-20-24-35-2-4-5-8-5-9-1-1-2-4-3-6-2-3-5-9-7-14-5-9-5-11-1-11 1 0 3 1 6 5 4 6 21 29 33 45 18 25 31 44 33 45 2 2 19 1 19-2 0-1-4-10-4-11-1 0-1-2-1-4 0-8 7-7 17 2 7 6 8 6 10 2 3-6 10-6 15 0 3 3 6 2 7-3 2-5 8-5 15 0 3 1 6 3 8 4 1 1 9 8 18 16 24 24 27 24 4 0-3-4-10-12-14-17-4-6-8-11-9-11-1 0-5-5-27-30-5-7-14-15-18-20-7-5-9-8-8-9 1-4 3-3 20 11 8 7 20 16 26 20 3 2 4 3 3 6 0 3 8 18 15 25 2 2 8 8 12 13 12 14 24 26 24 24 0-1-1-5-2-10-5-24 14-31 47-15 12 6 12 5 11-2 0-7 2-13 9-17 3-3 5-3 14-6 5-1 20-2 34-1 15 1 26 0 39-7 12-5 22-7 22-4 0 1-1 2-2 2-2 1-8 3-15 7-21 9-24 9-46 9-26-1-36 0-43 7-6 5-6 5-3 15 3 9-3 10-17 4-30-12-39-13-44-2-4 11 4 29 24 49 18 19 49 55 72 83 3 5 7 9 8 10 1 1 5 7 10 13 15 18 21 26 28 33 9 9 9 10 7 12-3 4-6 2-19-9zm-4-14c-13-16-28-34-32-39-3-3-5-6-6-8-7-8-35-41-37-44-33-36-35-38-24-20 3 5 6 9 6 9 0 1 0 1 1 1 1 0 1 0 1 1 0 1 0 2 1 2 1 1 5 6 9 13 17 22 19 25 25 32 4 4 8 9 9 11 3 5 12 15 28 29 7 7 14 14 16 15 3 3 9 8 10 7 0 0-3-4-7-9zm-42-17c0 0-1-2-3-4-2-2-5-6-7-9-4-4-23-17-25-17-1 0-6-3-12-6-6-3-19-10-29-15-10-5-22-12-27-14-14-8-44-25-57-33-34-23-37-23-14-4 2 2 7 6 11 10 4 3 9 7 10 9 2 1 10 7 18 13 19 15 52 38 55 38 0 0 2 2 6 4 4 3 29 15 30 16 0 0 2 0 4 1 4 3 19 8 22 9 2 0 6 1 9 1 6 2 9 2 9 1zm-26-33c-3-3-8-7-10-9-14-12-50-49-64-65-30-34-43-51-41-56 0-1-1-2-3-4-4-3-5-2-3 4 2 5 0 8-4 6-2-1-2-1-2 1 2 5-5 5-8-1-8-11-12-13-13-4 0 8-4 8-12 1-13-12-13-12-10-4 4 10 0 15-12 15-4 0-7 0-7 0 0 4 16 20 25 26 1 1 3 2 3 2 1 1 10 6 15 9 2 1 6 4 9 6 7 5 17 11 34 20 2 2 6 4 8 5 4 3 25 14 49 26 11 5 27 14 35 18 9 5 16 9 16 9 0 0-2-2-5-5zm-2-12c-2-1-6-7-11-12-4-6-12-14-16-19-4-4-12-13-17-19-31-36-39-45-50-54-14-11-14-11-4 2 4 5 9 12 11 15 3 3 7 9 11 13 4 3 9 10 12 14 12 13 53 54 62 61 4 4 5 3 2-1zm-32-45c-1-2-3-6-5-8-1-3-4-8-6-11-4-6-5-7-7-8-2 0-5-1-6-2-5-3-4 0 1 5 2 3 6 7 7 9 4 4 17 19 18 19 0 0-1-2-2-4zm-170-71c-1-1-7-10-15-20-2-3-6-8-8-10-3-6-14-20-18-26-5-6-3-2 4 10 14 23 40 55 37 46z"/></symbol>
+<symbol id="sig-kai" viewBox="0 0 613 411"><path vector-effect="non-scaling-stroke" transform="translate(-34.654748,437.588550) scale(1 -1)" d="M599 437c-2 0-5-1-5 0-1 0-3 0-5-1-2-1-6-1-10-2-4 0-10 0-12-1-11-2-15-3-29-6-8-1-18-3-22-4-4 0-9-1-10-1-1 0-2-1-2-1 0 0-1-1-2-1-4 0-12-1-13-1-1-1-6-2-11-2-2-1-8-2-13-3-5-1-15-2-22-3-7 0-14-1-16-1-2-1-3 0-4 0-1 1-1 1-2 0-1-1-1-1-1 0 0 1 0 1-1 0-1 0-2 0-2 1-1 0-4 1-8 1-3 1-7 1-7 2 0 0-5 0-10 1-5 0-10 0-11 1-2 0-6 0-10 1-4 0-10 0-13 1-4 0-11 1-15 1-5 0-9 1-10 1-1 1-2 1-2 0 0-1-1-1-2-1-1 1-10 1-49 2-30 1-47 3-54 7-2 1-14 2-14 1 0 0-1-1-2-1-9-3 4-13 19-17 3-1 11-3 18-5 41-11 86-13 152-6 35 4 78-10 103-32 0-1 4-4 7-7 25-21 32-43 25-80-1-1-2-4-3-7-1-2-3-7-4-9-3-10-5-11-11-7-6 4-8 6-8 9-1 4-5 5-5 1 0-4 2-8 7-13 5-5 5-6 0-5-6 1-42 2-47 1-3 0-10-1-17-1-18-1-31-2-41-3-5 0-19 0-31-1-26 0-36-1-52-2-26-2-83-3-84-1 0 0-2 0-4 0-2 0-5 1-7 1-12 3-61 1-69-3-1 0-6-2-11-3-5-1-10-2-11-3-21-8-6 3 47 38 5 3 15 10 23 15 7 5 18 12 23 15 4 3 9 5 10 6 3 3-2 6-7 4-2-1-6-3-8-4-3-1-5-2-6-2 0 0-4-2-8-3-12-6-26-9-38-10-11 0-16-2-14-4 2-2 22 0 40 4 9 2 10 1 3-3-9-6-18-12-20-13-1-1-2-2-3-2 0 0-1-1-2-2-1-1-3-2-4-2-6-4-18-12-20-14-1-1-3-2-3-2-1 0-3-2-6-4-3-1-5-3-6-3 0 0-2-2-4-4-4-3-23-14-25-14-1 0-1 0-1-1 0-1 0-1-1-1 0 0-3-1-5-3-3-1-7-3-10-5-4-1-6-2-6-3 1 0 0-1-1-2-2 0-1-4 1-5 1 0 10 2 15 5 1 1 6 3 10 5 52 19 79 23 116 18 13-2 55-3 68-2 1 1 7 1 14 1 6 1 14 1 18 2 14 0 29 1 50 2 22 0 71 3 79 4 20 2 54 1 60-3 2-1-1-7-4-9-1 0-1-1-1-1 0-2-4-6-9-12-1-1-3-3-2-3 0-1-1-2-2-3-1-1-2-2-2-1-1 0-1 0-1-1 0-1-2-3-3-5-2-1-4-3-4-3 0-2-5-6-6-6-1 0-1 0-1-1 1 0-1-2-4-5-3-2-5-5-6-6-1-2-17-16-21-18-1-1-4-3-6-5-1-1-5-4-8-6-2-2-5-4-5-5-1 0-2-1-3-1 0 0-1 0-1-1 0 0-1-1-3-2-2-1-5-4-7-6-3-1-6-4-8-4-2-1-3-2-3-2 0-1-2-2-5-4-3-2-7-4-8-5-1-1-3-2-5-3-1 0-3-2-5-3-1-2-6-5-9-7-4-2-9-5-10-6-1-1-4-2-6-3-2-1-4-3-4-3-1-1-15-9-26-15-4-2-8-4-9-4-1-1-6-4-11-6-4-2-9-4-10-5-7-4-17-8-20-8-1 0-2-1-3-1-1-1-18-7-23-8-2 0-4 0-4-1-2-1-28-4-37-4-11 0-16 1-28 4-4 0-8 1-9 1-1 1-2 1-3 1-1 1-5 2-8 3-8 1-8 2-2 9 1 1 4 5 6 8 2 2 4 5 4 5 4 6 11 15 17 25 11 16 11 16 12 19 1 1 2 3 3 4 3 3 16 33 20 44 6 18 5 31-3 29-2 0-2 0 0-5 1-3 1-4-1-11-2-11-3-13-6-22-1-2-2-4-2-5 0 0-2-4-4-7-2-4-5-8-6-11 0-2-2-5-3-7-1-1-3-5-4-7-2-3-4-6-5-8-1-1-2-2-2-3 0-1-7-12-12-17-1-1-2-4-3-5-1-2-2-4-3-5-1-1-2-2-2-3 0 0-1-1-1-2-2-1-9-11-9-12 0 0-2-2-4-3-1-2-3-4-3-3 0 0-1 0-2-1-1-1-7 1-10 4-2 1-7 4-13 7-11 5-14 7-15 8 0 0-4 3-8 6-5 3-9 6-9 6 0 0-3 2-6 3-3 2-8 4-11 6-3 2-6 3-7 3-1 0-2 1-2 2-1 1-2 1-2 0-1 0-2 0-2 1-2 2-3 2-13 2-11 1-14-4-14-25-1-50 39-76 84-56 2 1 4 2 4 2 0 1 1 1 1 1 2 0 11 7 19 14 7 7 7 7 15 5 39-13 78-12 116 3 27 11 51 23 78 39 7 4 13 8 14 8 0 0 3 2 6 4 4 3 9 6 13 8 20 13 60 41 74 53 24 20 49 47 62 68 1 2 3 5 3 5 2 1 12 25 15 35 5 15 6 30 2 44-2 8-3 10-6 17-1 1-3 5-5 8-2 3-4 6-4 6 0 1-8 9-9 9 0 0-2 1-3 3-3 3-13 11-14 11 0 0-1 1-2 1 0 1-3 3-5 4-3 2-7 4-9 5-7 4-32 15-38 16-6 2 4 5 21 8 17 3 39 6 46 7 3 1 8 2 10 2 2 1 4 1 5 2 2 0 5 1 12 2 3 0 13 2 22 4 34 7 59 8 77 6 4-1 8-1 8-1 2 1-6 4-9 4-2 0-3 0-3 1 1 1-30 1-36 0zm-326-20c15 0 35-1 45-2 42-1 96-8 77-10-3-1-8-2-11-2-27-5-109-2-121 5-1 1-2 1-3 1 0-1-1-1-1 0-1 1-2 1-4 1-3 0-15 4-18 6-2 2 1 3 6 2 2 0 15 0 30-1zm-205-315c6-3 18-10 25-14 8-5 14-9 15-9 0 0 1 0 1-1 0 0 7-4 16-9 8-4 15-8 17-9 2-1-10-13-17-16-1 0-2-1-3-2 0-2-2-3-2-1 0 1 0 1-1 0 0-2-1-3-2-3-3 0-7-1-7-2 0 0-2-1-4-2-30-8-58 12-65 46-5 26 4 33 27 22zM328 274c0-3 3-4 5-2 3 2 2 3-2 4-2 0-3 0-3-2z"/></symbol>
+</defs>
+</svg>
+
+<nav class="fhead" aria-label="Site" inert>
+<div class="fbar">
+<a class="brand" href="/">five days</a>
+<a href="/"><span class="xp">experiment </span>no. 01</a>
+<a href="/why" aria-current="page"><span class="here">why five days<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></a>
+<a href="/faq">faq</a>
+<a href="/involved">get involved</a>
+<button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
+<div class="fmenu" id="fmenu" hidden>
+<ol>
+<li><a href="/#idea"><span>the idea</span></a></li>
+<li><a href="/#how"><span>your next 5 days</span></a></li>
+<li><a href="/#experiment"><span>the experiment</span></a></li>
+<li><a href="/rsvp"><span>rsvp</span></a></li>
+<li><a href="/#faq"><span>questions</span></a></li>
+<li><a href="/#team"><span>who's setting you up</span></a></li>
+<li><a href="/why" aria-current="page"><span>why five days</span></a></li>
+</ol>
+<p class="fmenu-foot"><a href="/faq">faq</a><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></span></p>
+</div>
+<a class="btn" href="/rsvp">rsvp</a>
+</div>
+</nav>
+
+<header class="hero">
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><a href="/why" aria-current="page">why five days</a><span class="tb-page"> &nbsp;/&nbsp; <a href="/faq">faq</a> &nbsp;/&nbsp; <a href="/involved">get involved</a></span><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="intro">
+<p class="kicker">why five days</p>
+<h1 class="draw" data-reveal>dating means going on <span class="mk ring">dates.<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.9s" d="M26 8C80-4 180 0 194 24C206 46 150 58 96 57C40 56 2 48 5 30C8 14 50 5 120 5"/></svg></span></h1>
+<div class="props draw" data-reveal aria-hidden="true">
+<span class="prop cal"><span class="cal-m">thu</span><span class="cal-d">8<small>pm</small></span><span class="cal-w">somewhere good</span><svg viewBox="0 0 200 60" preserveAspectRatio="none" class="cal-ring"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:1.6s" d="M26 8C80-4 180 0 194 24C206 46 150 58 96 57C40 56 2 48 5 30C8 14 50 5 120 5"/></svg></span>
+<span class="prop tix"><span class="tix-k">admit</span><span class="tix-n">two</span><span class="tix-t">table for two</span><svg class="tix-tick" viewBox="0 0 40 30"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:1.9s" d="M4 16L14 25L36 4"/></svg></span>
+</div>
+</div>
+</header>
+<svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16L0 70Z" fill="#4F6B45"/><path d="M0 70L1200 16" fill="none" stroke="#EDEAE1" stroke-width="10" vector-effect="non-scaling-stroke"/></svg>
+
+<main class="wrap">
+<section class="glance" aria-labelledby="glance-h">
+<h2 class="x-head first" id="glance-h">the short version</h2>
+<ol class="cards draw" data-reveal>
+<li class="paper card" style="--r:-1.2deg;--i:0"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.3s" d="M6 30L30 6M30 6H17M30 6V19"/></svg>where we're going</p><p class="card-l">A world where people meet, not match.</p></li>
+<li class="paper card" style="--r:.9deg;--i:1"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.45s" d="M4 17H32M9 17L7 31M27 17L29 31M12 6V13M24 6V13M12 13C9 13 9 9 10 6M12 13C15 13 15 9 14 6M24 13C21 13 21 9 22 6M24 13C27 13 27 9 26 6"/></svg>what we do</p><p class="card-l">Plan real dates, in real places, with people who fit your life.</p></li>
+<li class="paper card" style="--r:.7deg;--i:2"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M18 31C8 23 4 17 7 11C10 6 16 7 18 12C20 7 26 6 29 11C32 17 28 23 18 31Z"/></svg>why</p><p class="card-l">Matching interests isn't the same as matching lives.</p></li>
+<li class="paper card" style="--r:-.8deg;--i:3"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.75s" d="M6 28C12 10 22 30 30 8M30 8L24 10M30 8L31 14"/></svg>what's next</p><p class="card-l">New York first, then every major walkable city.</p>
+<svg class="route" viewBox="0 0 240 40" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:1s" d="M14 24C50 6 80 36 118 20S184 10 228 22"/><circle class="stop ny" cx="14" cy="24" r="5"/><circle class="stop" cx="92" cy="27" r="3.2"/><circle class="stop" cx="158" cy="15" r="3.2"/><circle class="stop" cx="228" cy="22" r="3.2"/><text x="14" y="10" text-anchor="middle">NY</text></svg></li>
+</ol>
+</section>
+
+<article class="paper letter draw" data-reveal aria-label="A letter from the founders">
+<dl class="memo">
+<dt>to:</dt><dd>whoever's wondering</dd>
+<dt>from:</dt><dd>Ruby &amp; Kai</dd>
+<dt>re:</dt><dd>a letter from the founders</dd>
+</dl>
+<div class="body">
+<p>Many years ago, I moved to the Netherlands for a legal internship. It was my first time living away from home, and I didn’t know anyone besides my coworkers.</p>
+<p>So, naturally, I downloaded the dating apps. I loved that they introduced me to people I never would have met otherwise. I just didn’t know how to tell who actually made sense for me.</p>
+<p>While I was there, I learned a Dutch saying:</p>
+<blockquote class="saying" lang="nl"><p>“Op ieder potje past een dekseltje.”</p><p class="en" lang="en">There’s a lid for every pot.</p></blockquote>
+<p>I don’t know why, but it stuck with me. I liked the idea that there isn’t one type of person everyone is supposed to want. Some lids might look more impressive than others, but the point isn’t to find the “best” lid. It’s to find <span class="mk">the one that fits.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.4s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
+<p>Over time, I started thinking about how different that felt from the way we date. We have more choice than ever, but somehow more choice doesn’t always make choosing easier.</p>
+<p>Before law school, I studied sociology. I’ve always been curious about why we choose the people we do and why someone can look perfect on paper but feel completely wrong in real life.</p>
+<p>I don’t think there’s a formula for love. But I do think shared values matter, wanting similar things out of life matters, and some things still have to be figured out face-to-face.</p>
+</div>
+<div class="sig one"><figure class="signed ruby"><span class="ink-sig"><svg class="sgn" style="--dl:.3s" role="img" aria-label="Ruby’s signature"><use href="#sig-ruby"/></svg><figcaption>Ruby</figcaption></span><span class="pola" style="--r:3deg"><img src="/ruby.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span></figure></div>
+<hr class="turn">
+<div class="body">
+<p>I came to this from a different place.</p>
+<p>I went to school in New York, and honestly, most of what I heard from my friends about dating apps was terrible.</p>
+<p>Bad dates. Weird messages. People disappearing. Weeks of talking that never turned into anything. Obviously there were success stories too, but it felt like there were a lot more horror stories and mediocre outcomes in between.</p>
+<p>After a while, I started wondering why this had become normal.</p>
+<p>Most people just wanted to meet someone they actually liked. Somehow getting to a good date had become the hardest part.</p>
+<p>That’s what interested me about building 5days.</p>
+<p class="pair">Not another way to keep people looking.<br>A better way to help them actually meet.</p>
+</div>
+<div class="sig one"><figure class="signed kai"><span class="ink-sig"><svg class="sgn" style="--dl:.3s" role="img" aria-label="Kai’s signature"><use href="#sig-kai"/></svg><figcaption>Kai</figcaption></span><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span></figure></div>
+<hr class="turn">
+<div class="body">
+<p>That’s really where 5days started.</p>
+<p>We ask the questions that usually come later: what matters to you, what you want your life to look like, what kind of relationship you want, and what you’re looking for in another person.</p>
+<p>Then we find someone we think might fit and plan the date.</p>
+<p>You just show up.</p>
+<p>We can help with fit. Whether you actually click is something you have to find out in person.</p>
+<p class="last">That part is yours.</p>
+</div>
+<div class="sig both">
+<div class="stamp draw" data-reveal aria-hidden="true">
+<svg viewBox="0 0 196 124" class="st">
+<defs><clipPath id="st-clip"><rect x="12" y="12" width="126" height="94"/></clipPath>
+<filter id="wash-s" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="6"/><feGaussianBlur stdDeviation="1.4"/></filter></defs>
+<path class="st-paper" d="M0 0L1.5 0.0A3.2 3.2 0 0 0 7.9 0.0L10.9 0.0A3.2 3.2 0 0 0 17.3 0.0L20.2 0.0A3.2 3.2 0 0 0 26.6 0.0L29.6 0.0A3.2 3.2 0 0 0 36.0 0.0L39.0 0.0A3.2 3.2 0 0 0 45.4 0.0L48.4 0.0A3.2 3.2 0 0 0 54.8 0.0L57.7 0.0A3.2 3.2 0 0 0 64.1 0.0L67.1 0.0A3.2 3.2 0 0 0 73.5 0.0L76.5 0.0A3.2 3.2 0 0 0 82.9 0.0L85.9 0.0A3.2 3.2 0 0 0 92.3 0.0L95.2 0.0A3.2 3.2 0 0 0 101.6 0.0L104.6 0.0A3.2 3.2 0 0 0 111.0 0.0L114.0 0.0A3.2 3.2 0 0 0 120.4 0.0L123.4 0.0A3.2 3.2 0 0 0 129.8 0.0L132.7 0.0A3.2 3.2 0 0 0 139.1 0.0L142.1 0.0A3.2 3.2 0 0 0 148.5 0.0L150 0L150.0 1.3A3.2 3.2 0 0 0 150.0 7.7L150.0 10.4A3.2 3.2 0 0 0 150.0 16.8L150.0 19.5A3.2 3.2 0 0 0 150.0 25.9L150.0 28.6A3.2 3.2 0 0 0 150.0 35.0L150.0 37.6A3.2 3.2 0 0 0 150.0 44.0L150.0 46.7A3.2 3.2 0 0 0 150.0 53.1L150.0 55.8A3.2 3.2 0 0 0 150.0 62.2L150.0 64.9A3.2 3.2 0 0 0 150.0 71.3L150.0 74.0A3.2 3.2 0 0 0 150.0 80.4L150.0 83.0A3.2 3.2 0 0 0 150.0 89.4L150.0 92.1A3.2 3.2 0 0 0 150.0 98.5L150.0 101.2A3.2 3.2 0 0 0 150.0 107.6L150.0 110.3A3.2 3.2 0 0 0 150.0 116.7L150 118L148.5 118.0A3.2 3.2 0 0 0 142.1 118.0L139.1 118.0A3.2 3.2 0 0 0 132.7 118.0L129.8 118.0A3.2 3.2 0 0 0 123.4 118.0L120.4 118.0A3.2 3.2 0 0 0 114.0 118.0L111.0 118.0A3.2 3.2 0 0 0 104.6 118.0L101.6 118.0A3.2 3.2 0 0 0 95.2 118.0L92.3 118.0A3.2 3.2 0 0 0 85.9 118.0L82.9 118.0A3.2 3.2 0 0 0 76.5 118.0L73.5 118.0A3.2 3.2 0 0 0 67.1 118.0L64.1 118.0A3.2 3.2 0 0 0 57.7 118.0L54.8 118.0A3.2 3.2 0 0 0 48.4 118.0L45.4 118.0A3.2 3.2 0 0 0 39.0 118.0L36.0 118.0A3.2 3.2 0 0 0 29.6 118.0L26.6 118.0A3.2 3.2 0 0 0 20.2 118.0L17.3 118.0A3.2 3.2 0 0 0 10.9 118.0L7.9 118.0A3.2 3.2 0 0 0 1.5 118.0L0 118L0.0 116.7A3.2 3.2 0 0 0 0.0 110.3L0.0 107.6A3.2 3.2 0 0 0 0.0 101.2L0.0 98.5A3.2 3.2 0 0 0 0.0 92.1L0.0 89.4A3.2 3.2 0 0 0 0.0 83.0L0.0 80.4A3.2 3.2 0 0 0 0.0 74.0L0.0 71.3A3.2 3.2 0 0 0 0.0 64.9L0.0 62.2A3.2 3.2 0 0 0 0.0 55.8L0.0 53.1A3.2 3.2 0 0 0 0.0 46.7L0.0 44.0A3.2 3.2 0 0 0 0.0 37.6L0.0 35.0A3.2 3.2 0 0 0 0.0 28.6L0.0 25.9A3.2 3.2 0 0 0 0.0 19.5L0.0 16.8A3.2 3.2 0 0 0 0.0 10.4L0.0 7.7A3.2 3.2 0 0 0 0.0 1.3L0 0Z"/>
+<rect class="st-frame" x="8" y="8" width="134" height="102"/>
+<g clip-path="url(#st-clip)">
+<g filter="url(#wash-s)">
+<rect x="10" y="10" width="130" height="60" style="fill:#F2C38F;opacity:.42"/>
+<ellipse cx="75" cy="104" rx="80" ry="16" style="fill:#A9B89A;opacity:.6"/>
+<circle class="st-glow" cx="125" cy="58" r="11" style="fill:#F2C38F;opacity:.8"/>
+</g>
+<g filter="url(#pen)">
+<circle class="ink thin" pathLength="1" cx="108" cy="28" r="6.5"/>
+<path class="ink thin" pathLength="1" style="--dl:.2s" d="M12 80V62H19V55H26V62H30V48H40V66H45V58L50 53L55 58V70H62V60H70V80M33 48V44H38V48M34 44L35.5 41L37 44M84 80V66H92V58H98V80"/>
+<path class="ink thin" pathLength="1" style="--dl:.4s" d="M12 94C46 90 98 96 138 91"/>
+<path class="ink" pathLength="1" style="--dl:.5s" d="M34 86H78M36 78H76M36 81H76M39 86V95M73 86V95M37 78V86M75 78V86"/>
+<path class="ink thin" pathLength="1" style="--dl:.6s" d="M122 100V56M122 56C122 50 128 49 128 53M125 53H131L129.5 58H126.5Z"/>
+<path class="ink thin" pathLength="1" style="--dl:.8s" d="M42 20V24M40 22H44M58 18V21M56.5 19.5H59.5M86 30V33M84.5 31.5H87.5"/>
+</g>
+<g class="haven-st" transform="translate(27 49) scale(.52)"><g class="st-bod" filter="url(#pen)">
+<path d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path class="thin" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52M65 64L64 72M61 72H68M75 63L76 72M73 72H80"/>
+<g class="st-head"><path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/><path class="thin" d="M88 32C92 35 97 35 100 32M101 22L107 25L101 27"/><circle class="eye" cx="95" cy="21" r="2"/><path class="thin" d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/></g>
+</g></g>
+</g>
+<text class="st-5" x="20" y="31">5</text>
+<text class="st-ny" x="75" y="104" text-anchor="middle">NEW YORK</text>
+<g class="st-mark" filter="url(#pen)">
+<circle class="ink" pathLength="1" style="--dl:1.2s" cx="146" cy="36" r="20"/>
+<circle class="ink thin" pathLength="1" style="--dl:1.3s" cx="146" cy="36" r="16"/>
+<path class="ink" pathLength="1" style="--dl:1.5s" d="M160 24C166 20 172 28 178 24S188 20 194 24M162 36C168 32 174 40 180 36S190 32 196 36M160 48C166 44 172 52 178 48S188 44 194 48"/>
+</g>
+<rect x="133" y="28" width="26" height="17" style="fill:#F4F3EF;opacity:.85"/>
+<text class="st-pm" x="146" y="35" text-anchor="middle">NYC</text>
+<text class="st-pm" x="146" y="44" text-anchor="middle">01</text>
+</svg>
+</div>
+<div class="both-sigs">
+<figure class="signed ruby"><span class="ink-sig"><svg class="sgn" style="--dl:.3s" role="img" aria-label="Ruby’s signature"><use href="#sig-ruby"/></svg><figcaption>Ruby</figcaption></span></figure>
+<figure class="signed kai"><span class="ink-sig"><svg class="sgn" style="--dl:1.2s" role="img" aria-label="Kai’s signature"><use href="#sig-kai"/></svg><figcaption>Kai</figcaption></span></figure>
+</div>
+</div>
+</article>
+
+<section aria-labelledby="x-h">
+<h2 class="x-head" id="x-h">what we crossed out</h2>
+<p class="x-sub">The usual parts of a dating product, and what we do instead.</p>
+<div class="paper crossed tape draw" data-reveal>
+<ul>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x1"><span class="t">a match percentage<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.20s" pathLength="1" filter="url(#pen)" d="M2 9C50 6 110 8 198 4"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x1" hidden>A number can't tell you whether someone wants the same Wednesday you do.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x2"><span class="t">an algorithm<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.45s" pathLength="1" filter="url(#pen)" d="M2 6C60 9 130 5 198 8"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x2" hidden>Two people read every answer.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x3"><span class="t">endless swiping<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.70s" pathLength="1" filter="url(#pen)" d="M2 8C40 5 120 9 198 5"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x3" hidden>One person, one evening, planned.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x4"><span class="t">posting from your instagram<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.95s" pathLength="1" filter="url(#pen)" d="M2 9C60 5 120 8 198 6"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x4" hidden>We look to check you're real. That's all we do with it.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x5"><span class="t">selling your data<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:1.20s" pathLength="1" filter="url(#pen)" d="M2 7C50 9 140 5 198 7"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x5" hidden>We don't. The <a href="/privacy">privacy notice</a> says so in writing.</p></li>
+</ul>
+<p class="hint">tap a line to see what took its place</p>
+</div>
+</section>
+
+<section class="paper chair" aria-labelledby="chair-h">
+<h2 id="chair-h">pull up a chair.</h2>
+<p>If this is how you'd rather meet someone, RSVP. If it's how you'd rather help, there's a door for that too.</p>
+<div class="acts">
+<a class="btn solid" href="/rsvp" data-track="why_rsvp">rsvp</a>
+<a class="btn" href="/involved" data-track="why_involved">get involved</a>
+</div>
+<div class="walkway">
+<button type="button" class="walker" data-leave-note aria-label="Give Haven a note to carry">
+<svg viewBox="0 0 130 80" aria-hidden="true"><g class="bod" filter="url(#pen)">
+<path d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path class="thin" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
+<g class="l1"><path class="thin" d="M65 64L64 72M61 72H68"/></g><g class="l2"><path class="thin" d="M75 63L76 72M73 72H80"/></g>
+<g class="head"><path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/><path class="thin" d="M88 32C92 35 97 35 100 32M101 22L107 25L101 27"/><circle class="eye" cx="95" cy="21" r="1.5"/><path d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/></g>
+</g></svg>
+</button>
+</div>
+<p class="note-line"><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note data-track="why_note">leave us a note</a></p>
+</section>
+</main>
+
+<footer>
+<a class="brand" href="/">five days</a>
+<p>A table for two, somewhere good. An experiment in slower, better dating.</p>
+<p class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></p>
+<p class="foot-links"><a href="/">experiment no. 01</a><span class="sep" aria-hidden="true">/</span><a href="/faq">faq</a><span class="sep" aria-hidden="true">/</span><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="/why" aria-current="page">why five days</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy">privacy</a></p>
+</footer>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+const io = new IntersectionObserver(es => es.forEach(e => {
+if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}), { threshold: .2 });
+$$("[data-reveal]").forEach(el => io.observe(el));
+
+// floating header, same as /involved
+const fhead = $(".fhead"), fmenu = $("#fmenu"), fmenuBtn = $(".fmenu-btn", fhead);
+let atTop = true;
+const setMenu = open => {
+if (open === !fmenu.hidden) return;
+if (!open && atTop) { fhead.classList.remove("on"); fhead.inert = true; }
+fmenu.hidden = !open;
+fhead.classList.toggle("open", open);
+fmenuBtn.setAttribute("aria-expanded", open);
+};
+fmenuBtn.addEventListener("click", () => setMenu(fmenu.hidden));
+fhead.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+addEventListener("keydown", e => { if (e.key === "Escape" && !fmenu.hidden) { setMenu(false); fmenuBtn.focus(); } });
+document.addEventListener("pointerdown", e => { if (e.target === fhead || !fhead.contains(e.target)) setMenu(false); });
+fhead.addEventListener("focusout", e => { if (e.relatedTarget && !fhead.contains(e.relatedTarget)) setMenu(false); });
+new IntersectionObserver(([e]) => {
+const on = !e.isIntersecting;
+atTop = !on;
+fhead.classList.toggle("on", on); fhead.inert = !on;
+if (!on) setMenu(false);
+}).observe($(".topbar"));
+// phones: "menu" in the topbar drops the strip in with its menu open
+$(".tb-menu").addEventListener("click", () => { fhead.classList.add("on"); fhead.inert = false; setMenu(true); fmenuBtn.focus(); });
+
+// the stamp: tap and Haven hops on his bench
+const stamp = $(".stamp");
+stamp.addEventListener("click", () => { stamp.classList.remove("hop"); void stamp.offsetWidth; stamp.classList.add("hop"); });
+
+// what we crossed out: a tap shows what took its place
+$$(".x-item").forEach(b => b.addEventListener("click", () => {
+const open = b.getAttribute("aria-expanded") !== "true";
+b.setAttribute("aria-expanded", open);
+document.getElementById(b.getAttribute("aria-controls")).hidden = !open;
+}));
+})();
+</script>
+<script src="/attr.js" defer></script>
+<script src="/note.js" defer></script>
+</body>
+</html>

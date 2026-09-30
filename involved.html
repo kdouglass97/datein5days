@@ -71,6 +71,8 @@ h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 .tb-menu i{font:normal 18px/.6 var(--type)}
 @media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
 @media (max-width:360px){.topbar > span > a{display:none}}
+/* tablets: "why five days" joins the topbar, so the cohort number sheds "experiment" first */
+@media (max-width:860px){.topbar .xp{display:none}}
 @media (max-width:560px){.topbar .xp{display:none}}
 @media (max-width:440px){.topbar .no{display:none}}
 
@@ -127,6 +129,7 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .kicker{margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
 .intro h1{color:var(--line);font-size:clamp(44px,9vw,76px);line-height:.98;letter-spacing:-.04em;margin:0 0 22px}
 .intro p{margin:0 auto;max-width:42ch}
+.intro p > a{font-weight:700;text-underline-offset:4px}
 .mk{position:relative;display:inline-block;white-space:nowrap}
 .mk svg{position:absolute;left:-2%;bottom:-6px;width:104%;height:10px;overflow:visible;pointer-events:none}
 .mk path{fill:none;stroke:#F2C38F;stroke-width:2;stroke-linecap:round}
@@ -259,6 +262,7 @@ html:has(.sheet[open]){overflow:hidden}
 <div class="fbar">
 <a class="brand" href="/">five days</a>
 <a href="/"><span class="xp">experiment </span>no. 01</a>
+<a href="/why">why five days</a>
 <a href="/faq">faq</a>
 <a href="/involved" aria-current="page"><span class="here">get involved<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></a>
 <button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
@@ -270,6 +274,7 @@ html:has(.sheet[open]){overflow:hidden}
 <li><a href="/rsvp"><span>rsvp</span></a></li>
 <li><a href="/#faq"><span>questions</span></a></li>
 <li><a href="/#team"><span>who's setting you up</span></a></li>
+<li><a href="/why"><span>why five days</span></a></li>
 </ol>
 <p class="fmenu-foot"><a href="/faq">faq</a><a href="/involved" aria-current="page">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></span></p>
 </div>
@@ -278,11 +283,11 @@ html:has(.sheet[open]){overflow:hidden}
 </nav>
 
 <header class="hero">
-<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" aria-current="page">get involved</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/why">why five days</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" aria-current="page">get involved</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="intro">
 <p class="kicker">get involved</p>
 <h1>help us seat the right people together.</h1>
-<p class="draw" data-reveal>Five Days is two people and one hunch: matching interests isn't the same as matching lives. We're testing it one city at a time, and we'd <span class="mk">rather not do it alone.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
+<p class="draw" data-reveal>Five Days is two people and one hunch: matching interests isn't the same as matching lives. We're testing it one city at a time, and we'd <span class="mk">rather not do it alone.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span> <a href="/why" data-track="involved_why">Here's why.</a></p>
 </div>
 </header>
 <svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16L0 70Z" fill="#4F6B45"/><path d="M0 70L1200 16" fill="none" stroke="#EDEAE1" stroke-width="10" vector-effect="non-scaling-stroke"/></svg>
@@ -393,7 +398,7 @@ html:has(.sheet[open]){overflow:hidden}
 <a class="brand" href="/">five days</a>
 <p>A table for two, somewhere good. An experiment in slower, better dating.</p>
 <p class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></p>
-<p class="foot-links"><a href="/">experiment no. 01</a><span class="sep" aria-hidden="true">/</span><a href="/faq">faq</a><span class="sep" aria-hidden="true">/</span><a href="/involved" aria-current="page">get involved</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy">privacy</a></p>
+<p class="foot-links"><a href="/">experiment no. 01</a><span class="sep" aria-hidden="true">/</span><a href="/faq">faq</a><span class="sep" aria-hidden="true">/</span><a href="/involved" aria-current="page">get involved</a><span class="sep" aria-hidden="true">/</span><a href="/why">why five days</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy">privacy</a></p>
 </footer>
 
 <dialog class="sheet" id="reach" aria-labelledby="reach-h">
