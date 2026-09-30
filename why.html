@@ -169,7 +169,7 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 
 /* the letter: the header is the printed form, typed; the body is set in the serif; the signatures are the hand */
 .wrap{padding:26px 16px 0}
-.letter{max-width:540px;margin:0 auto;padding:38px clamp(22px,6vw,44px) 30px;transform:rotate(-.6deg);box-shadow:inset 0 9px 0 var(--tag),0 18px 36px -20px rgba(0,0,0,.6)}
+.letter{max-width:540px;margin:72px auto 0;padding:38px clamp(22px,6vw,44px) 30px;transform:rotate(-.6deg);box-shadow:inset 0 9px 0 var(--tag),0 18px 36px -20px rgba(0,0,0,.6)}
 .memo{display:grid;grid-template-columns:4.2em 1fr;gap:4px 8px;margin:0 0 24px;padding:0 0 18px;border-bottom:1px dashed rgba(70,85,58,.55);font-size:14px;line-height:1.45}
 .memo dt{opacity:.7}
 .memo dd{margin:0}
@@ -190,6 +190,26 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 
 /* what we crossed out: the printed list, corrected by hand */
 .x-head{color:var(--line);text-align:center;font:400 clamp(38px,6vw,52px)/1 var(--serif);letter-spacing:-.03em;margin:72px 0 10px}
+.x-head.first{margin:14px 0 26px}
+/* the short version: four cards, one line each, readable at a glance. typed label (the form), a pen glyph (the hand) */
+.glance{max-width:760px;margin:0 auto}
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:22px}
+@media (min-width:640px){.cards{grid-template-columns:1fr 1fr;gap:26px 24px}}
+.card{padding:20px 22px 24px;transform:rotate(var(--r));transition:transform .35s cubic-bezier(.2,.8,.2,1.25),box-shadow .35s}
+@media (hover:hover){.card:hover{transform:rotate(0deg) translateY(-5px);box-shadow:0 26px 40px -20px rgba(0,0,0,.65)}}
+.card-k{display:flex;align-items:center;gap:10px;margin:0 0 10px;font:700 12px/1 var(--type);letter-spacing:.1em;text-transform:uppercase;color:var(--clay)}
+.gl{flex:none;width:30px;height:30px;overflow:visible}
+.gl path,.route path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card-l{margin:0;font:400 clamp(23px,3.2vw,27px)/1.18 var(--serif);letter-spacing:-.015em;--opsz:18;text-wrap:balance}
+.route{display:block;width:100%;max-width:280px;height:auto;margin:14px 0 0;overflow:visible}
+.route .stop{fill:var(--paper);stroke:var(--tag);stroke-width:1.6}
+.route .ny{fill:var(--clay);stroke:none}
+.route text{font:700 10px/1 var(--type);fill:var(--clay);letter-spacing:.08em}
+@media (prefers-reduced-motion:no-preference){
+.js .cards:not(.in) .card{opacity:0}
+.js .cards.in .card{animation:deal .7s calc(var(--i) * .12s) cubic-bezier(.2,.8,.25,1.2) backwards}
+@keyframes deal{from{opacity:0;transform:translateY(24px) rotate(calc(var(--r) * -3))}}
+}
 .x-sub{color:var(--line);text-align:center;margin:0 auto 32px;max-width:36ch}
 .crossed{max-width:540px;margin:0 auto;padding:22px clamp(20px,5vw,36px) 16px;transform:rotate(.5deg)}
 .crossed ul{list-style:none;margin:0;padding:0}
@@ -311,19 +331,29 @@ footer .soc a{padding:8px;margin:-8px}
 <svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16L0 70Z" fill="#4F6B45"/><path d="M0 70L1200 16" fill="none" stroke="#EDEAE1" stroke-width="10" vector-effect="non-scaling-stroke"/></svg>
 
 <main class="wrap">
+<section class="glance" aria-labelledby="glance-h">
+<h2 class="x-head first" id="glance-h">the short version</h2>
+<ol class="cards draw" data-reveal>
+<li class="paper card" style="--r:-1.2deg;--i:0"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.3s" d="M6 30L30 6M30 6H17M30 6V19"/></svg>where we're going</p><p class="card-l">A world where people meet, not match.</p></li>
+<li class="paper card" style="--r:.9deg;--i:1"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.45s" d="M4 17H32M9 17L7 31M27 17L29 31M12 6V13M24 6V13M12 13C9 13 9 9 10 6M12 13C15 13 15 9 14 6M24 13C21 13 21 9 22 6M24 13C27 13 27 9 26 6"/></svg>what we do</p><p class="card-l">Plan real dates, in real places, with people who fit your life.</p></li>
+<li class="paper card" style="--r:.7deg;--i:2"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.6s" d="M18 31C8 23 4 17 7 11C10 6 16 7 18 12C20 7 26 6 29 11C32 17 28 23 18 31Z"/></svg>why</p><p class="card-l">Matching interests isn't the same as matching lives.</p></li>
+<li class="paper card" style="--r:-.8deg;--i:3"><p class="card-k"><svg class="gl" viewBox="0 0 36 36" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.75s" d="M6 28C12 10 22 30 30 8M30 8L24 10M30 8L31 14"/></svg>what's next</p><p class="card-l">New York first, then every major walkable city.</p>
+<svg class="route" viewBox="0 0 240 40" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:1s" d="M14 24C50 6 80 36 118 20S184 10 228 22"/><circle class="stop ny" cx="14" cy="24" r="5"/><circle class="stop" cx="92" cy="27" r="3.2"/><circle class="stop" cx="158" cy="15" r="3.2"/><circle class="stop" cx="228" cy="22" r="3.2"/><text x="14" y="10" text-anchor="middle">NY</text></svg></li>
+</ol>
+</section>
+
 <article class="paper letter draw" data-reveal aria-label="A letter from Kai and Ruby">
 <dl class="memo">
 <dt>to:</dt><dd>whoever's wondering</dd>
 <dt>from:</dt><dd>Kai &amp; Ruby</dd>
-<dt>re:</dt><dd>plan real dates, in real places, with people who fit your life.</dd>
+<dt>re:</dt><dd>the longer version</dd>
 </dl>
 <div class="body">
-<p class="open">We think people should <span class="mk">meet, not match.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.7s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
-<p>The best introductions we've seen didn't come from an app. They came from a friend who knew two people well enough to say: you two, Thursday, this place.</p>
+<p class="open">The best introductions we've seen didn't come from an app.</p>
+<p>They came from a friend who knew two people well enough to say: <span class="mk">you two, Thursday, this place.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.7s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
 <p class="todo" data-todo>[Kai &amp; Ruby: one or two true sentences about the introduction, or the evening, that made you start this.]</p>
-<p>So we do it by hand. We read every answer. We pick the person, the place and the time. You get a text, and a table.</p>
-<p>It doesn't scale, and we've stopped trying to make it. We only open a city where we can be in the room. New York first, then every major walkable city, because the best dates end with a walk somewhere.</p>
-<p>If the dates land, there's something here. If they don't, the hunch was wrong, and we'd rather know in six weeks than in two years.</p>
+<p>So we do it by hand. We read every answer, then pick the person, the place and the time. You get a text, and a table.</p>
+<p>If the dates land, there's something here. If they don't, we'd rather know in six weeks than in two years.</p>
 </div>
 <div class="sig">
 <figure><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="Kai" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" style="--dl:1.2s">Kai</text></svg></figure>

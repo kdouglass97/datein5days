@@ -384,16 +384,20 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   preview link, 307s to it). The landing page covers what happens to you; `/why` answers the one
   thing it doesn't: who is doing this, and why trust them. It must **never re-run the pitch**:
   no thesis diagram, no founder flip cards, no timeline of the five days, since each of those
-  already has its landing section. Four blocks only, under 400 words: the hero ("dating means
-  going on dates."), a `.paper` letter at the 540px measure, "what we crossed out", and "pull up
-  a chair.". The letter's typed memo header (to / from / re) is the printed form, and its `re:`
-  line is the mission, word for word, appearing once; nothing on the page is labeled mission,
-  vision or values. The body is in the serif, the pen underlines one phrase ("meet, not
-  match."), and the signatures are the hand (`#pen` on the names, small polaroids beside them).
-  On this page we set up, seat and introduce; "match" only ever describes what the apps do. "what
-  we crossed out" is the values section written as refusals: the pen strikes each line on reveal,
-  a tap shows what took its place, and every line must be a promise that outlives cohort 01 (so
-  no "a subscription": free is a beta condition). Haven paces with a letter at the foot, as on
+  already has its landing section. Five blocks, under 400 words: the hero ("dating means going
+  on dates."), **"the short version"**, the letter, "what we crossed out", and "pull up a chair.".
+  The short version (added 2026-09-30, because the letter alone didn't say where we're going at a
+  glance) is four paper cards, one line each, with a typed label and a pen glyph: *where we're
+  going* (a world where people meet, not match), *what we do* (the mission, word for word, its one
+  appearance), *why* (matching interests isn't the same as matching lives) and *what's next* (New
+  York first, then every major walkable city, with a pen-drawn route). The labels are plain words,
+  never "Mission", "Vision" or "Values". The letter is now the personal part only: its `re:` is
+  "the longer version", the pen underlines "you two, Thursday, this place.", and the signatures are
+  the hand (`#pen` on the names, small polaroids beside them). On this page we set up, seat and
+  introduce; "match" only ever describes what the apps do. "what we crossed out" is the values
+  section written as refusals: the pen strikes each line on reveal, a tap shows what took its place,
+  and every line must be a promise that outlives cohort 01 (so no "a subscription": free is a beta
+  condition). Haven paces with a letter at the foot, as on
   `/faq`. The hero's line sits between two paper props that land on load: a calendar leaf
   ("thu, 8pm", circled by the pen) and a kraft ticket stub ("admit two", ticked). Beside the h1 on
   wide screens, in a row beneath it below 1000px. As of 2026-09-30 **it's in every header**:
@@ -917,7 +921,6 @@ not in `rsvps`.
       the landing page and in the FAQ (hand-copied in three places, plus the JSON-LD). If the line
       sticks, change "your match" to "your date" everywhere, in a separate PR.
 - [ ] Kai & Ruby: confirm every line in "what we crossed out" is a promise you'll keep for good.
-- [ ] Kai & Ruby: "because the best dates end with a walk somewhere" is Claude's line. Keep it or cut it.
 - [ ] Haven's yard (from the old /story: tap to drop crumbs, Haven walks over and pecks) could live on 404.
 - [ ] Two polaroid collisions left (§5): iPad Pro in portrait (821–1050px, desktop placement) slides the top-left polaroid under the "five days" wordmark, and landscape phones 700–820px wide put the bottom-left one on "WE HANDLE THE ADMIN".
 
