@@ -43,7 +43,9 @@ It also crosses answers (city × age, city × who they'd like to meet, age × wh
 meet, age × what a date is worth, and the two age tables for New York alone), worked out
 separately for everyone and for those
 who answered all seven. A city needs 3 people in a view for its own row; smaller ones share
-"elsewhere", which also waits for 3. See `crosses_()`.
+"elsewhere", which also waits for 3. See `crosses_()`. `shareOf_()` reads the sharing slider
+by age, by what a date is worth and by tier-one city, with medians (3 people or more), a rank
+correlation for age and for price, and age × price medians; never a person's own answer.
 
 - The password is the **`ADMIN_PASSWORD` repo secret** (GitHub: Settings → Secrets and
   variables → Actions). The deploy writes it into `secret.js` just before `clasp push`, so it

@@ -185,6 +185,10 @@ main{padding:6px 0 10px}
 .heat .sum{font-weight:700;color:var(--ink);padding-left:6px;padding-right:3px}
 .heat tfoot .base{color:var(--ink);font-size:13px}
 @media (max-width:400px){.heat tfoot .base{font-size:12px}.heat .sum{padding-left:3px}}
+/* who keeps their own life: the key under the median table, the same five steps */
+.ramp{display:flex;align-items:center;gap:3px;margin:8px 0 0;font-size:12px;color:var(--soft)}
+.ramp i{display:block;width:22px;height:12px;border-radius:2px}
+.ramp span:first-child{margin-right:5px}.ramp span:last-child{margin-left:5px}
 .switch{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;padding:2px;margin:0 0 12px;max-width:100%}
 .switch button{font:12.5px/1 var(--type);color:var(--ink);background:none;border:0;border-radius:999px;padding:0 13px;min-height:34px;cursor:pointer;white-space:nowrap}
 .switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
@@ -285,6 +289,8 @@ const LOOKING = [["relationship", "something serious"], ["date", "a date"], ["fr
 const WANTS = [["chemistry", "chemistry"], ["ease", "ease"], ["play", "play"], ["ambition", "ambition"], ["building", "building"]];
 const VERIFY = [["ig", "instagram"], ["photo", "photo"]];
 const REACH = [["imessage", "iMessage"], ["whatsapp", "WhatsApp"], ["sms", "text"]];
+// the sharing slider in five bands; 50 is its own, since the slider starts there (shareBand_() in Code.js)
+const SHARE_BANDS = [["0-24", "0–24"], ["25-49", "25–49"], ["50", "50"], ["51-75", "51–75"], ["76-100", "76+"]];
 const WORDS = ["under 50", "50–99", "100–149", "150–199", "200–299", "300–499", "500+"];
 // a phone's region, from the country calling code the Apps Script reads off the number (it
 // keeps nothing else of it). Region -> dial code, the libphonenumber table index.html's
@@ -593,13 +599,13 @@ function trend(days, width) {
 
 /* ---------------- side by side ---------------- */
 // which count the squares show, and where each age table looks. kept across refreshes.
-// the count is one choice for both cards of crosses, side by side and by place
+// the count is one choice for every card of crosses: side by side, by place, and who keeps their own life
 let crossWho = "all";
 const crossWhere = { meet: "all", price: "all" };
 // a switch redraws both cards, then gives focus back to the button pressed in the card it's in.
 // the numbers stay open if they were
 function redrawCrosses(id, label) {
-  for (const [key, make] of [["cross", crossCard], ["place", placeCard]]) {
+  for (const [key, make] of [["cross", crossCard], ["place", placeCard], ["share", shareCard]]) {
     const old = board.querySelector(`[data-card="${key}"]`), fresh = old && make(S.cross);
     if (!fresh) continue;
     const open = [...old.querySelectorAll("details.nums[open]")].map(d => d.dataset.id);
@@ -659,12 +665,14 @@ function crossCard(X) {
 // place × answer, read across: every square is its share of the row, so a city of five sits on
 // New York's scale, and the all row beneath counts everyone in the view once. The counts are in
 // the tooltips and the numbers. G comes from grid_() in Code.js; name(key) -> [label, small print];
-// sum, when given, is one more column: [heading, the answers it adds up]
+// sum, when given, is one more column: [heading, the answers it adds up]. When G has medians
+// (ladder_() in Code.js) they get a column of their own, the all row's from median_all
 function across(G, cols, name, done, id, sum, empty) {
   if (!G.rows.length) return [h("p", { class: "note", text: empty })];
+  const med = G.median ? m => (m == null ? "–" : Math.round(m) + "%") : null;
   const count = (counts, keys) => keys.reduce((s, k) => s + ((counts || {})[k] || 0), 0);
   const of = (c, n) => done ? `${fmt(c)} of the ${fmt(n)} who answered all seven` : `${fmt(c)} of ${fmt(n)} ${n === 1 ? "person" : "people"}`;
-  const line = (label, small, counts, foot) => {
+  const line = (label, small, counts, foot, m) => {
     const full = small ? `${label} ${small}` : label;
     const vals = cols.map(([k]) => count(counts, [k])), n = vals.reduce((a, b) => a + b, 0);
     return h("tr", {}, h("th", { scope: "row" }, label, small ? h("small", { text: " " + small }) : null),
@@ -675,16 +683,17 @@ function across(G, cols, name, done, id, sum, empty) {
         return td;
       }),
       sum ? h("td", { class: "sum" + (foot ? " base" : ""), text: pct(count(counts, sum[1]), n) }) : null,
+      med ? h("td", { class: "sum" + (foot ? " base" : ""), text: med(m) }) : null,
       h("td", { class: "tot", text: fmt(n) }));
   };
-  const places = G.rows.map(k => { const [label, small = ""] = name(k); return [label, small, G.cells[k]]; });
+  const places = G.rows.map(k => { const [label, small = ""] = name(k); return [label, small, G.cells[k], med ? G.median[k] : null]; });
   return [
     h("div", { class: "scroll" }, h("table", { class: "heat" },
-      h("thead", {}, h("tr", {}, h("th", { scope: "col" }), [...cols.map(([, cl]) => cl), ...(sum ? [sum[0]] : []), "all"].map(t => h("th", { scope: "col", text: t })))),
-      h("tbody", {}, places.map(([label, small, counts]) => line(label, small, counts))),
-      h("tfoot", {}, line("all", "", G.total, true)))),
-    numbers(id, ["", ...cols.map(([, cl]) => cl), "all"],
-      [...places, ["all", "", G.total]].map(([label, small, counts]) => [small ? `${label} ${small}` : label, ...cols.map(([k]) => count(counts, [k])), count(counts, cols.map(([k]) => k))])),
+      h("thead", {}, h("tr", {}, h("th", { scope: "col" }), [...cols.map(([, cl]) => cl), ...(sum ? [sum[0]] : []), ...(med ? ["median"] : []), "all"].map(t => h("th", { scope: "col", text: t })))),
+      h("tbody", {}, places.map(([label, small, counts, m]) => line(label, small, counts, false, m))),
+      h("tfoot", {}, line("all", "", G.total, true, med ? G.median_all : null)))),
+    numbers(id, ["", ...cols.map(([, cl]) => cl), ...(med ? ["median"] : []), "all"],
+      [...places, ["all", "", G.total, med ? G.median_all : null]].map(([label, small, counts, m]) => [small ? `${label} ${small}` : label, ...cols.map(([k]) => count(counts, [k])), ...(med ? [med(m)] : []), count(counts, cols.map(([k]) => k))])),
   ];
 }
 function placeCard(X) {
@@ -704,6 +713,84 @@ function placeCard(X) {
         h("p", { class: "note", text: "Region is the country code on their number, asked since Sep 23. +1 is the US, Canada and much of the Caribbean." +
           unshown(V.region_reach, "person has a number from a region", "people have numbers from regions") }))),
     h("p", { class: "note", text: "A place needs three people for its own row; smaller ones share elsewhere, which also waits for three. One person moves a row of five by 20 points, so read a gap as a hunch until its row has ten." }));
+}
+
+/* ---------------- who keeps their own life ---------------- */
+// the independence hunch: older, tier-one-city people who'd pay more for a date share less of
+// their life. X.share comes from shareOf_() in Code.js. Which squares the median table shows
+// is kept across refreshes, like the count
+let shareWhere = "all";
+const minus = n => (n < 0 ? "−" : "") + Math.abs(n).toFixed(2);
+// Spearman's r in words. The bar is 1.96/√(n−1), roughly where a correlation stops being
+// something ten people could throw up by chance (95%, no correlation at all as the null)
+function lean(R, older) {
+  if (!R || R.r == null) return "Too few answers to read a trend yet.";
+  const bar = 1.96 / Math.sqrt(R.n - 1), a = Math.abs(R.r);
+  const head = `Rank correlation ${minus(R.r)} across ${fmt(R.n)} people: `;
+  if (a < .1) return head + `no real trend. ${older} don't share less, or more, than anyone else.`;
+  const size = a < .3 ? "a weak lean" : a < .5 ? "a moderate lean" : "a strong lean";
+  return head + size + (R.r < 0 ? " the hunch's way" : " against the hunch") + ", " +
+    (a >= bar ? "clear of the noise." : `inside the noise (at ${fmt(R.n)} people it takes ${bar.toFixed(2)} to count).`);
+}
+// tier one against elsewhere: the medians and the share under 50, side by side
+function tierLean(G, tiers) {
+  if (!G.rows.includes("tier") || !G.rows.includes("other")) return "Needs three people on each side to compare.";
+  const under = k => { const c = G.cells[k] || {}, n = SHARE_BANDS.reduce((s, [b]) => s + (c[b] || 0), 0); return pct((c["0-24"] || 0) + (c["25-49"] || 0), n); };
+  const d = Math.round(G.median.tier) - Math.round(G.median.other);
+  return `Median ${Math.round(G.median.tier)}% in tier-one cities (${tiers}), ${Math.round(G.median.other)}% elsewhere; under 50, ${under("tier")} against ${under("other")}. ` +
+    (Math.abs(d) < 5 ? "No real gap in the medians." : d < 0 ? "Tier one leans the hunch's way." : "Tier one leans against the hunch.");
+}
+// age × what a date is worth, the median share in each square: lighter is more independent.
+// A square under three people shows its count in the tooltip, never a median
+function medianHeat(grid) {
+  const g = grid || {};
+  const n = (a, p) => ((g[a] || {})[p] || {}).n || 0;
+  const rowTot = AGES.map(([a]) => PRICES.reduce((s, [p]) => s + n(a, p), 0));
+  const colTot = PRICES.map(([p]) => AGES.reduce((s, [a]) => s + n(a, p), 0));
+  const body = AGES.map(([a, al], i) => h("tr", {}, h("th", { scope: "row", text: al }),
+    PRICES.map(([p, pl]) => {
+      const c = (g[a] || {})[p], m = c && c.m != null ? Math.round(c.m) : null;
+      const step = m == null ? 0 : Math.min(5, Math.floor(m / 20) + 1);
+      const who = c ? `${fmt(c.n)} ${c.n === 1 ? "person" : "people"}` : "nobody yet";
+      const td = h("td", { class: "hc s" + step, tabindex: 0, "aria-label": `${al}, ${pl}: ` + (m == null ? who : `median ${m}%, ${who}`) }, m == null ? "·" : m + "%");
+      bindTip(td, m == null ? [who, c ? "too few for a median" : "", `${al} · ${pl}`] : [`median ${m}%`, who, `${al} · ${pl}`]);
+      return td;
+    }),
+    h("td", { class: "tot", text: fmt(rowTot[i]) })));
+  return h("div", { class: "scroll" }, h("table", { class: "heat" },
+    h("thead", {}, h("tr", {}, h("th", { scope: "col" }), PRICES.map(([, pl]) => h("th", { scope: "col", text: pl })), h("th", { scope: "col", text: "all" }))),
+    h("tbody", {}, body),
+    h("tfoot", {}, h("tr", {}, h("th", { scope: "row", text: "all" }), colTot.map(t => h("td", { class: "tot", text: fmt(t) })), h("td", { class: "tot", text: fmt(rowTot.reduce((x, y) => x + y, 0)) })))));
+}
+function shareCard(X) {
+  if (!X || !X.all || !X.all.share) return null; // an Apps Script from before this card
+  const V = X[crossWho === "done" ? "done" : "all"], done = crossWho === "done", Sh = V.share;
+  const set = (v, label) => { crossWho = v; redrawCrosses("share", label); };
+  const setWhere = (v, label) => { shareWhere = v; redrawCrosses("share", label); };
+  const label = list => k => [(list.find(([key]) => key === k) || [k, k])[1]];
+  const under = ["under 50", ["0-24", "25-49"]];
+  const tiers = Sh.tier_one.join(", ");
+  const unshown = G => G.unshown ? ` ${fmt(G.unshown)} ${G.unshown === 1 ? "person is" : "people are"} in rows too small to show yet.` : "";
+  return card("who keeps their own life", `The hunch: older people in tier-one cities (${tiers}) who'd pay more for a date want to share less of their life. Question four's slider, read three ways. Each row adds up to 100%; the more of it to the left, the more independent.`, { id: "share", wide: true, band: "var(--grass)" },
+    switcher("count", [["all", "everyone"], ["done", "answered all seven"]], crossWho, set),
+    h("div", { class: "cross-grid" },
+      h("div", { class: "cross-block" }, h("h3", { text: "age × how much of a life to share" }),
+        ...across(Sh.age, SHARE_BANDS, label(AGES), done, "share-age", under, "No age has three people here yet."),
+        h("p", { class: "note" }, h("b", { text: "Older, less? " }), lean(Sh.rho.age, "Older people") + unshown(Sh.age))),
+      h("div", { class: "cross-block" }, h("h3", { text: "what a date is worth × how much to share" }),
+        ...across(Sh.price, SHARE_BANDS, label(PRICES), done, "share-price", under, "No price has three people here yet."),
+        h("p", { class: "note" }, h("b", { text: "Pays more, less? " }), lean(Sh.rho.price, "Bigger spenders") + unshown(Sh.price))),
+      h("div", { class: "cross-block" }, h("h3", { text: "tier-one city × how much to share" }),
+        h("p", { class: "note", text: `Tier one: ${tiers}. Listing any of them counts, whatever else someone lists.` }),
+        ...across(Sh.tier, SHARE_BANDS, k => [k === "tier" ? "tier one" : k === "other" ? "elsewhere" : k], done, "share-tier", under, "Neither side has three people here yet."),
+        h("p", { class: "note" }, h("b", { text: "Big city, less? " }), tierLean(Sh.tier, tiers) + unshown(Sh.tier))),
+      h("div", { class: "cross-block" }, h("h3", { text: "all three: median share, age × what a date is worth" }),
+        switcher("where, median share", [["all", "everywhere"], ["tier", "tier one"], ["other", "elsewhere"]], shareWhere, setWhere),
+        medianHeat(Sh.grid[shareWhere]),
+        h("p", { class: "ramp", "aria-hidden": "true" }, h("span", { text: "own life" }), [1, 2, 3, 4, 5].map(i => h("i", { class: "hc s" + i })), h("span", { text: "intertwined" })),
+        h("p", { class: "note", text: `Each square is its median, and needs three people to show one. If the hunch holds, the squares lighten toward the bottom right, and more so in tier one (${tiers}).` }))),
+    h("p", { class: "note", text: "The slider starts at 50, so the 50 column holds the untouched along with the chosen: under 50 is the cleaner read on independence. " +
+      "Only people who reached question four have an answer here. An age or price needs three people for its own row." }));
 }
 
 /* ---------------- the board ---------------- */
@@ -752,8 +839,8 @@ function render(data) {
     h("h3", { text: "would like to meet" }), ...stack(meetRows, "meet"),
     h("p", { class: "note", text: "The form never asks anyone's own gender, only who they'd like to meet. So this is demand, not supply." })));
 
-  // 4b. side by side, and by place
-  cards.push(crossCard(S.cross), placeCard(S.cross));
+  // 4b. side by side, by place, and the independence hunch
+  cards.push(crossCard(S.cross), placeCard(S.cross), shareCard(S.cross));
 
   // 5. what a date is worth
   const priceRows = ordered(S.price, PRICES);
@@ -938,15 +1025,22 @@ function demoStats() {
     // the number mostly comes from the first city, the app leans on the number, and what a date
     // is worth leans a little by city, so the by-place card has a pattern to find
     const region = rnd() < .85 ? { "New York": "1", "Los Angeles": "1", London: "44", Paris: "33", Tokyo: "81", Tbilisi: "995", "Mexico City": "52" }[cities[0]] : pick(["1", "44", "33", "49", "852"], [3, 3, 1, 1, 1]);
-    const lean = { London: 1.4, Paris: 1.2, Tokyo: 1.1, "Los Angeles": .9, "Mexico City": .55, Tbilisi: .45 }[cities[0]] || 1;
-    return { t, level, done, cities, looking, wantOrder, src, region,
+    const tilt = { London: 1.4, Paris: 1.2, Tokyo: 1.1, "Los Angeles": .9, "Mexico City": .55, Tbilisi: .45 }[cities[0]] || 1;
+    const p = { t, level, done, cities, looking, wantOrder, src, region,
       via: src === "qr" || src === "invite" ? "none" : src === "tt" ? "tiktok" : src === "direct" ? pick(["google", "ai-chatgpt", "none"], [3, 2, 2]) : pick(["instagram", "tiktok", "whatsapp"], [7, 3, 1]),
       age: pick(["21 to 24", "25 to 29", "30 to 34", "35 to 39", "40+"], [5, 16, 13, 5, 2]),
       meet: pick(["women", "men", "anyone"], [11, 10, 2]),
-      price: pick(["0", "25", "50", "100+"], done ? [1 / lean, 4 / lean, 7 * lean, 5 * lean] : [3 / lean, 6 / lean, 5 * lean, 2 * lean]),
+      price: pick(["0", "25", "50", "100+"], done ? [1 / tilt, 4 / tilt, 7 * tilt, 5 * tilt] : [3 / tilt, 6 / tilt, 5 * tilt, 2 * tilt]),
       share: rnd() < .15 ? 50 : Math.max(0, Math.min(100, Math.round(62 + (rnd() + rnd() + rnd() - 1.5) * 44))),
       words: Math.round(Math.exp(4.9 + (rnd() + rnd() - 1) * 1.2)),
       verify: rnd() < .9 ? "ig" : "photo", reach: pick(["imessage", "whatsapp", "sms"], region === "1" ? [13, 3, 1] : [2, 9, 1]) };
+    // the slider leans a little lower with age, price and a tier-one city, so the independence
+    // card has a hunch to test. an untouched 50 stays 50
+    if (p.share !== 50) {
+      const tier = p.cities.some(c => ["New York", "London", "Paris", "Tokyo", "Hong Kong"].includes(c));
+      p.share = Math.max(0, Math.min(100, p.share + 14 - AGES.findIndex(([k]) => k === p.age) * 5 - PRICES.findIndex(([k]) => k === p.price) * 3 - (tier ? 6 : 0)));
+    }
+    return p;
   };
   if (!demoPeople) {
     demoPeople = [];
@@ -973,7 +1067,7 @@ function demoStats() {
     if (p.done) { const f = Math.min(Date.now(), p.t + 40 * 60e3); const fk = new Date(f).toISOString().slice(0, 13); (out.hours[fk] = out.hours[fk] || [0, 0])[1]++; if (new Date(f).toISOString() > out.last.done) out.last.done = new Date(f).toISOString(); }
     p.cities.forEach(c => count(out.cities, c, p.done));
     const told = p.level >= 1;
-    crossPeople.push({ cities: p.cities, age: told ? p.age : "", meet: told ? p.meet : "", price: told ? p.price : "", reach: told ? p.reach : "", region: told ? p.region : "", done: p.done });
+    crossPeople.push({ cities: p.cities, age: told ? p.age : "", meet: told ? p.meet : "", price: told ? p.price : "", reach: told ? p.reach : "", region: told ? p.region : "", share: p.level >= 5 ? p.share : null, done: p.done });
     count(out.src, p.src, p.done); count(out.via, p.via, p.done); count(out.verify, p.verify, p.done);
     out.looking.n++; count(out.looking.first, p.looking[0], p.done); p.looking.forEach((k, i) => lookSum[k] = (lookSum[k] || 0) + i + 1);
     if (p.looking.join() === "date,relationship,friends,community") out.looking.untouched++;
@@ -1026,7 +1120,51 @@ function demoStats() {
     if (elsewhere >= 3) X.cities.push("elsewhere"); else X.unshown = elsewhere;
     X.city_price = grid(list, q => q.cities, q => q.price);
     X.region_reach = grid(list, q => (q.region ? [q.region] : []), q => q.reach);
+    X.share = shareOf(list);
     return X;
+  };
+  // shareOf_(), ladder_() and rank_() in Code.js
+  const TIER_ONE = ["New York", "London", "Hong Kong", "Singapore", "Shanghai", "Beijing", "Dubai", "Paris", "Tokyo"];
+  const band = v => (v < 25 ? "0-24" : v < 50 ? "25-49" : v === 50 ? "50" : v <= 75 ? "51-75" : "76-100");
+  const ladder = (ppl, order, keyOf) => {
+    const G = { rows: [], cells: {}, total: {}, median: {}, median_all: null, unshown: 0 }, all = [];
+    for (const k of order) {
+      const v = ppl.filter(q => keyOf(q) === k).map(q => q.share);
+      v.forEach(x => { all.push(x); G.total[band(x)] = (G.total[band(x)] || 0) + 1; });
+      if (v.length < 3) { G.unshown += v.length; continue; }
+      G.rows.push(k); v.forEach(x => cell(G.cells, k, band(x))); G.median[k] = med(v);
+    }
+    if (all.length >= 3) G.median_all = med(all);
+    return G;
+  };
+  const rank = (ppl, order, keyOf) => {
+    const pairs = ppl.filter(q => order.includes(keyOf(q))).map(q => [order.indexOf(keyOf(q)), q.share]), n = pairs.length;
+    if (n < 3) return { r: null, n };
+    const ranks = vals => {
+      const idx = vals.map((_, i) => i).sort((x, y) => vals[x] - vals[y]), r = [];
+      for (let i = 0; i < n;) { let j = i; while (j + 1 < n && vals[idx[j + 1]] === vals[idx[i]]) j++; for (let k = i; k <= j; k++) r[idx[k]] = (i + j) / 2 + 1; i = j + 1; }
+      return r;
+    };
+    const x = ranks(pairs.map(q => q[0])), y = ranks(pairs.map(q => q[1])), mean = (n + 1) / 2;
+    let sxy = 0, sxx = 0, syy = 0;
+    for (let i = 0; i < n; i++) { sxy += (x[i] - mean) * (y[i] - mean); sxx += (x[i] - mean) ** 2; syy += (y[i] - mean) ** 2; }
+    return { r: sxx && syy ? Math.round(sxy / Math.sqrt(sxx * syy) * 100) / 100 : null, n };
+  };
+  const shareOf = list => {
+    const ppl = list.filter(q => q.share != null);
+    const tierOf = q => (!q.cities.length ? "" : q.cities.some(c => TIER_ONE.includes(c)) ? "tier" : "other");
+    const gridOf = l => {
+      const g = {};
+      for (const [a] of AGES) for (const [pr] of PRICES) {
+        const v = l.filter(q => q.age === a && q.price === pr).map(q => q.share);
+        if (v.length) (g[a] = g[a] || {})[pr] = v.length >= 3 ? { n: v.length, m: med(v) } : { n: v.length };
+      }
+      return g;
+    };
+    return { tier_one: TIER_ONE,
+      age: ladder(ppl, AGES.map(([k]) => k), q => q.age), price: ladder(ppl, PRICES.map(([k]) => k), q => q.price), tier: ladder(ppl, ["tier", "other"], tierOf),
+      rho: { age: rank(ppl, AGES.map(([k]) => k), q => q.age), price: rank(ppl, PRICES.map(([k]) => k), q => q.price) },
+      grid: { all: gridOf(ppl), tier: gridOf(ppl.filter(q => tierOf(q) === "tier")), other: gridOf(ppl.filter(q => tierOf(q) === "other")) } };
   };
   out.cross = { all: crossOf(crossPeople), done: crossOf(crossPeople.filter(q => q.done)) };
   return out;
