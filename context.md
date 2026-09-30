@@ -698,6 +698,15 @@ via
   line. One count switch drives all three cross cards. Own gender isn't asked, so "meet" is the only gender axis there
   is (§10). The page refreshes every minute while open and says what's new since you last
   looked.
+  "shipped this week" (added 2026-09-30), the last card, lists what merged to `main` since
+  Monday (the viewer's Monday), with a count against the week before and tags for what each
+  merge touched (landing, faq, admin, sheet, guards …, read off its files). It is not in the
+  page source: the repo is private, so the titles sit behind the password like everything
+  else. After every deploy, `apps-script.yml`'s `shipped` job runs `.github/scripts/shipped.js`,
+  which posts the last two weeks of `main` (`{ kind: "shipped" }`, signed with an HMAC of the
+  password under its own label, so a device's token can read it but never write it); the
+  Apps Script keeps it in one Script Property and `stats_()` returns it. Titles are the PR
+  titles, so a clear PR title is a clear line on the card.
   The password is the **`ADMIN_PASSWORD` repo secret** (8+ characters; unset means locked).
   The Apps Script deploy writes it into `apps-script/secret.js` just before `clasp push`;
   that file is in `.gitignore` and must never be committed, and the password never goes in

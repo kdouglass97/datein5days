@@ -193,6 +193,20 @@ main{padding:6px 0 10px}
 .switch button{font:12.5px/1 var(--type);color:var(--ink);background:none;border:0;border-radius:999px;padding:0 13px;min-height:34px;cursor:pointer;white-space:nowrap}
 .switch button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 
+/* shipped this week: a printed ledger, each line ticked off by hand */
+.ship-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;margin:6px 0 0}
+.ship-sum .n{font:700 clamp(34px,10vw,50px)/1 var(--type);letter-spacing:-.03em}
+.ship-sum .l{font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+.ship-sum .s{flex-basis:100%;font-size:12.5px;color:var(--soft)}
+.areas{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:12px 0 2px;padding:0;font-size:12px}
+.areas li{border:1px solid var(--kraft-deep);border-radius:999px;padding:2px 10px 3px}
+.areas b{margin-left:6px;font-variant-numeric:tabular-nums}
+.ship{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ship li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:9px;font-size:13.5px;line-height:1.4}
+.ship svg{width:15px;height:13px;margin-top:3px;fill:none;stroke:var(--clay);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.ship small{display:block;margin-top:2px;font-size:11.5px;color:var(--soft)}
+@media (min-width:1000px){.ship-days{columns:2;column-gap:40px}.ship-day{break-inside:avoid;padding-top:1px}}
+
 /* the numbers behind each chart */
 details.nums{margin:12px 0 0;font-size:12.5px}
 details.nums summary{cursor:pointer;color:var(--soft);width:max-content;list-style:none;text-decoration:underline;text-decoration-color:var(--kraft-deep);text-underline-offset:3px}
@@ -793,6 +807,51 @@ function shareCard(X) {
       "Only people who reached question four have an answer here. An age or price needs three people for its own row." }));
 }
 
+/* ---------------- shipped this week ---------------- */
+// the last two weeks of main, one line per merge, sent by the deploy after every merge
+// (.github/scripts/shipped.js, shipped_() in Code.js). The week starts Monday, wherever you are
+const AREA_ORDER = ["landing", "faq", "get involved", "privacy", "admin", "sheet", "site", "guards", "notes"];
+function weekStart(t) {
+  const d = new Date(t); d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+  return d;
+}
+function tick() {
+  return sv("svg", { viewBox: "0 0 16 14", "aria-hidden": "true" }, sv("path", { filter: "url(#pen)", d: "M1.5 7.5C3.5 9 5 10.6 6 12.5C8.2 7.6 11 3.9 14.5 1.5" }));
+}
+function shippedCard(L) {
+  if (!L) return null; // an Apps Script from before this card
+  const start = weekStart(Date.now()), prev = new Date(start);
+  prev.setDate(prev.getDate() - 7);
+  const items = (L.items || []).map(([at, title, areas, pr]) => ({ t: new Date(at), title, areas: areas || [], pr }))
+    .filter(i => !isNaN(i.t)).sort((a, b) => b.t - a.t);
+  const week = items.filter(i => i.t >= start), before = items.filter(i => i.t >= prev && i.t < start).length;
+  const tally = {};
+  week.forEach(i => i.areas.forEach(a => { tally[a] = (tally[a] || 0) + 1; }));
+  const areas = Object.entries(tally).sort((a, b) => b[1] - a[1] || AREA_ORDER.indexOf(a[0]) - AREA_ORDER.indexOf(b[0]));
+  const days = [];
+  for (const i of week) {
+    const k = dayKey(i.t);
+    if (!days.length || days[days.length - 1].k !== k) days.push({ k, t: i.t, list: [] });
+    days[days.length - 1].list.push(i);
+  }
+  const since = dayFmt.format(start);
+  const sum = h("div", { class: "ship-sum" },
+    h("span", { class: "n", text: fmt(week.length) }),
+    h("span", { class: "l", text: week.length === 1 ? "merge this week" : "merges this week" }),
+    h("span", { class: "s", text: `Since ${since}. ${fmt(before)} the week before.` }));
+  const foot = L.at ? `Straight from main, sent after every merge. Last sent ${ago(L.at)}.` : "Fills in after the next merge to main.";
+  return card("shipped this week", "What went live, newest first. The tags say what each one touched.", { id: "shipped", wide: true, band: "var(--tag)" },
+    sum,
+    areas.length ? h("ul", { class: "areas", "aria-label": "touched this week" }, areas.map(([a, n]) => h("li", {}, a, h("b", { text: fmt(n) })))) : null,
+    week.length ? h("div", { class: "ship-days" }, days.map(d => h("div", { class: "ship-day" },
+      h("h3", { text: d.k === dayKey(new Date()) ? "today" : dayFmt.format(d.t) }),
+      h("ul", { class: "ship" }, d.list.map(i => h("li", {}, tick(), h("span", {}, i.title,
+        h("small", { text: [i.pr ? "#" + i.pr : "", i.areas.join(", "), timeFmt.format(i.t)].filter(Boolean).join(" · ") }))))))))
+      : h("p", { class: "note", text: items.length ? `Nothing yet since ${since}. Last out: ${items[0].title}, ${shortDay.format(items[0].t)}.` : "Nothing in the last two weeks." }),
+    h("p", { class: "note", text: foot }));
+}
+
 /* ---------------- the board ---------------- */
 let S = null, prevRows = null, seenPrev = null;
 const board = $("[data-board]");
@@ -881,6 +940,9 @@ function render(data) {
     legend(["done", "answered all seven"], ["", "not yet"]),
     h("h3", { text: "verified with" }), ...stack(ordered(S.verify, VERIFY), "verify"),
     h("h3", { text: "text me on" }), ...stack(ordered(S.reach, REACH), "reach")));
+
+  // 10. what we shipped
+  cards.push(shippedCard(S.shipped));
 
   board.hidden = false;
   board.replaceChildren(...cards.filter(Boolean));
@@ -1167,6 +1229,17 @@ function demoStats() {
       grid: { all: gridOf(ppl), tier: gridOf(ppl.filter(q => tierOf(q) === "tier")), other: gridOf(ppl.filter(q => tierOf(q) === "other")) } };
   };
   out.cross = { all: crossOf(crossPeople), done: crossOf(crossPeople.filter(q => q.done)) };
+  // made-up merges: this week's spread from Monday to now, then last week's
+  const ws = weekStart(Date.now()).getTime(), span = Math.max(3600e3, Date.now() - ws);
+  const made = [
+    ["Add a seating chart to the confirmation card", ["landing"]], ["Count notes per page on /admin", ["admin", "sheet"]],
+    ["Tighten the rsvp button on small phones", ["landing"]], ["Answer \"can i bring a friend?\" on /faq", ["landing", "faq"]],
+    ["Check the headers on every deploy", ["guards"]], ["Fold tiny cities into elsewhere", ["admin", "sheet"]],
+  ];
+  out.shipped = { at: new Date(Date.now() - 42 * 60e3).toISOString(), items: [
+    ...made.map(([title, areas], i) => [new Date(Date.now() - (i + .3) / made.length * span).toISOString(), title, areas, 60 - i]),
+    ...Array.from({ length: 9 }, (_, i) => [new Date(ws - (i + .5) * 17 * 3600e3).toISOString(), `Last week's change ${9 - i}`, ["landing"], 53 - i]),
+  ] };
   return out;
 }
 
