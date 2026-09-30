@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-28
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-30
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -910,7 +910,10 @@ not in `rsvps`.
 - Prefer changing `CONFIG` over changing markup.
 - After any change to the form or the poll, **walk the entire flow in a headless browser**
   before shipping. Stub `script.google.com` and `*.posthog.com` so tests never write rows.
-- Push to `main` deploys to production. There is no staging.
+- Never push to `main`. Work on your own `claude/` branch: each push there gets its own
+  Vercel preview, so several changes can be in flight at once. To ship, open a PR to
+  `main`; the auto-ship Action merges it, and the merge deploys to production. `CLAUDE.md`
+  has the full steps.
 - Verify a deploy by asserting `/c/01` returns **200**. `/` returning a 307 proves nothing:
   the redirect working while the page 404s is exactly the failure already seen. Then assert
   `/context.md` returns **404**, which proves the allowlist is working.
