@@ -586,7 +586,7 @@ function tally_(values, now) {
     // for the cross tables, and only ever counted there: never returned as a row. The number
     // itself goes no further than this line: only its country calling code is kept
     people.push({ cities: cities, age: text("age"), meet: text("meet"), price: text("price"),
-      reach: text("reach_on"), region: callingCode_(cell("phone")), done: done });
+      reach: text("reach_on"), region: callingCode_(cell("phone")), share: share, done: done });
   }
 
   Object.keys(lookSum).forEach(function (k) { out.looking.rank[k] = round2_(lookSum[k] / out.looking.n); });
@@ -653,7 +653,109 @@ function crossOf_(people) {
   else out.unshown = elsewhere;
   out.city_price = grid_(people, function (p) { return p.cities; }, function (p) { return p.price; });
   out.region_reach = grid_(people, function (p) { return p.region ? [p.region] : []; }, function (p) { return p.reach; });
+  out.share = shareOf_(people);
   return out;
+}
+
+/**
+ * The world's top business cities, roughly GaWC's alpha++ and alpha+. Someone who lists any of
+ * them counts as "tier one" in shareOf_(), whatever else they list. The page names them.
+ */
+const TIER_ONE = ["New York", "London", "Hong Kong", "Singapore", "Shanghai", "Beijing", "Dubai", "Paris", "Tokyo"];
+const AGE_ORDER = ["21 to 24", "25 to 29", "30 to 34", "35 to 39", "40+"];
+const PRICE_ORDER = ["0", "25", "50", "100+"];
+/** the sharing slider in five bands. 50 is its own: the slider starts there, so it holds the untouched */
+function shareBand_(s) {
+  return s < 25 ? "0-24" : s < 50 ? "25-49" : s === 50 ? "50" : s <= 75 ? "51-75" : "76-100";
+}
+
+/**
+ * The independence hunch: do older, tier-one-city people who'd pay more for a date want to share
+ * less of their life? The sharing slider (question 4) read three ways, each row split into
+ * five bands (shareBand_()) with its median: by age, by what a date is worth, and by tier-one city or not.
+ * Rows keep their order and need CROSS_MIN people to show, like a city row; a median needs the
+ * same. `rho` is the rank correlation of age and of price with the slider, over everyone who
+ * gave both (a number, never a person). `grid` is age × price, the median in each square, for
+ * everyone, tier one and elsewhere; a square under CROSS_MIN gets its count and no median.
+ */
+function shareOf_(people) {
+  const ppl = people.filter(function (p) { return p.share !== null && p.share !== undefined; });
+  const tierOf = function (p) {
+    if (!p.cities.length) return "";
+    const low = TIER_ONE.map(function (c) { return c.toLowerCase(); });
+    return p.cities.some(function (c) { return low.indexOf(c.toLowerCase()) > -1; }) ? "tier" : "other";
+  };
+  const gridOf = function (list) {
+    const g = {};
+    AGE_ORDER.forEach(function (a) {
+      PRICE_ORDER.forEach(function (pr) {
+        const s = list.filter(function (p) { return p.age === a && p.price === pr; }).map(function (p) { return p.share; });
+        if (!s.length) return;
+        if (!g[a]) g[a] = {};
+        g[a][pr] = s.length >= CROSS_MIN ? { n: s.length, m: median_(s) } : { n: s.length };
+      });
+    });
+    return g;
+  };
+  return {
+    tier_one: TIER_ONE,
+    age: ladder_(ppl, AGE_ORDER, function (p) { return p.age; }),
+    price: ladder_(ppl, PRICE_ORDER, function (p) { return p.price; }),
+    tier: ladder_(ppl, ["tier", "other"], tierOf),
+    rho: { age: rank_(ppl, AGE_ORDER, function (p) { return p.age; }), price: rank_(ppl, PRICE_ORDER, function (p) { return p.price; }) },
+    grid: {
+      all: gridOf(ppl),
+      tier: gridOf(ppl.filter(function (p) { return tierOf(p) === "tier"; })),
+      other: gridOf(ppl.filter(function (p) { return tierOf(p) === "other"; })),
+    },
+  };
+}
+
+/**
+ * The slider by one ordered answer, in the shape grid_() returns (rows, cells, total, unshown)
+ * plus medians: `median` per shown row and `median_all` for everyone with the answer. A row
+ * under CROSS_MIN doesn't show, and its people are counted in `unshown` (and in the total).
+ */
+function ladder_(ppl, order, keyOf) {
+  const out = { rows: [], cells: {}, total: {}, median: {}, median_all: null, unshown: 0 };
+  const all = [];
+  order.forEach(function (k) {
+    const s = ppl.filter(function (p) { return keyOf(p) === k; }).map(function (p) { return p.share; });
+    s.forEach(function (v) { all.push(v); out.total[shareBand_(v)] = (out.total[shareBand_(v)] || 0) + 1; });
+    if (s.length < CROSS_MIN) { out.unshown += s.length; return; }
+    out.rows.push(k);
+    s.forEach(function (v) { cell_(out.cells, k, shareBand_(v)); });
+    out.median[k] = median_(s);
+  });
+  if (all.length >= CROSS_MIN) out.median_all = median_(all);
+  return out;
+}
+
+/**
+ * Spearman's rank correlation between an ordered answer and the slider, ties given their average
+ * rank: { r, n }, r from -1 to 1, null under CROSS_MIN people or when either side never varies.
+ */
+function rank_(ppl, order, keyOf) {
+  const pairs = ppl.filter(function (p) { return order.indexOf(keyOf(p)) > -1; })
+    .map(function (p) { return [order.indexOf(keyOf(p)), p.share]; });
+  const n = pairs.length;
+  if (n < CROSS_MIN) return { r: null, n: n };
+  const ranks = function (vals) {
+    const idx = vals.map(function (v, i) { return i; }).sort(function (a, b) { return vals[a] - vals[b]; });
+    const out = [];
+    for (let i = 0; i < n;) {
+      let j = i;
+      while (j + 1 < n && vals[idx[j + 1]] === vals[idx[i]]) j++;
+      for (let k = i; k <= j; k++) out[idx[k]] = (i + j) / 2 + 1;
+      i = j + 1;
+    }
+    return out;
+  };
+  const x = ranks(pairs.map(function (q) { return q[0]; })), y = ranks(pairs.map(function (q) { return q[1]; }));
+  const mean = (n + 1) / 2;
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) { sxy += (x[i] - mean) * (y[i] - mean); sxx += (x[i] - mean) * (x[i] - mean); syy += (y[i] - mean) * (y[i] - mean); }
+  return { r: sxx && syy ? round2_(sxy / Math.sqrt(sxx * syy)) : null, n: n };
 }
 
 /**

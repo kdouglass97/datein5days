@@ -685,8 +685,17 @@ via
   calling code on `phone`: the Apps Script reads the code off the number and keeps nothing
   else of it (`callingCode_()`), and the page names it (+1 is the US, Canada and much of
   the Caribbean). Rows from before 2026-09-23 have no number, so they sit out that table.
-  Each by-place table picks its own rows by the same three-person rule, and one count switch
-  drives both cross cards. Own gender isn't asked, so "meet" is the only gender axis there
+  Each by-place table picks its own rows by the same three-person rule. "who keeps their own
+  life" (added 2026-09-30) tests the independence hunch: that older people in tier-one
+  cities who'd pay more for a date want to share less of their life. It reads the sharing
+  slider three ways, each row split into five bands (50 is its own band, since the slider
+  starts there) with its share under 50 and its median: by age, by what a date is worth, and
+  tier one against elsewhere. Tier one is roughly GaWC's alpha++ and alpha+ (`TIER_ONE` in
+  the Apps Script); listing any of them counts. Age and price each get a rank correlation
+  (Spearman) in words, with the size it needs to clear the noise at that head count. A
+  fourth table, age × what a date is worth, shows the median in each square, switchable to
+  tier one or elsewhere; a square needs three people for a median, a row three for its own
+  line. One count switch drives all three cross cards. Own gender isn't asked, so "meet" is the only gender axis there
   is (§10). The page refreshes every minute while open and says what's new since you last
   looked.
   The password is the **`ADMIN_PASSWORD` repo secret** (8+ characters; unset means locked).
