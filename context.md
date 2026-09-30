@@ -396,11 +396,10 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   dekseltje", set off as a quote; the pen underlines "the one that fits."), signed with her
   polaroid; Kai's part (New York, what friends went through on the apps), signed with his; then a
   shared close ending "That part is yours.", signed by both. Its `re:` is "a letter from the
-  founders". **The letter is handwritten** (2026-09-30): each founder in their own hand
-  on ruled paper, Ruby in La Belle Aurore (a cursive), Kai in Reenie Beanie (a felt-tip print),
-  and in the shared close they pass the pen paragraph by paragraph. The signatures are in the same
-  hands. These two fonts load on `/why` only; the memo header stays typed (the printed form).
-  Both hands share one line height (`--lh`), so the rules line up across the whole letter. With it the page runs past the 400-word budget, by the founders' choice. On this page we set up, seat and
+  founders". The letter is set in the serif (a handwritten-font version was tried on
+  2026-09-30 and set aside). Each part is signed with **the founders' real signatures**, traced
+  from ink on paper into two `<symbol>`s (`#sig-ruby`, `#sig-kai`) and wiped in left to right on
+  reveal, with the name typed small beneath, since neither signature is legible. With it the page runs past the 400-word budget, by the founders' choice. On this page we set up, seat and
   introduce; "match" only ever describes what the apps do. "what we crossed out" is the values
   section written as refusals: the pen strikes each line on reveal, a tap shows what took its place,
   and every line must be a promise that outlives cohort 01 (so no "a subscription": free is a beta
