@@ -109,9 +109,10 @@ function doGet() {
 }
 
 function doPost(e) {
-  // the /admin dashboard asking for totals: read-only, so it never waits on the sign-up lock
-  const ask = statsAsk_(e && e.postData && e.postData.contents);
-  if (ask) return json_(stats_(ask));
+  // the /admin dashboard asking for totals, or the deploy telling it what shipped: neither
+  // touches the Sheet's rows, so neither waits on the sign-up lock
+  const ask = teamAsk_(e && e.postData && e.postData.contents);
+  if (ask) return json_(ask.kind === "shipped" ? saveShipped_(ask) : stats_(ask));
 
   const lock = LockService.getScriptLock();
   try {
@@ -439,12 +440,15 @@ const TEXT_ANSWERS = ["q2_wednesday", "q3_friendships", "q5_cared_for", "q6_not_
 /** word-count buckets: under 50, 50-99, 100-149, 150-199, 200-299, 300-499, 500+ */
 const WORD_EDGES = [50, 100, 150, 200, 300, 500];
 
-/** the dashboard's { kind: "stats", password | token, tab } from a POST body, null for anything else */
-function statsAsk_(body) {
+/**
+ * The dashboard's { kind: "stats", password | token, tab } or the deploy's { kind: "shipped",
+ * key, items } from a POST body, null for anything else
+ */
+function teamAsk_(body) {
   if (!body) return null;
   try {
     const d = JSON.parse(body);
-    return d && d.kind === "stats" ? d : null;
+    return d && (d.kind === "stats" || d.kind === "shipped") ? d : null;
   } catch (err) {
     return null; // not ours: the sign-up path below reports it as it always has
   }
@@ -471,6 +475,7 @@ function stats_(ask) {
     out.tab = tab;
     out.token = token;
     out.notes = notes ? Math.max(0, notes.getLastRow() - 1) : 0;
+    out.shipped = shipped_();
     return out;
   } catch (err) {
     console.error("stats: " + err);
@@ -489,8 +494,63 @@ function adminPassword_() {
 
 /** what a device keeps instead of the password: an HMAC of it, so the password itself is never stored */
 function adminToken_(password) {
-  return Utilities.computeHmacSha256Signature("five days admin", password)
+  return hmacHex_("five days admin", password);
+}
+
+/**
+ * What the deploy signs the ship log with: an HMAC of the password under its own label, so a
+ * device's token can read the log (through stats_()) but never write it.
+ */
+function shippedKey_(password) {
+  return hmacHex_("five days shipped", password);
+}
+
+function hmacHex_(label, password) {
+  return Utilities.computeHmacSha256Signature(label, password)
     .map(function (b) { return ((b + 256) % 256).toString(16).padStart(2, "0"); }).join("");
+}
+
+/*
+ * What shipped, for /admin's last card. After every merge to main the Deploy Apps Script
+ * workflow posts the last two weeks of main (.github/scripts/shipped.js); the dashboard gets it
+ * back inside stats_(), behind the password. Items are [merged, PR title, [areas], PR number].
+ * It lives in one Script Property, which holds 9KB, so the oldest go first when it's full.
+ */
+const SHIPPED_PROP = "shipped";
+const SHIPPED_AREAS = ["landing", "faq", "get involved", "privacy", "admin", "sheet", "site", "guards", "notes"];
+const SHIPPED_MAX_BYTES = 8500;
+
+function saveShipped_(d) {
+  try {
+    const real = adminPassword_();
+    if (real.length < ADMIN_MIN_LENGTH || String(d.key || "") !== shippedKey_(real)) return { ok: false, error: "locked" };
+    const items = (Array.isArray(d.items) ? d.items : []).map(function (it) {
+      if (!Array.isArray(it)) return null;
+      const at = toDate_(it[0]);
+      const title = String(it[1] || "").replace(/\s+/g, " ").trim().slice(0, 160);
+      if (!at || !title) return null;
+      const areas = (Array.isArray(it[2]) ? it[2] : []).map(String).filter(function (a) { return SHIPPED_AREAS.indexOf(a) > -1; });
+      return [at.toISOString(), title, areas, Math.max(0, Math.floor(Number(it[3]) || 0))];
+    }).filter(Boolean).sort(function (a, b) { return a[0] < b[0] ? 1 : a[0] > b[0] ? -1 : 0; }).slice(0, 120);
+    const pack = function () { return JSON.stringify({ at: new Date().toISOString(), items: items }); };
+    let json = pack();
+    while (items.length && Utilities.newBlob(json).getBytes().length > SHIPPED_MAX_BYTES) { items.pop(); json = pack(); }
+    PropertiesService.getScriptProperties().setProperty(SHIPPED_PROP, json);
+    return { ok: true, kind: "shipped", items: items.length };
+  } catch (err) {
+    console.error("shipped: " + err);
+    return { ok: false, error: "failed" };
+  }
+}
+
+/** the stored ship log, or an empty one before the first deploy has told us anything */
+function shipped_() {
+  try {
+    const raw = PropertiesService.getScriptProperties().getProperty(SHIPPED_PROP);
+    return raw ? JSON.parse(raw) : { at: "", items: [] };
+  } catch (err) {
+    return { at: "", items: [] };
+  }
 }
 
 /**
@@ -586,7 +646,7 @@ function tally_(values, now) {
     // for the cross tables, and only ever counted there: never returned as a row. The number
     // itself goes no further than this line: only its country calling code is kept
     people.push({ cities: cities, age: text("age"), meet: text("meet"), price: text("price"),
-      reach: text("reach_on"), region: callingCode_(cell("phone")), done: done });
+      reach: text("reach_on"), region: callingCode_(cell("phone")), share: share, done: done });
   }
 
   Object.keys(lookSum).forEach(function (k) { out.looking.rank[k] = round2_(lookSum[k] / out.looking.n); });
@@ -653,7 +713,109 @@ function crossOf_(people) {
   else out.unshown = elsewhere;
   out.city_price = grid_(people, function (p) { return p.cities; }, function (p) { return p.price; });
   out.region_reach = grid_(people, function (p) { return p.region ? [p.region] : []; }, function (p) { return p.reach; });
+  out.share = shareOf_(people);
   return out;
+}
+
+/**
+ * The world's top business cities, roughly GaWC's alpha++ and alpha+. Someone who lists any of
+ * them counts as "tier one" in shareOf_(), whatever else they list. The page names them.
+ */
+const TIER_ONE = ["New York", "London", "Hong Kong", "Singapore", "Shanghai", "Beijing", "Dubai", "Paris", "Tokyo"];
+const AGE_ORDER = ["21 to 24", "25 to 29", "30 to 34", "35 to 39", "40+"];
+const PRICE_ORDER = ["0", "25", "50", "100+"];
+/** the sharing slider in five bands. 50 is its own: the slider starts there, so it holds the untouched */
+function shareBand_(s) {
+  return s < 25 ? "0-24" : s < 50 ? "25-49" : s === 50 ? "50" : s <= 75 ? "51-75" : "76-100";
+}
+
+/**
+ * The independence hunch: do older, tier-one-city people who'd pay more for a date want to share
+ * less of their life? The sharing slider (question 4) read three ways, each row split into
+ * five bands (shareBand_()) with its median: by age, by what a date is worth, and by tier-one city or not.
+ * Rows keep their order and need CROSS_MIN people to show, like a city row; a median needs the
+ * same. `rho` is the rank correlation of age and of price with the slider, over everyone who
+ * gave both (a number, never a person). `grid` is age × price, the median in each square, for
+ * everyone, tier one and elsewhere; a square under CROSS_MIN gets its count and no median.
+ */
+function shareOf_(people) {
+  const ppl = people.filter(function (p) { return p.share !== null && p.share !== undefined; });
+  const tierOf = function (p) {
+    if (!p.cities.length) return "";
+    const low = TIER_ONE.map(function (c) { return c.toLowerCase(); });
+    return p.cities.some(function (c) { return low.indexOf(c.toLowerCase()) > -1; }) ? "tier" : "other";
+  };
+  const gridOf = function (list) {
+    const g = {};
+    AGE_ORDER.forEach(function (a) {
+      PRICE_ORDER.forEach(function (pr) {
+        const s = list.filter(function (p) { return p.age === a && p.price === pr; }).map(function (p) { return p.share; });
+        if (!s.length) return;
+        if (!g[a]) g[a] = {};
+        g[a][pr] = s.length >= CROSS_MIN ? { n: s.length, m: median_(s) } : { n: s.length };
+      });
+    });
+    return g;
+  };
+  return {
+    tier_one: TIER_ONE,
+    age: ladder_(ppl, AGE_ORDER, function (p) { return p.age; }),
+    price: ladder_(ppl, PRICE_ORDER, function (p) { return p.price; }),
+    tier: ladder_(ppl, ["tier", "other"], tierOf),
+    rho: { age: rank_(ppl, AGE_ORDER, function (p) { return p.age; }), price: rank_(ppl, PRICE_ORDER, function (p) { return p.price; }) },
+    grid: {
+      all: gridOf(ppl),
+      tier: gridOf(ppl.filter(function (p) { return tierOf(p) === "tier"; })),
+      other: gridOf(ppl.filter(function (p) { return tierOf(p) === "other"; })),
+    },
+  };
+}
+
+/**
+ * The slider by one ordered answer, in the shape grid_() returns (rows, cells, total, unshown)
+ * plus medians: `median` per shown row and `median_all` for everyone with the answer. A row
+ * under CROSS_MIN doesn't show, and its people are counted in `unshown` (and in the total).
+ */
+function ladder_(ppl, order, keyOf) {
+  const out = { rows: [], cells: {}, total: {}, median: {}, median_all: null, unshown: 0 };
+  const all = [];
+  order.forEach(function (k) {
+    const s = ppl.filter(function (p) { return keyOf(p) === k; }).map(function (p) { return p.share; });
+    s.forEach(function (v) { all.push(v); out.total[shareBand_(v)] = (out.total[shareBand_(v)] || 0) + 1; });
+    if (s.length < CROSS_MIN) { out.unshown += s.length; return; }
+    out.rows.push(k);
+    s.forEach(function (v) { cell_(out.cells, k, shareBand_(v)); });
+    out.median[k] = median_(s);
+  });
+  if (all.length >= CROSS_MIN) out.median_all = median_(all);
+  return out;
+}
+
+/**
+ * Spearman's rank correlation between an ordered answer and the slider, ties given their average
+ * rank: { r, n }, r from -1 to 1, null under CROSS_MIN people or when either side never varies.
+ */
+function rank_(ppl, order, keyOf) {
+  const pairs = ppl.filter(function (p) { return order.indexOf(keyOf(p)) > -1; })
+    .map(function (p) { return [order.indexOf(keyOf(p)), p.share]; });
+  const n = pairs.length;
+  if (n < CROSS_MIN) return { r: null, n: n };
+  const ranks = function (vals) {
+    const idx = vals.map(function (v, i) { return i; }).sort(function (a, b) { return vals[a] - vals[b]; });
+    const out = [];
+    for (let i = 0; i < n;) {
+      let j = i;
+      while (j + 1 < n && vals[idx[j + 1]] === vals[idx[i]]) j++;
+      for (let k = i; k <= j; k++) out[idx[k]] = (i + j) / 2 + 1;
+      i = j + 1;
+    }
+    return out;
+  };
+  const x = ranks(pairs.map(function (q) { return q[0]; })), y = ranks(pairs.map(function (q) { return q[1]; }));
+  const mean = (n + 1) / 2;
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) { sxy += (x[i] - mean) * (y[i] - mean); sxx += (x[i] - mean) * (x[i] - mean); syy += (y[i] - mean) * (y[i] - mean); }
+  return { r: sxx && syy ? round2_(sxy / Math.sqrt(sxx * syy)) : null, n: n };
 }
 
 /**

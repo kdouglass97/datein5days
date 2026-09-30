@@ -4,7 +4,7 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-28
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-30
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -727,10 +727,28 @@ via
   calling code on `phone`: the Apps Script reads the code off the number and keeps nothing
   else of it (`callingCode_()`), and the page names it (+1 is the US, Canada and much of
   the Caribbean). Rows from before 2026-09-23 have no number, so they sit out that table.
-  Each by-place table picks its own rows by the same three-person rule, and one count switch
-  drives both cross cards. Own gender isn't asked, so "meet" is the only gender axis there
+  Each by-place table picks its own rows by the same three-person rule. "who keeps their own
+  life" (added 2026-09-30) tests the independence hunch: that older people in tier-one
+  cities who'd pay more for a date want to share less of their life. It reads the sharing
+  slider three ways, each row split into five bands (50 is its own band, since the slider
+  starts there) with its share under 50 and its median: by age, by what a date is worth, and
+  tier one against elsewhere. Tier one is roughly GaWC's alpha++ and alpha+ (`TIER_ONE` in
+  the Apps Script); listing any of them counts. Age and price each get a rank correlation
+  (Spearman) in words, with the size it needs to clear the noise at that head count. A
+  fourth table, age × what a date is worth, shows the median in each square, switchable to
+  tier one or elsewhere; a square needs three people for a median, a row three for its own
+  line. One count switch drives all three cross cards. Own gender isn't asked, so "meet" is the only gender axis there
   is (§10). The page refreshes every minute while open and says what's new since you last
   looked.
+  "shipped this week" (added 2026-09-30), the last card, lists what merged to `main` since
+  Monday (the viewer's Monday), with a count against the week before and tags for what each
+  merge touched (landing, faq, admin, sheet, guards …, read off its files). It is not in the
+  page source: the repo is private, so the titles sit behind the password like everything
+  else. After every deploy, `apps-script.yml`'s `shipped` job runs `.github/scripts/shipped.js`,
+  which posts the last two weeks of `main` (`{ kind: "shipped" }`, signed with an HMAC of the
+  password under its own label, so a device's token can read it but never write it); the
+  Apps Script keeps it in one Script Property and `stats_()` returns it. Titles are the PR
+  titles, so a clear PR title is a clear line on the card.
   The password is the **`ADMIN_PASSWORD` repo secret** (8+ characters; unset means locked).
   The Apps Script deploy writes it into `apps-script/secret.js` just before `clasp push`;
   that file is in `.gitignore` and must never be committed, and the password never goes in
@@ -946,7 +964,10 @@ not in `rsvps`.
 - Prefer changing `CONFIG` over changing markup.
 - After any change to the form or the poll, **walk the entire flow in a headless browser**
   before shipping. Stub `script.google.com` and `*.posthog.com` so tests never write rows.
-- Push to `main` deploys to production. There is no staging.
+- Never push to `main`. Work on your own `claude/` branch: each push there gets its own
+  Vercel preview, so several changes can be in flight at once. To ship, open a PR to
+  `main`; the auto-ship Action merges it, and the merge deploys to production. `CLAUDE.md`
+  has the full steps.
 - Verify a deploy by asserting `/c/01` returns **200**. `/` returning a 307 proves nothing:
   the redirect working while the page 404s is exactly the failure already seen. Then assert
   `/context.md` returns **404**, which proves the allowlist is working.
