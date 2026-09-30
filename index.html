@@ -102,17 +102,20 @@ background:linear-gradient(177deg,var(--grass) 0 calc(49% - 5.5px),var(--line) c
 .soc a:active svg:first-child{transform:translateY(1px)}
 .topbar .soc{margin-left:18px}
 .topbar .soc a{padding:12px 7px;margin:-12px -7px}
-/* narrow screens drop the cohort number before the glyphs: they're how a stranger checks we're real */
+/* phones: no page links, just the cohort number, the menu and the glyphs. A lone link up here
+   reads as the site's headline and every candidate is a detour from rsvp; the menu has them all */
 @media (max-width:640px){.topbar .tb-page{display:none}}
 /* phones: the topbar opens the header's menu, so the pages are reachable before any scroll */
 .tb-menu{display:none;align-items:center;gap:6px;margin:-12px 0 -12px 18px;padding:12px 0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
 .tb-menu i{font:normal 18px/.6 var(--type)}
+/* the same perforation as the strip: the cohort number is where you are, menu is what you do */
+.tb-menu{position:relative;padding-left:17px}
+.tb-menu::before{content:"";position:absolute;left:0;top:50%;height:24px;transform:translateY(-50%);border-left:1px dashed rgba(237,234,225,.5)}
 @media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
-@media (max-width:360px){.topbar > span > a{display:none}}
 /* tablets: "why five days" joins the topbar, so the cohort number sheds "experiment" first */
 @media (max-width:860px){.topbar .xp{display:none}}
 @media (max-width:560px){.topbar .xp{display:none}}
-@media (max-width:440px){.topbar .no{display:none}}
+@media (max-width:340px){.topbar .no{display:none}}
 .stage{position:relative;width:var(--w);height:calc(var(--w)*1.2);margin:40px auto 0;perspective:calc(var(--w)*4.1);perspective-origin:50% 72%}
 @media (min-width:700px) and (min-aspect-ratio:1/1){:root{--w:min(540px,82vw,max(280px,calc((100svh - 330px)/1.2)))}.hero .cta-wrap{margin-top:30px}.hero .spots{margin-top:14px}.hero .ctas{gap:16px}}
 /* the envelope is a small 3D scene: .env carries the drop onto the table, .env-tilt the in-air tilt and focus pull.
@@ -460,21 +463,25 @@ footer .soc a{padding:8px;margin:-8px}
 /* floating header: drops in once the hero's own topbar scrolls away; anchors land below it */
 :root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
 html{scroll-padding-top:calc(var(--fh-top) + var(--fh-h) + 12px)}
-.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:680px;margin:0 auto;
+.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:780px;margin:0 auto;
 transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .fhead.on{transform:none}
 .fbar{display:flex;align-items:center;gap:18px;height:var(--fh-h);padding:0 10px 0 16px;background:var(--paper);box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
-.fbar .brand{margin-right:auto;line-height:1}
+.fbar .brand{margin-right:auto;white-space:nowrap;flex:none;line-height:1}
 .fbar > a:not(.brand,.btn),.fmenu-btn{font:14px/1 var(--type);color:var(--ink);text-decoration:none;text-underline-offset:3px;padding:18px 0;white-space:nowrap}
 .fmenu-btn{display:flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer}
 .fmenu-btn i{font:normal 20px/.6 var(--type);transition:transform .25s}
 .fmenu-btn[aria-expanded="true"] i{transform:rotate(45deg)}
 @media (hover:hover){.fbar > a:not(.brand,.btn):hover,.fmenu-btn:hover span{text-decoration:underline}}
 .fbar > a:not(.brand,.btn):focus-visible,.fmenu-btn:focus-visible span{text-decoration:underline}
+/* pages are typed apart with the topbar's slash; a perforation tears menu and rsvp off as the stub */
+.fbar > a:not(.brand,.btn) + a:not(.btn){position:relative;margin-left:8px}
+.fbar > a:not(.brand,.btn) + a:not(.btn)::before{content:"/";position:absolute;left:-13px;transform:translateX(-50%);color:rgba(70,85,58,.45);pointer-events:none}
+.fbar .fmenu-btn{align-self:stretch;padding:0 0 0 18px;border-left:1px dashed rgba(70,85,58,.55)}
 .fbar .btn{padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag);transition:transform .12s,box-shadow .12s,opacity .2s,visibility .2s}
 .fhead.at-rsvp .fbar .btn{opacity:0;visibility:hidden}
 /* phones: rsvp is the strip's one call to action; get involved waits in the menu */
-@media (max-width:640px){.fbar > a:not(.brand,.btn){display:none}}
+@media (max-width:680px){.fbar > a:not(.brand,.btn){display:none}}
 @media (max-width:900px){.fbar .xp{display:none}}
 @media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
 .fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
@@ -488,6 +495,12 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .fmenu li span{position:relative}
 .fmenu li svg{position:absolute;left:-3%;bottom:-6px;width:106%;height:9px;overflow:visible;pointer-events:none}
 .fmenu li path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
+/* the menu is a table of contents: the pages in the header's order, the landing page's parts typed under it */
+.fmenu ol ol{margin:-3px 0 10px;padding:0 0 0 14px;border-left:1px dashed rgba(70,85,58,.55)}
+.fmenu li li{border:0}
+.fmenu li li a{padding:7px 0;font:14px/1.25 var(--type);letter-spacing:0}
+.fmenu li [aria-current="page"]{color:var(--tag)}
+.fmenu li [aria-current="page"] > span{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:5px}
 .fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
 .fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
 .fmenu-foot .soc-row{justify-content:flex-start;padding:12px 0;font-size:13px}
@@ -699,22 +712,27 @@ section{padding:56px 16px}
 <button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
 <div class="fmenu" id="fmenu" hidden>
 <ol>
+<li><a href="#" aria-current="page"><span>experiment no. 01</span></a>
+<ol>
 <li><a href="#idea"><span>the idea</span></a></li>
 <li><a href="#how"><span>your next 5 days</span></a></li>
 <li><a href="#experiment"><span>the experiment</span></a></li>
 <li><a href="#rsvp"><span>rsvp</span></a></li>
 <li><a href="#faq"><span>questions</span></a></li>
 <li><a href="#team"><span>who's setting you up</span></a></li>
+</ol></li>
 <li><a href="/why"><span>why five days</span></a></li>
+<li><a href="/faq"><span>faq</span></a></li>
+<li><a href="/involved"><span>get involved</span></a></li>
 </ol>
-<p class="fmenu-foot"><a href="/faq">faq</a><a href="/involved">get involved</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></span></p>
+<p class="fmenu-foot"><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span data-ig-account>@datein5days</span></span></p>
 <svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true" data-here><path pathLength="1" filter="url(#pen)" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg>
 </div>
 <a class="btn" href="#rsvp" data-track="cta_float">rsvp</a>
 </div>
 </nav>
 <header class="hero">
-<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#" aria-current="page"><span class="xp">experiment </span>no. 01</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/why" data-track="nav_why">why five days</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq" data-track="nav_faq">faq</a> &nbsp;/&nbsp; </span><a href="/involved" data-track="nav_involved">get involved</a><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="topbar"><a class="brand" href="#" data-brand>five days</a><span><span class="no"><a href="#" aria-current="page"><span class="xp">experiment </span>no. 01</a><span class="tb-page"> &nbsp;/&nbsp; </span></span><span class="tb-page"><a href="/why" data-track="nav_why">why five days</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/faq" data-track="nav_faq">faq</a> &nbsp;/&nbsp; </span><span class="tb-page"><a href="/involved" data-track="nav_involved">get involved</a></span><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram" data-ig-link data-track="social_ig_top"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok" data-tt-link data-track="social_tt_top"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
 <div class="stage">
 <div class="env-shadow" aria-hidden="true"></div>
 <div class="env"><div class="env-tilt">
@@ -1434,8 +1452,8 @@ const markHere = () => {
 hereRaf = 0;
 let at = "";
 for (const s of $$("main > section[id]")) if (s.getBoundingClientRect().top <= innerHeight * .35) at = "#" + s.id;
-const cur = $$("ol a", fmenu).find(a => a.getAttribute("href") === at);
-$$("ol a", fmenu).forEach(a => a === cur ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current"));
+const cur = $$("ol ol a", fmenu).find(a => a.getAttribute("href") === at);
+$$("ol ol a", fmenu).forEach(a => a === cur ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current"));
 if (!cur) here.remove();
 else if (here.parentNode !== cur.firstElementChild) cur.firstElementChild.append(here);
 };
