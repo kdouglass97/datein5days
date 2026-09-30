@@ -456,17 +456,21 @@ footer .soc a{padding:8px;margin:-8px}
 /* floating header: drops in once the hero's own topbar scrolls away; anchors land below it */
 :root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
 html{scroll-padding-top:calc(var(--fh-top) + var(--fh-h) + 12px)}
-.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:680px;margin:0 auto;
+.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:780px;margin:0 auto;
 transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .fhead.on{transform:none}
 .fbar{display:flex;align-items:center;gap:18px;height:var(--fh-h);padding:0 10px 0 16px;background:var(--paper);box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
-.fbar .brand{margin-right:auto;line-height:1}
+.fbar .brand{margin-right:auto;white-space:nowrap;flex:none;line-height:1}
 .fbar > a:not(.brand,.btn),.fmenu-btn{font:14px/1 var(--type);color:var(--ink);text-decoration:none;text-underline-offset:3px;padding:18px 0;white-space:nowrap}
 .fmenu-btn{display:flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer}
 .fmenu-btn i{font:normal 20px/.6 var(--type);transition:transform .25s}
 .fmenu-btn[aria-expanded="true"] i{transform:rotate(45deg)}
 @media (hover:hover){.fbar > a:not(.brand,.btn):hover,.fmenu-btn:hover span{text-decoration:underline}}
 .fbar > a:not(.brand,.btn):focus-visible,.fmenu-btn:focus-visible span{text-decoration:underline}
+/* pages are typed apart with the topbar's slash; a perforation tears menu and rsvp off as the stub */
+.fbar > a:not(.brand,.btn) + a:not(.btn){position:relative;margin-left:8px}
+.fbar > a:not(.brand,.btn) + a:not(.btn)::before{content:"/";position:absolute;left:-13px;transform:translateX(-50%);color:rgba(70,85,58,.45);pointer-events:none}
+.fbar .fmenu-btn{align-self:stretch;padding:0 0 0 18px;border-left:1px dashed rgba(70,85,58,.55)}
 .fbar .btn{padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag);transition:transform .12s,box-shadow .12s,opacity .2s,visibility .2s}
 .fhead.at-rsvp .fbar .btn{opacity:0;visibility:hidden}
 /* phones: rsvp is the strip's one call to action; get involved waits in the menu */

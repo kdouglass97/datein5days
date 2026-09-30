@@ -326,6 +326,12 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   "menu" card listing the page's parts. The hand is the pen underline under wherever you are
   (live on the landing page, the current page on `/involved` and `/privacy`). On touch screens it steps aside
   while a text field has focus, so the questionnaire stays a clean writing surface.
+  **The strip's links are typed apart with the same slash as the topbar and footer**, in a
+  lighter ink, and a dashed perforation, the menu card's own rule, tears "menu +" and rsvp off
+  as the stub: the pages are places, the stub is what you do (added 2026-09-30; before it the
+  row read as one sentence). The strip is 780px wide and the wordmark never wraps. It fits four
+  page links from 681px up; a fifth link (like `/why`) needs the phone breakpoint that hides
+  the links raised from 640px to 680px.
   Its one button is **rsvp, at every width**; on the landing page it fades while the form
   itself is on screen. On phones (≤640px) the strip's text link (get involved; privacy on
   `/privacy`) lives only in the menu. The strip
