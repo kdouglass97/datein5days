@@ -13,6 +13,8 @@ name: Deploy Apps Script
 # apps-script/secret.js just before the push. It is never committed. After changing
 # the secret, run this workflow by hand: a secret change alone doesn't touch apps-script/,
 # so the automatic runs would skip it.
+#
+# Then, every time, the shipped job tells /admin what went out (.github/scripts/shipped.js).
 on:
   push:
     branches: [main]
@@ -73,3 +75,23 @@ jobs:
         run: |
           SHA=$(git rev-parse --short=7 HEAD)
           clasp update-deployment "$DEPLOYMENT_ID" --description "gh $SHA"
+
+  # /admin's "shipped this week" card: the last two weeks of main, posted to the live script.
+  # After the deploy, so a change to the handler is live before it's called, and whether or not
+  # the deploy skipped, since most merges never touch apps-script/. No clasp login here.
+  shipped:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Tell /admin what shipped
+        env:
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ENDPOINT: https://script.google.com/macros/s/AKfycbwzPjNII26q7AdawsfeSSjkhjkXw7ZGKouEnx8mWh8N8LmGt5Y-sjEIBtCbV3STk7VU/exec
+        run: node .github/scripts/shipped.js
