@@ -362,7 +362,7 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
 - **`/faq` wears the `/involved` frame too** (added 2026-09-29): the same ten questions as the
   landing page's `#faq`, on their own page for anyone who wants answers before the pitch. It's
   linked as "faq" in every header strip and hero topbar and every footer. **Desktop headers
-  read the same on every page: experiment no. 01 / faq / get involved** (plus privacy, on
+  read the same on every page: experiment no. 01 / why five days / faq / get involved** (plus privacy, on
   `/privacy`), in that order: the thing, the questions about it, then going further. On phones
   the topbar keeps only the cohort number and the page you're on; the rest are in the menu card.
   "leave us a note" stays out of the headers: it opens a sheet rather than going somewhere, and
@@ -394,9 +394,15 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   we crossed out" is the values section written as refusals: the pen strikes each line on reveal,
   a tap shows what took its place, and every line must be a promise that outlives cohort 01 (so
   no "a subscription": free is a beta condition). Haven paces with a letter at the foot, as on
-  `/faq`. **It is not in any topbar or strip**: desktop headers stay "experiment no. 01 / faq /
-  get involved". It's linked from every footer, every menu card foot, one quiet line under the
-  landing `#team` cards ("why we're doing this →") and "Here's why." in the `/involved` intro.
+  `/faq`. The hero's line sits between two paper props that land on load: a calendar leaf
+  ("thu, 8pm", circled by the pen) and a kraft ticket stub ("admit two", ticked). Beside the h1 on
+  wide screens, in a row beneath it below 1000px. As of 2026-09-30 **it's in every header**:
+  desktop topbars and strips read **experiment no. 01 / why five days / faq / get involved** (the
+  thing, why we do it, the questions, going further), and it's the last item in every menu card's
+  list. Below 860px the topbar drops the word "experiment"; on `/privacy`, which names one more
+  page, the cohort number leaves both bars below 760px. The strip is 780px wide to hold it. It's
+  also in every footer, one quiet line under the landing `#team` cards ("why we're doing this →")
+  and "Here's why." in the `/involved` intro.
   Never beside the RSVP form: the form is the page's one action.
 - **The divider under every hero is one straight diagonal**: about 3°, rising to the right, a
   10px cream rule. Subpages draw it as the `.arc` SVG; the landing page draws it as a hard-stop
@@ -561,8 +567,8 @@ read, quoted, and repeated, by search engines and AI tools alike.
   step with `#team`.
 
 **The header menu is hand-listed in five places** (`index.html`, `faq.html`, `involved.html`,
-`privacy.html`, `why.html`), and so is the menu card foot and the footer link row (faq, get
-involved, why five days, leave us a note, privacy). Its targets are the section ids `#idea`
+`privacy.html`, `why.html`), with "why five days" as the list's last item; so are the menu card
+foot (faq, get involved, leave us a note, privacy) and the footer link row (which adds why five days). Its targets are the section ids `#idea`
 `#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
 `privacy.html` link to the same ones as `/#faq` (the fragment survives the `/` redirect).
 Rename a section and update all three menus. The social glyphs are hand-copied the same way
