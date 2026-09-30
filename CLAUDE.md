@@ -1,3 +1,8 @@
+## Read context.md first (always)
+- Before any change, read `context.md` at the repo root. It holds what the product is, who it's for, and why each piece works the way it does.
+- Copy or tone change: follow §4 "Voice and copy". Visual change: follow §5 "Design language".
+- If this file and `context.md` disagree, this file wins on how to ship.
+
 ## Shipping workflow (always follow)
 - Work only on your own claude/ branch. Never push to main.
 - Push after each meaningful change so a preview deploy builds. Share the preview link if you can find it.
