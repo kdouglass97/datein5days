@@ -380,6 +380,24 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   edited by hand. The last three are about cities and end on "how do i bring this to my city?",
   which hands off to `/involved`: an out-of-town reader should leave with something to do, not
   just a no. Answers may hold a link; the find field marks text nodes only, so links survive.
+- **`/why` is the letter inside the envelope** (`why.html`, added 2026-09-30; `/story`, an older
+  preview link, 307s to it). The landing page covers what happens to you; `/why` answers the one
+  thing it doesn't: who is doing this, and why trust them. It must **never re-run the pitch**:
+  no thesis diagram, no founder flip cards, no timeline of the five days, since each of those
+  already has its landing section. Four blocks only, under 400 words: the hero ("dating means
+  going on dates."), a `.paper` letter at the 540px measure, "what we crossed out", and "pull up
+  a chair.". The letter's typed memo header (to / from / re) is the printed form, and its `re:`
+  line is the mission, word for word, appearing once; nothing on the page is labeled mission,
+  vision or values. The body is in the serif, the pen underlines one phrase ("meet, not
+  match."), and the signatures are the hand (`#pen` on the names, small polaroids beside them).
+  On this page we set up, seat and introduce; "match" only ever describes what the apps do. "what
+  we crossed out" is the values section written as refusals: the pen strikes each line on reveal,
+  a tap shows what took its place, and every line must be a promise that outlives cohort 01 (so
+  no "a subscription": free is a beta condition). Haven paces with a letter at the foot, as on
+  `/faq`. **It is not in any topbar or strip**: desktop headers stay "experiment no. 01 / faq /
+  get involved". It's linked from every footer, every menu card foot, one quiet line under the
+  landing `#team` cards ("why we're doing this →") and "Here's why." in the `/involved` intro.
+  Never beside the RSVP form: the form is the page's one action.
 - **The divider under every hero is one straight diagonal**: about 3°, rising to the right, a
   10px cream rule. Subpages draw it as the `.arc` SVG; the landing page draws it as a hard-stop
   `linear-gradient(177deg…)` on `.hero`, because the envelope sits across it. Until 2026-09-29
@@ -491,7 +509,7 @@ on push to `main`. Google Apps Script Web App as the form backend, writing to a 
 Sheet. No build step, no framework, nothing external except the PostHog snippet and
 MediaPipe. **This is deliberate. Resist adding a build step.**
 
-**Repo, flat at root:** the pages (`index.html`, `faq.html`, `involved.html`, `privacy.html`, `404.html`,
+**Repo, flat at root:** the pages (`index.html`, `faq.html`, `why.html`, `involved.html`, `privacy.html`, `404.html`,
 and `admin.html`, the team dashboard),
 `note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
 `.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
@@ -509,6 +527,7 @@ The QR code is printed. Its target can never change.
 /c/01      rewrite → /index.html
 /privacy   rewrite → /privacy.html
 /faq       rewrite → /faq.html
+/why       rewrite → /why.html   (/story 307s here)
 /admin     rewrite → /admin.html   the team dashboard, password only, §8
 
 /ig /tt /invite /@<name>   307 →  /c/01?src=…   the link book, §9
@@ -531,7 +550,7 @@ As of 2026-09-26 the site invites crawlers in. The invitation is marketing: we w
 read, quoted, and repeated, by search engines and AI tools alike.
 
 - `robots.txt` allows everyone, AI training and search crawlers included, and points to
-  `sitemap.xml`, which lists `/c/01`, `/faq` and `/involved`. A new public page goes in the sitemap.
+  `sitemap.xml`, which lists `/c/01`, `/faq`, `/involved` and `/why`. A new public page goes in the sitemap.
 - `/privacy` is `noindex` by design. Never `Disallow` it in `robots.txt`: a blocked page
   can't show Google its `noindex`, and the bare URL can get indexed anyway.
 - `/c/01` and `/involved` carry a canonical tag, which folds every `?src=` tag, `?go=rsvp`,
@@ -541,7 +560,9 @@ read, quoted, and repeated, by search engines and AI tools alike.
 - `index.html` carries JSON-LD (`WebSite` + `Organization`) naming the founders. Keep it in
   step with `#team`.
 
-**The header menu is hand-listed in three places.** Its targets are the section ids `#idea`
+**The header menu is hand-listed in five places** (`index.html`, `faq.html`, `involved.html`,
+`privacy.html`, `why.html`), and so is the menu card foot and the footer link row (faq, get
+involved, why five days, leave us a note, privacy). Its targets are the section ids `#idea`
 `#how` `#experiment` `#rsvp` `#faq` `#team` on `index.html`, and `involved.html` and
 `privacy.html` link to the same ones as `/#faq` (the fragment survives the `/` redirect).
 Rename a section and update all three menus. The social glyphs are hand-copied the same way
@@ -882,6 +903,16 @@ not in `rsvps`.
 - [ ] "testing test" isn't routed to the `test` tab: `isTestName_()` matches "test" only as a
       whole first word, though §8 and the Code.js comments say it does. Decide which is right.
 - [ ] Rename the PostHog project from "Default project" and fix its app URL
+- [ ] **Kai & Ruby: write the origin sentence in `/why`'s letter.** It's the pencil note in the
+      margin (`data-todo` in `why.html`). Don't ship the page until it's replaced.
+- [ ] Kai & Ruby: your notes give "purpose" and "vision" the same two lines. The page doesn't need
+      both. If you keep a purpose, it should be the why behind the vision, not a repeat of it.
+- [ ] Kai & Ruby: "meet, not match" collides with the site calling the person "your match", on
+      the landing page and in the FAQ (hand-copied in three places, plus the JSON-LD). If the line
+      sticks, change "your match" to "your date" everywhere, in a separate PR.
+- [ ] Kai & Ruby: confirm every line in "what we crossed out" is a promise you'll keep for good.
+- [ ] Kai & Ruby: "because the best dates end with a walk somewhere" is Claude's line. Keep it or cut it.
+- [ ] Haven's yard (from the old /story: tap to drop crumbs, Haven walks over and pecks) could live on 404.
 - [ ] Two polaroid collisions left (§5): iPad Pro in portrait (821–1050px, desktop placement) slides the top-left polaroid under the "five days" wordmark, and landscape phones 700–820px wide put the bottom-left one on "WE HANDLE THE ADMIN".
 
 ---

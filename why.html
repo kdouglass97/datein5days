@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4F6B45">
+<title>five days: why five days</title>
+<meta name="description" content="Who's behind Five Days, and why two people plan every date by hand. A short letter from Kai and Ruby.">
+<link rel="canonical" href="https://datein5days.com/why">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/icon.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="five days">
+<meta property="og:title" content="five days: why five days">
+<meta property="og:description" content="Who's behind Five Days, and why two people plan every date by hand. A short letter from Kai and Ruby.">
+<meta property="og:url" content="https://datein5days.com/why">
+<meta property="og:image" content="https://datein5days.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="An envelope that reads: you're invited to a date in 5 days.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
+<style>
+:root{
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;
+--serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+--type:"Courier Prime","Courier New",Courier,monospace;
+--opsz:10;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--clay);color:var(--ink);font:17px/1.6 var(--type);-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:var(--noise);opacity:.2;mix-blend-mode:multiply;z-index:50}
+a{color:inherit}
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:3px solid #F2C94C;outline-offset:3px}
+h1,h2{font-family:var(--serif);font-weight:400;margin:0}
+/* bodoni's auto optical size keeps hairlines ~0.2px at every size: print-thin, invisible on screens. pin it per tier (!important: font shorthands reset it) */
+*{font-variation-settings:"opsz" var(--opsz)!important}
+.intro h1,.chair h2,.x-head{--opsz:18}
+html{scroll-padding-top:calc(var(--fh-top) + var(--fh-h) + 24px)}
+
+.hero{position:relative;padding:calc(22px + env(safe-area-inset-top)) 0 30px;background:var(--grass)}
+.arc{display:block;width:100%;height:clamp(44px,7vw,84px);margin-top:-1px}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:0 clamp(14px,4vw,40px);color:var(--line);font-size:14px;position:relative;z-index:8}
+.topbar .brand{font-size:clamp(23px,7vw,29px);white-space:nowrap;flex:none}
+.topbar>span{white-space:nowrap;text-align:right;margin-left:auto}
+@media (max-width:360px){.topbar{font-size:12.5px}}
+.brand{font-family:var(--serif);font-size:29px;text-decoration:none;letter-spacing:-.02em}
+.topbar a:not(.brand){text-decoration:none;text-underline-offset:3px;padding:12px 0;margin:-12px 0}
+@media (hover:hover){.topbar a:not(.brand):hover{text-decoration:underline}}
+.topbar a:not(.brand):focus-visible{text-decoration:underline}
+/* social links: glyphs set like type in the masthead, the menu card and the colophon; the pen circles one on hover */
+.soc{--g:18px;--r:34px;display:inline-flex;align-items:center;gap:14px;vertical-align:middle}
+.soc a{display:grid;place-items:center;color:inherit}
+.soc a>*{grid-area:1/1}
+.soc svg{width:var(--g);height:var(--g);overflow:visible;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.soc .ring{width:var(--r);height:var(--r);margin:calc((var(--g) - var(--r)) / 2);stroke-width:3.4;stroke-dasharray:1;stroke-dashoffset:1;opacity:0;transition:stroke-dashoffset 0s .2s,opacity .2s}
+@media (hover:hover){.soc a:hover .ring{opacity:1;stroke-dashoffset:0;transition:stroke-dashoffset .4s cubic-bezier(.5,.1,.3,1)}}
+.soc a:active svg:first-child{transform:translateY(1px)}
+.topbar .soc{margin-left:18px}
+.topbar .soc a{padding:12px 7px;margin:-12px -7px}
+/* phones: faq waits in the menu; then the cohort number goes before the glyphs, which are how a stranger checks we're real */
+@media (max-width:640px){.topbar .tb-page{display:none}}
+/* phones: the topbar opens the header's menu, so the pages are reachable before any scroll */
+.tb-menu{display:none;align-items:center;gap:6px;margin:-12px 0 -12px 18px;padding:12px 0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.tb-menu i{font:normal 18px/.6 var(--type)}
+@media (max-width:640px){.topbar .tb-menu{display:inline-flex}}
+@media (max-width:360px){.topbar > span > a{display:none}}
+@media (max-width:560px){.topbar .xp{display:none}}
+@media (max-width:440px){.topbar .no{display:none}}
+
+/* floating header: drops in once the hero's own topbar scrolls away */
+:root{--fh-top:calc(10px + env(safe-area-inset-top));--fh-h:50px}
+.fhead{position:fixed;z-index:41;top:var(--fh-top);left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));max-width:680px;margin:0 auto;
+transform:translateY(calc(-100% - var(--fh-top) - 30px));transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.fhead.on{transform:none}
+.fbar{display:flex;align-items:center;gap:18px;height:var(--fh-h);padding:0 10px 0 16px;background:var(--paper);box-shadow:0 12px 26px -14px rgba(0,0,0,.6)}
+.fbar .brand{margin-right:auto;font-size:24px;line-height:1}
+.fbar > a:not(.brand,.btn),.fmenu-btn{font:14px/1 var(--type);color:var(--ink);text-decoration:none;text-underline-offset:3px;padding:18px 0;white-space:nowrap}
+.fmenu-btn{display:flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer}
+.fmenu-btn i{font:normal 20px/.6 var(--type);transition:transform .25s}
+.fmenu-btn[aria-expanded="true"] i{transform:rotate(45deg)}
+@media (hover:hover){.fbar > a:not(.brand,.btn,[aria-current]):hover,.fmenu-btn:hover span{text-decoration:underline}}
+.fbar > a:not(.brand,.btn,[aria-current]):focus-visible,.fmenu-btn:focus-visible span{text-decoration:underline}
+.fbar .here{position:relative}
+.fbar .here svg{position:absolute;left:-3%;bottom:-7px;width:106%;height:8px;overflow:visible;pointer-events:none}
+.fbar .here path{fill:none;stroke:var(--tag);stroke-width:1.8;stroke-linecap:round}
+.fbar .btn{padding:10px 16px;font-size:14px;box-shadow:3px 3px 0 var(--tag)}
+/* phones: rsvp is the strip's one call to action; faq and get involved wait in the menu */
+@media (max-width:640px){.fbar > a:not(.brand,.btn){display:none}}
+@media (max-width:900px){.fbar .xp{display:none}}
+@media (max-width:360px){.fbar{gap:13px;padding-left:12px}.fbar .brand{font-size:21px}.fbar > a:not(.brand,.btn),.fmenu-btn{font-size:13px}}
+.fmenu{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,100%);max-height:calc(100vh - var(--fh-top) - var(--fh-h) - 30px);max-height:calc(100svh - var(--fh-top) - var(--fh-h) - 30px);overflow:auto;overscroll-behavior:contain;
+padding:24px 24px 6px;background:var(--paper);transform:rotate(-.6deg);transform-origin:100% 0;
+box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18px rgba(0,0,0,.6)}
+.fmenu[hidden]{display:none}
+@media (max-width:640px){.fmenu{left:0;width:auto}.fhead.open::before{content:"";position:fixed;inset:0;z-index:-1;background:rgba(31,40,26,.4)}}
+.fmenu ol{list-style:none;margin:0;padding:0}
+.fmenu li{border-bottom:1px dashed rgba(70,85,58,.55)}
+.fmenu li a{display:block;padding:10px 0 11px;font:italic 400 24px/1.15 var(--serif);letter-spacing:-.01em;text-decoration:none}
+@media (hover:hover){.fmenu li a:hover{color:var(--tag)}}
+.fmenu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 14px;margin:0}
+.fmenu-foot a{font-size:13px;padding:14px 0;text-underline-offset:3px}
+.fmenu-foot [aria-current]{font-weight:700}
+.fmenu-foot .soc-row{justify-content:flex-start;padding:12px 0;font-size:13px}
+.fmenu-foot .soc a{padding:9px 7px;margin:-9px -7px}
+.fmenu .ring{stroke:var(--tag)}
+@media (prefers-reduced-motion:no-preference){
+.fmenu:not([hidden]){animation:menuDrop .3s cubic-bezier(.2,.8,.25,1.15)}
+@keyframes menuDrop{from{opacity:0;transform:translateY(-12px) rotate(-2.4deg)}}
+.fhead.open::before{animation:fadeIn .25s ease-out}
+@keyframes fadeIn{from{opacity:0}}
+.fbar .here path{stroke-dasharray:1;stroke-dashoffset:1}
+.fhead.on .here path{animation:ink .6s .35s cubic-bezier(.5,.1,.3,1) forwards}
+}
+
+.intro{max-width:620px;margin:0 auto;padding:clamp(44px,8vw,72px) 24px 0;text-align:center;color:var(--line)}
+.kicker{margin:0 0 14px;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+.intro h1{color:var(--line);font-size:clamp(44px,9vw,76px);line-height:.98;letter-spacing:-.04em;margin:0 0 22px}
+.mk{position:relative;display:inline-block;white-space:nowrap}
+.mk svg{position:absolute;left:-2%;bottom:-6px;width:104%;height:10px;overflow:visible;pointer-events:none}
+.mk path{fill:none;stroke:#F2C38F;stroke-width:2;stroke-linecap:round}
+.js .draw .ink{stroke-dasharray:1;stroke-dashoffset:1}
+.js .draw.in .ink{animation:ink 1.2s var(--dl,.2s) cubic-bezier(.5,.1,.3,1) forwards}
+@keyframes ink{to{stroke-dashoffset:0}}
+.paper{background-color:var(--paper);box-shadow:0 18px 36px -20px rgba(0,0,0,.6);position:relative}
+.tape::before{content:"";position:absolute;top:-14px;left:50%;width:110px;height:28px;transform:translateX(-50%) rotate(-3deg);background:rgba(223,214,190,.85);z-index:2}
+
+/* the letter: the header is the printed form, typed; the body is set in the serif; the signatures are the hand */
+.wrap{padding:26px 16px 0}
+.letter{max-width:540px;margin:0 auto;padding:38px clamp(22px,6vw,44px) 30px;transform:rotate(-.6deg);box-shadow:inset 0 9px 0 var(--tag),0 18px 36px -20px rgba(0,0,0,.6)}
+.memo{display:grid;grid-template-columns:4.2em 1fr;gap:4px 8px;margin:0 0 24px;padding:0 0 18px;border-bottom:1px dashed rgba(70,85,58,.55);font-size:14px;line-height:1.45}
+.memo dt{opacity:.7}
+.memo dd{margin:0}
+.body p{margin:0 0 16px;font:400 19px/1.5 var(--serif);letter-spacing:-.005em}
+.body .open{font-size:clamp(24px,4.4vw,28px);line-height:1.2;letter-spacing:-.015em;margin-bottom:20px}
+.body .mk path{stroke:var(--clay)}
+/* a pencil note from us to us: it has to be replaced before this ships, so it can't be missed */
+.todo{display:block;margin:-4px 0 18px;padding:10px 12px;border:1.5px dashed rgba(70,85,58,.6);font:italic 14px/1.45 var(--type);color:var(--ink);opacity:.8;transform:rotate(-1deg)}
+.sig{display:flex;justify-content:flex-end;align-items:flex-end;gap:clamp(12px,4vw,22px);margin:22px 0 0}
+.sig figure{margin:0;text-align:center}
+.pola{display:block;width:74px;padding:5px 5px 14px;background:#F4F3EF;box-shadow:0 8px 16px -8px rgba(0,0,0,.55);transform:rotate(var(--r))}
+.pola img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center 30%}
+.sig svg{display:block;width:84px;height:40px;margin:4px auto 0;overflow:visible}
+.sig text{font:italic 400 30px/1 var(--serif);fill:var(--tag);--opsz:14}
+.sig .amp{align-self:center;font:italic 400 24px/1 var(--serif);color:var(--tag);padding-bottom:30px}
+.js .draw .sig text{opacity:0;transition:opacity .8s var(--dl,.2s)}
+.js .draw.in .sig text{opacity:1}
+
+/* what we crossed out: the printed list, corrected by hand */
+.x-head{color:var(--line);text-align:center;font:400 clamp(38px,6vw,52px)/1 var(--serif);letter-spacing:-.03em;margin:72px 0 10px}
+.x-sub{color:var(--line);text-align:center;margin:0 auto 32px;max-width:36ch}
+.crossed{max-width:540px;margin:0 auto;padding:22px clamp(20px,5vw,36px) 16px;transform:rotate(.5deg)}
+.crossed ul{list-style:none;margin:0;padding:0}
+.crossed li{border-bottom:1px dashed rgba(70,85,58,.5)}
+.crossed li:last-child{border-bottom:0}
+.x-item{display:flex;align-items:baseline;justify-content:space-between;gap:14px;width:100%;padding:14px 0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.x-item .t{position:relative;font-size:17px}
+.x-item .t svg{position:absolute;left:-3%;top:50%;width:106%;height:14px;margin-top:-7px;overflow:visible;pointer-events:none}
+.x-item .t path{fill:none;stroke:var(--clay);stroke-width:2.2;stroke-linecap:round}
+.x-item .plus{flex:none;font-size:20px;line-height:1;transition:transform .25s;color:var(--tag)}
+.x-item[aria-expanded="true"] .plus{transform:rotate(45deg)}
+.x-note{margin:-4px 0 16px;padding-left:14px;border-left:2px solid var(--clay);font:italic 400 20px/1.3 var(--serif);color:var(--tag)}
+.x-note[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.x-note:not([hidden]){animation:noteIn .35s cubic-bezier(.2,.8,.2,1)}}
+@keyframes noteIn{from{opacity:0;transform:translateY(-6px)}}
+.x-note a{text-underline-offset:3px}
+.crossed .hint{margin:8px 0 0;font-size:13px;opacity:.65;text-align:center}
+
+/* pull up a chair */
+.chair{max-width:540px;margin:72px auto 0;padding:clamp(36px,7vw,52px) clamp(24px,6vw,44px) 30px;outline:1px solid var(--ink);outline-offset:-12px;text-align:center;transform:rotate(-.4deg)}
+.chair h2{font-size:clamp(40px,8vw,56px);letter-spacing:-.03em;line-height:1;margin:0 0 12px}
+.chair > p{margin:0 auto 24px;max-width:36ch}
+.chair path,.chair circle{fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chair .thin{stroke-width:1.2}
+.chair .eye{fill:var(--ink);stroke:none}
+.note-line{margin:0;font-size:15px}
+.note-line a{font-weight:700;text-underline-offset:3px}
+
+.walkway{position:relative;height:96px;margin:18px -8px 4px;overflow:hidden}
+.walkway::after{content:"";position:absolute;left:0;right:0;bottom:22px;border-top:1.5px dashed rgba(70,85,58,.45)}
+.walker{position:absolute;bottom:15px;left:0;width:104px;height:64px;padding:0;border:0;background:none;cursor:pointer;animation:pace 16s linear infinite}
+.walker svg{width:100%;height:100%;overflow:visible;animation:face 16s steps(1,end) infinite}
+.walker .bod{transform-box:view-box;transform-origin:70px 72px;animation:waddle .4s ease-in-out infinite alternate}
+.walker .head{transform-box:view-box;transform-origin:92px 31px;animation:thrust .4s infinite}
+.walker .l1,.walker .l2{transform-box:view-box}
+.walker .l1{transform-origin:65px 63px;animation:step .4s ease-in-out infinite alternate}
+.walker .l2{transform-origin:75px 63px;animation:step .4s ease-in-out infinite alternate-reverse}
+.walkway:hover .walker,.walkway:hover .walker *,.walker:focus-visible,.walker:focus-visible *{animation-play-state:paused}
+@keyframes pace{0%{left:-4px}46%{left:calc(100% - 100px)}50%{left:calc(100% - 100px)}96%{left:-4px}100%{left:-4px}}
+@keyframes face{0%{transform:none}48%{transform:scaleX(-1)}98%{transform:none}}
+@keyframes waddle{0%{transform:translateY(2px) rotate(-5deg) scaleY(.96)}50%{transform:translateY(-3px) rotate(0) scaleY(1.02)}100%{transform:translateY(2px) rotate(5deg) scaleY(.96)}}
+@keyframes thrust{0%{transform:translateX(-3px);animation-timing-function:cubic-bezier(.2,.9,.3,1)}22%{transform:translateX(4px);animation-timing-function:linear}100%{transform:translateX(-3px)}}
+@keyframes step{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.acts{display:grid;gap:16px;max-width:360px;margin:0 auto}
+@media (min-width:520px){.acts{grid-template-columns:1fr 1fr;max-width:none}}
+
+.btn{display:block;text-align:center;font:700 16px/1 var(--type);letter-spacing:.02em;text-decoration:none;color:var(--ink);background:var(--paper);border:2px solid var(--tag);padding:16px 20px;box-shadow:5px 5px 0 var(--tag);cursor:pointer;transition:transform .12s,box-shadow .12s}
+@media (hover:hover){.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--tag)}}
+.btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--tag)}
+.btn.solid{background:var(--tag);color:var(--line)}
+footer{color:var(--line);text-align:center;padding:56px 20px 64px;font-size:14px}
+footer .brand{display:block;margin-bottom:6px;font-size:30px}
+footer p{margin:4px 0}
+.soc-row{display:flex;justify-content:center;align-items:center;gap:14px}
+footer .soc-row{margin:22px 0 16px}
+footer .soc{--g:24px;--r:44px;gap:16px}
+footer .soc svg{stroke-width:1.5}
+footer .soc .ring{stroke-width:3}
+footer .soc a{padding:8px;margin:-8px}
+/* phones: the links wrap, so they drop their slashes rather than strand one at a line end */
+.foot-links{display:flex;flex-wrap:wrap;justify-content:center;column-gap:1.1em}
+@media (max-width:480px){.foot-links{column-gap:22px}.foot-links .sep{display:none}}
+@media (prefers-reduced-motion:reduce){
+*{animation:none!important;transition:none!important}
+.js .draw .ink{stroke-dashoffset:0}
+.js .draw .sig text{opacity:1}
+.walker{left:calc(50% - 52px)}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<filter id="pen" x="-10%" y="-10%" width="120%" height="120%">
+<feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/>
+<feDisplacementMap in="SourceGraphic" scale="2.4"/>
+</filter>
+<symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.2" cy="6.8" r="1.05" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-tt" viewBox="0 0 24 24"><path d="M11.5 2.6H15.2A5.6 5.6 0 0 0 20.8 8.2V11.8A9.5 9.5 0 0 1 15.2 10.1V15.6A6 6 0 1 1 8 9.72V13.64A2.3 2.3 0 1 0 11.5 15.6Z"/></symbol>
+<symbol id="i-ring" viewBox="0 0 100 100"><path pathLength="1" filter="url(#pen)" d="M68 15C45 8 15 22 12 50C10 78 35 93 58 88C80 83 93 60 86 35C80 20 65 12 45 17"/></symbol>
+</defs>
+</svg>
+
+<nav class="fhead" aria-label="Site" inert>
+<div class="fbar">
+<a class="brand" href="/">five days</a>
+<a href="/"><span class="xp">experiment </span>no. 01</a>
+<a href="/faq">faq</a>
+<a href="/involved">get involved</a>
+<button type="button" class="fmenu-btn" aria-expanded="false" aria-controls="fmenu"><span>menu</span><i aria-hidden="true">+</i></button>
+<div class="fmenu" id="fmenu" hidden>
+<ol>
+<li><a href="/#idea"><span>the idea</span></a></li>
+<li><a href="/#how"><span>your next 5 days</span></a></li>
+<li><a href="/#experiment"><span>the experiment</span></a></li>
+<li><a href="/rsvp"><span>rsvp</span></a></li>
+<li><a href="/#faq"><span>questions</span></a></li>
+<li><a href="/#team"><span>who's setting you up</span></a></li>
+</ol>
+<p class="fmenu-foot"><a href="/faq">faq</a><a href="/involved">get involved</a><a href="/why" aria-current="page">why five days</a><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><a href="/privacy">privacy</a><span class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></span></p>
+</div>
+<a class="btn" href="/rsvp">rsvp</a>
+</div>
+</nav>
+
+<header class="hero">
+<div class="topbar"><a class="brand" href="/">five days</a><span><span class="no"><a href="/"><span class="xp">experiment </span>no. 01</a></span><span class="tb-page"> &nbsp;/&nbsp; <a href="/faq">faq</a> &nbsp;/&nbsp; <a href="/involved">get involved</a></span><button type="button" class="tb-menu" aria-controls="fmenu" aria-expanded="false"><span>menu</span><i aria-hidden="true">+</i></button><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span></span></div>
+<div class="intro">
+<p class="kicker">why five days</p>
+<h1>dating means going on dates.</h1>
+</div>
+</header>
+<svg class="arc" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H1200V16L0 70Z" fill="#4F6B45"/><path d="M0 70L1200 16" fill="none" stroke="#EDEAE1" stroke-width="10" vector-effect="non-scaling-stroke"/></svg>
+
+<main class="wrap">
+<article class="paper letter draw" data-reveal aria-label="A letter from Kai and Ruby">
+<dl class="memo">
+<dt>to:</dt><dd>whoever's wondering</dd>
+<dt>from:</dt><dd>Kai &amp; Ruby</dd>
+<dt>re:</dt><dd>plan real dates, in real places, with people who fit your life.</dd>
+</dl>
+<div class="body">
+<p class="open">We think people should <span class="mk">meet, not match.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path class="ink" pathLength="1" filter="url(#pen)" style="--dl:.7s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
+<p>The best introductions we've seen didn't come from an app. They came from a friend who knew two people well enough to say: you two, Thursday, this place.</p>
+<p class="todo" data-todo>[Kai &amp; Ruby: one or two true sentences about the introduction, or the evening, that made you start this.]</p>
+<p>So we do it by hand. We read every answer. We pick the person, the place and the time. You get a text, and a table.</p>
+<p>It doesn't scale, and we've stopped trying to make it. We only open a city where we can be in the room. New York first, then every major walkable city, because the best dates end with a walk somewhere.</p>
+<p>If the dates land, there's something here. If they don't, the hunch was wrong, and we'd rather know in six weeks than in two years.</p>
+</div>
+<div class="sig">
+<figure><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="Kai" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" style="--dl:1.2s">Kai</text></svg></figure>
+<span class="amp" aria-hidden="true">&amp;</span>
+<figure><span class="pola" style="--r:3deg"><img src="/ruby.jpg" alt="Ruby" width="360" height="480" loading="lazy" decoding="async"></span><svg viewBox="0 0 84 40" aria-hidden="true"><text x="42" y="30" text-anchor="middle" filter="url(#pen)" style="--dl:1.5s">Ruby</text></svg></figure>
+</div>
+</article>
+
+<section aria-labelledby="x-h">
+<h2 class="x-head" id="x-h">what we crossed out</h2>
+<p class="x-sub">The usual parts of a dating product, and what we do instead.</p>
+<div class="paper crossed tape draw" data-reveal>
+<ul>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x1"><span class="t">a match percentage<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.20s" pathLength="1" filter="url(#pen)" d="M2 9C50 6 110 8 198 4"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x1" hidden>A number can't tell you whether someone wants the same Wednesday you do.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x2"><span class="t">an algorithm<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.45s" pathLength="1" filter="url(#pen)" d="M2 6C60 9 130 5 198 8"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x2" hidden>Two people read every answer.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x3"><span class="t">endless swiping<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.70s" pathLength="1" filter="url(#pen)" d="M2 8C40 5 120 9 198 5"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x3" hidden>One person, one evening, planned.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x4"><span class="t">posting from your instagram<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:0.95s" pathLength="1" filter="url(#pen)" d="M2 9C60 5 120 8 198 6"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x4" hidden>We look to check you're real. That's all we do with it.</p></li>
+<li><button type="button" class="x-item" aria-expanded="false" aria-controls="x5"><span class="t">selling your data<svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path class="ink" style="--dl:1.20s" pathLength="1" filter="url(#pen)" d="M2 7C50 9 140 5 198 7"/></svg></span><span class="plus" aria-hidden="true">+</span></button><p class="x-note" id="x5" hidden>We don't. The <a href="/privacy">privacy notice</a> says so in writing.</p></li>
+</ul>
+<p class="hint">tap a line to see what took its place</p>
+</div>
+</section>
+
+<section class="paper chair" aria-labelledby="chair-h">
+<h2 id="chair-h">pull up a chair.</h2>
+<p>If this is how you'd rather meet someone, RSVP. If it's how you'd rather help, there's a door for that too.</p>
+<div class="acts">
+<a class="btn solid" href="/rsvp" data-track="why_rsvp">rsvp</a>
+<a class="btn" href="/involved" data-track="why_involved">get involved</a>
+</div>
+<div class="walkway">
+<button type="button" class="walker" data-leave-note aria-label="Give Haven a note to carry">
+<svg viewBox="0 0 130 80" aria-hidden="true"><g class="bod" filter="url(#pen)">
+<path d="M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29"/>
+<path class="thin" d="M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52"/>
+<g class="l1"><path class="thin" d="M65 64L64 72M61 72H68"/></g><g class="l2"><path class="thin" d="M75 63L76 72M73 72H80"/></g>
+<g class="head"><path d="M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30"/><path class="thin" d="M88 32C92 35 97 35 100 32M101 22L107 25L101 27"/><circle class="eye" cx="95" cy="21" r="1.5"/><path d="M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21"/></g>
+</g></svg>
+</button>
+</div>
+<p class="note-line"><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note data-track="why_note">leave us a note</a></p>
+</section>
+</main>
+
+<footer>
+<a class="brand" href="/">five days</a>
+<p>A table for two, somewhere good. An experiment in slower, better dating.</p>
+<p class="soc-row"><span class="soc"><a href="https://instagram.com/datein5days" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a><a href="https://www.tiktok.com/@datein5days" target="_blank" rel="noopener" aria-label="TikTok"><svg aria-hidden="true"><use href="#i-tt"/></svg><svg class="ring" aria-hidden="true"><use href="#i-ring"/></svg></a></span><span>@datein5days</span></p>
+<p class="foot-links"><a href="/">experiment no. 01</a><span class="sep" aria-hidden="true">/</span><a href="/faq">faq</a><span class="sep" aria-hidden="true">/</span><a href="/involved">get involved</a><span class="sep" aria-hidden="true">/</span><a href="/why" aria-current="page">why five days</a><span class="sep" aria-hidden="true">/</span><a href="mailto:datein5days@gmail.com?subject=A%20note" data-leave-note>leave us a note</a><span class="sep" aria-hidden="true">/</span><a href="/privacy">privacy</a></p>
+</footer>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+const io = new IntersectionObserver(es => es.forEach(e => {
+if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+}), { threshold: .2 });
+$$("[data-reveal]").forEach(el => io.observe(el));
+
+// floating header, same as /involved
+const fhead = $(".fhead"), fmenu = $("#fmenu"), fmenuBtn = $(".fmenu-btn", fhead);
+let atTop = true;
+const setMenu = open => {
+if (open === !fmenu.hidden) return;
+if (!open && atTop) { fhead.classList.remove("on"); fhead.inert = true; }
+fmenu.hidden = !open;
+fhead.classList.toggle("open", open);
+fmenuBtn.setAttribute("aria-expanded", open);
+};
+fmenuBtn.addEventListener("click", () => setMenu(fmenu.hidden));
+fhead.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+addEventListener("keydown", e => { if (e.key === "Escape" && !fmenu.hidden) { setMenu(false); fmenuBtn.focus(); } });
+document.addEventListener("pointerdown", e => { if (e.target === fhead || !fhead.contains(e.target)) setMenu(false); });
+fhead.addEventListener("focusout", e => { if (e.relatedTarget && !fhead.contains(e.relatedTarget)) setMenu(false); });
+new IntersectionObserver(([e]) => {
+const on = !e.isIntersecting;
+atTop = !on;
+fhead.classList.toggle("on", on); fhead.inert = !on;
+if (!on) setMenu(false);
+}).observe($(".topbar"));
+// phones: "menu" in the topbar drops the strip in with its menu open
+$(".tb-menu").addEventListener("click", () => { fhead.classList.add("on"); fhead.inert = false; setMenu(true); fmenuBtn.focus(); });
+
+// what we crossed out: a tap shows what took its place
+$$(".x-item").forEach(b => b.addEventListener("click", () => {
+const open = b.getAttribute("aria-expanded") !== "true";
+b.setAttribute("aria-expanded", open);
+document.getElementById(b.getAttribute("aria-controls")).hidden = !open;
+}));
+})();
+</script>
+<script src="/attr.js" defer></script>
+<script src="/note.js" defer></script>
+</body>
+</html>
