@@ -199,6 +199,8 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .hl{color:inherit;padding:0 .12em;margin:0 -.04em;-webkit-box-decoration-break:clone;box-decoration-break:clone;background:linear-gradient(100deg,transparent 1%,rgba(242,195,143,.85) 4%,rgba(242,195,143,.7) 94%,transparent 99%) no-repeat 0 62%/100% 72%}
 @media (prefers-reduced-motion:no-preference){.js .hl{background-size:0% 72%;transition:background-size .9s .25s cubic-bezier(.5,.1,.3,1)}.js .hl.in{background-size:100% 72%}}
 .saying.pull{margin:10px 0 20px}
+.wavy{text-decoration:underline wavy var(--clay);text-decoration-thickness:1.4px;text-underline-offset:6px;text-decoration-skip-ink:none}
+@media (prefers-reduced-motion:no-preference){.js .wavy{text-decoration-color:transparent;transition:text-decoration-color .9s .3s}.js .wavy.in{text-decoration-color:var(--clay)}}
 
 .body p.pair{font-style:italic;font-size:21px}
 .body .last{margin:4px 0 0;font:italic 400 clamp(24px,4.4vw,28px)/1.2 var(--serif);letter-spacing:-.015em;--opsz:18}
@@ -441,7 +443,7 @@ footer .soc a{padding:8px;margin:-8px}
 <div class="body">
 <p>I came to this from a different place.</p>
 <p>Among my friends in New York, “how’s the <span class="mk ring km" data-reveal>situationship?<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" style="--dl:.2s" d="M26 8C80-4 180 0 194 24C206 46 150 58 96 57C40 56 2 48 5 30C8 14 50 5 120 5"/></svg></span>” comes up more often than “how’s the relationship?” It’s only about half a joke. I’m usually the one they send the screenshots to, and at some point I stopped being surprised by the next text.</p>
-<p>What still gets me is who it happens to. My most put-together friends ask real questions, say what they want, and don’t waste anyone’s time. They still end up with someone who looked great on paper and talked about commitment right up until it was time to commit.</p>
+<p>What still gets me is who it happens to. My most put-together friends ask real questions, say what they want, and don’t waste anyone’s time. They still end up with someone who looked great on paper and <span class="wavy" data-reveal>talked about commitment right up until it was time to commit.</span></p>
 <p>The rest say they’re “taking a break from the apps.”</p>
 <blockquote class="saying pull"><p>A break. From trying to meet someone.</p></blockquote>
 <p>Nobody should need to recover from that.</p>
