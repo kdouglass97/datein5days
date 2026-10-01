@@ -199,8 +199,14 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .hl{color:inherit;padding:0 .12em;margin:0 -.04em;-webkit-box-decoration-break:clone;box-decoration-break:clone;background:linear-gradient(100deg,transparent 1%,rgba(242,195,143,.85) 4%,rgba(242,195,143,.7) 94%,transparent 99%) no-repeat 0 62%/100% 72%}
 @media (prefers-reduced-motion:no-preference){.js .hl{background-size:0% 72%;transition:background-size .9s .25s cubic-bezier(.5,.1,.3,1)}.js .hl.in{background-size:100% 72%}}
 .saying.pull{margin:10px 0 20px}
-.wavy{padding-bottom:5px;-webkit-box-decoration-break:clone;box-decoration-break:clone;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='8'%3E%3Cpath d='M0 4C7 .5 15 .5 22 4S37 7.5 44 4' fill='none' stroke='%238A4129' stroke-opacity='.85' stroke-width='.85' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 100%/44px 8px}
-@media (prefers-reduced-motion:no-preference){.js .wavy{background-size:44px 0;transition:background-size .7s .3s cubic-bezier(.3,1.4,.5,1)}.js .wavy.in{background-size:44px 8px}}
+/* the commitment line: a loose hand-drawn squiggle, drawn per line of text by the script below so
+   it wraps with the sentence. irregular on purpose: a tiled wave read as a machine pattern */
+.squig-p{position:relative}
+.squig{position:absolute;height:12px;overflow:visible;pointer-events:none}
+.squig path{fill:none;stroke:var(--clay);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.js .squig path{stroke-dasharray:1;stroke-dashoffset:1}
+.js .squig.go path{animation:ink .9s var(--dl,0s) cubic-bezier(.5,.1,.3,1) forwards}
+.js .squig.done path{stroke-dashoffset:0}
 
 .body p.pair{font-style:italic;font-size:21px}
 .body .last{margin:4px 0 0;font:italic 400 clamp(24px,4.4vw,28px)/1.2 var(--serif);letter-spacing:-.015em;--opsz:18}
@@ -349,6 +355,7 @@ footer .soc a{padding:8px;margin:-8px}
 *{animation:none!important;transition:none!important}
 .js .draw .ink{stroke-dashoffset:0}
 .js .km path{stroke-dashoffset:0}
+.js .squig path{stroke-dashoffset:0}
 .walker{left:calc(50% - 52px)}
 }
 </style>
@@ -443,7 +450,7 @@ footer .soc a{padding:8px;margin:-8px}
 <div class="body">
 <p>I came to this from a different place.</p>
 <p>Among my friends in New York, “how’s the <span class="mk ring km" data-reveal>situationship?<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" style="--dl:.2s" d="M26 8C80-4 180 0 194 24C206 46 150 58 96 57C40 56 2 48 5 30C8 14 50 5 120 5"/></svg></span>” comes up more often than “how’s the relationship?” It’s only about half a joke. I’m usually the one they send the screenshots to, and at some point I stopped being surprised by the next text.</p>
-<p>What still gets me is who it happens to. My most put-together friends ask real questions, say what they want, and don’t waste anyone’s time. They still end up with someone who looked great on paper and <span class="wavy" data-reveal>talked about commitment right up until it was time to commit.</span></p>
+<p class="squig-p">What still gets me is who it happens to. My most put-together friends ask real questions, say what they want, and don’t waste anyone’s time. They still end up with someone who looked great on paper and <span class="wavy">talked about commitment right up until it was time to commit.</span></p>
 <p>The rest say they’re “taking a break from the apps.”</p>
 <blockquote class="saying pull"><p>A break. From trying to meet someone.</p></blockquote>
 <p>Nobody should need to recover from that.</p>
@@ -588,6 +595,46 @@ $(".tb-menu").addEventListener("click", () => { fhead.classList.add("on"); fhead
 // the stamp: tap and Haven hops on his bench
 const stamp = $(".stamp");
 stamp.addEventListener("click", () => { stamp.classList.remove("hop"); void stamp.offsetWidth; stamp.classList.add("hop"); });
+
+// the commitment line: one hand-drawn squiggle under each line the phrase wraps onto
+const wavy = $(".wavy");
+if (wavy) {
+const host = wavy.closest("p");
+let shown = false;
+const rnd = seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const squiggle = (w, seed) => {
+const r = rnd(seed * 7919 + 13);
+let x = 0, up = r() > .5, d = `M0 ${5 + r() * 1.5}`;
+while (x < w) {
+const len = Math.min(w - x, 22 + r() * 18), amp = 1.6 + r() * 2.2, y = 5.5 + (r() - .5) * 1.6;
+d += `Q${(x + len / 2).toFixed(1)} ${(up ? y - amp : y + amp).toFixed(1)} ${(x + len).toFixed(1)} ${y.toFixed(1)}`;
+x += len; up = !up;
+}
+return d;
+};
+const draw = () => {
+$$(".squig", host).forEach(n => n.remove());
+const hr = host.getBoundingClientRect();
+[...wavy.getClientRects()].filter(q => q.width > 6).forEach((q, i) => {
+const w = q.width + 4;
+const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+svg.setAttribute("class", "squig" + (shown ? " done" : ""));
+svg.setAttribute("aria-hidden", "true");
+svg.setAttribute("viewBox", `0 0 ${w} 12`);
+svg.style.cssText = `left:${q.left - hr.left - 2}px;top:${q.bottom - hr.top - 6}px;width:${w}px;--dl:${i * .55}s`;
+svg.innerHTML = `<path pathLength="1" filter="url(#pen)" d="${squiggle(w, i + 1)}"/>`;
+host.append(svg);
+});
+};
+draw();
+addEventListener("resize", () => requestAnimationFrame(draw));
+document.fonts?.ready.then(draw);
+new IntersectionObserver(([e], o) => {
+if (!e.isIntersecting) return;
+o.disconnect(); shown = true;
+$$(".squig", host).forEach(n => n.classList.add("go"));
+}, { threshold: .6 }).observe(wavy);
+}
 
 // what we crossed out: a tap shows what took its place
 $$(".x-item").forEach(b => b.addEventListener("click", () => {
