@@ -412,7 +412,7 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   never "Mission", "Vision" or "Values". The letter is the founders' own (Kai and Ruby's draft, set
   2026-09-30, their wording kept): Ruby's part (the Netherlands, "Op ieder potje past een
   dekseltje", set off as a quote; the pen underlines "the one that fits."), signed with her
-  polaroid; Kai's part (New York, what friends went through on the apps), signed with his; then a
+  polaroid; Kai's part (2026-10-01, his tightened draft plus two restored lines, "A break. From trying to meet someone." and "None of that fits on a profile.": the friend people send screenshots to; situationships; being kept as an option; a friend running another friend's profile and asking month-three questions; "We won't get every date right", date not match; ends "Modern problems, medieval solutions." set in italic), signed with his; then a
   shared close ending "That part is yours.", signed by both. Its `re:` is "a letter from the
   founders". The letter is set in the serif (a handwritten-font version was tried on
   2026-09-30 and set aside). Each part is signed with **the founders' real signatures**, traced
