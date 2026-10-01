@@ -189,6 +189,17 @@ box-shadow:inset 0 8px 0 var(--paper),inset 0 13px 0 var(--tag),0 22px 40px -18p
 .saying{margin:6px 0 22px;padding:4px 0 4px 18px;border-left:2px solid var(--clay)}
 .saying p{margin:0 0 4px!important;font:italic 400 clamp(23px,4vw,27px)/1.2 var(--serif)!important;letter-spacing:-.015em;--opsz:18}
 .saying .en{margin:0;font:14px/1.4 var(--type);opacity:.8}
+/* Kai's annotations: the hand over the printed letter. a pen loop, two underlines, a highlighter
+   pass and one set-off line, each drawn as it scrolls into view rather than with the letter */
+.body .km path{stroke:var(--clay)}
+.js .km path{stroke-dasharray:1;stroke-dashoffset:1}
+.js .km.in path{animation:ink 1.1s var(--dl,.2s) cubic-bezier(.5,.1,.3,1) forwards}
+.body .mk.ring svg{left:-6%;top:2%;width:112%;height:104%}
+.body .mk.ring path{stroke-width:2}
+.hl{color:inherit;padding:0 .12em;margin:0 -.04em;-webkit-box-decoration-break:clone;box-decoration-break:clone;background:linear-gradient(100deg,transparent 1%,rgba(242,195,143,.85) 4%,rgba(242,195,143,.7) 94%,transparent 99%) no-repeat 0 62%/100% 72%}
+@media (prefers-reduced-motion:no-preference){.js .hl{background-size:0% 72%;transition:background-size .9s .25s cubic-bezier(.5,.1,.3,1)}.js .hl.in{background-size:100% 72%}}
+.saying.pull{margin:10px 0 20px}
+
 .body p.pair{font-style:italic;font-size:21px}
 .body .last{margin:4px 0 0;font:italic 400 clamp(24px,4.4vw,28px)/1.2 var(--serif);letter-spacing:-.015em;--opsz:18}
 .turn{border:0;border-top:1px dashed rgba(70,85,58,.55);margin:26px 0 26px}
@@ -335,6 +346,7 @@ footer .soc a{padding:8px;margin:-8px}
 @media (prefers-reduced-motion:reduce){
 *{animation:none!important;transition:none!important}
 .js .draw .ink{stroke-dashoffset:0}
+.js .km path{stroke-dashoffset:0}
 .walker{left:calc(50% - 52px)}
 }
 </style>
@@ -428,13 +440,15 @@ footer .soc a{padding:8px;margin:-8px}
 <hr class="turn">
 <div class="body">
 <p>I came to this from a different place.</p>
-<p>Among my friends in New York, “how’s the situationship?” comes up more often than “how’s the relationship?” It’s only about half a joke. I’m usually the one they send the screenshots to, and at some point I stopped being surprised by the next text.</p>
+<p>Among my friends in New York, “how’s the <span class="mk ring km" data-reveal>situationship?<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" style="--dl:.2s" d="M26 8C80-4 180 0 194 24C206 46 150 58 96 57C40 56 2 48 5 30C8 14 50 5 120 5"/></svg></span>” comes up more often than “how’s the relationship?” It’s only about half a joke. I’m usually the one they send the screenshots to, and at some point I stopped being surprised by the next text.</p>
 <p>What still gets me is who it happens to. My most put-together friends ask real questions, say what they want, and don’t waste anyone’s time. They still end up with someone who looked great on paper and talked about commitment right up until it was time to commit.</p>
-<p>The rest say they’re “taking a break from the apps.” A break. From trying to meet someone. Nobody should need to recover from that.</p>
-<p>When you’re ready to commit and the other person isn’t, you’re left asking, “am I not enough?” Being kept as an option slowly teaches you that you’re not worth choosing, and you carry that into everything else. It happens so quietly that almost nobody calls it what it is: disrespectful.</p>
+<p>The rest say they’re “taking a break from the apps.”</p>
+<blockquote class="saying pull"><p>A break. From trying to meet someone.</p></blockquote>
+<p>Nobody should need to recover from that.</p>
+<p>When you’re ready to commit and the other person isn’t, you’re left asking, <mark class="hl" data-reveal>“am I not enough?”</mark> Being kept as an option slowly teaches you that you’re not worth choosing, and you carry that into everything else. It happens so quietly that almost nobody calls it what it is: <span class="mk km" data-reveal>disrespectful.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" style="--dl:.3s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
 <p>After all that, the most hopeful story I’ve heard lately actually surprised me. A friend was running another friend’s dating profile, and everyone who matched knew. So she skipped the small talk and asked the questions most people save for month three. The dates were genuinely good.</p>
-<p>That’s what we look for: not where someone went to school or what they make, but whether they’re curious, honest with themselves, and ready to show up. None of that fits on a profile.</p>
-<p>We won’t get every date right. But nobody here will be treated like an option.</p>
+<p>That’s what we look for: not where someone went to school or what they make, but whether they’re curious, honest with themselves, and ready to show up. <mark class="hl" data-reveal>None of that fits on a profile.</mark></p>
+<p>We won’t get every date right. But nobody here will be treated like an <span class="mk km" data-reveal>option.<svg viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" filter="url(#pen)" style="--dl:.3s" d="M2 6C40 3 80 8 120 5S180 3 198 6"/></svg></span></p>
 <p class="pair">Modern problems, medieval solutions.</p>
 </div>
 <div class="sig one"><figure class="signed kai"><span class="ink-sig"><svg class="sgn" style="--dl:.3s" role="img" aria-label="Kai’s signature"><use href="#sig-kai"/></svg><figcaption>Kai</figcaption></span><span class="pola" style="--r:-4deg"><img src="/kai.jpg" alt="" width="360" height="480" loading="lazy" decoding="async"></span></figure></div>
