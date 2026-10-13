@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>liner notes · five days (draft)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/x.css">
+<style>
+body{background:var(--grass)}
+.intro{width:var(--w);margin:40px auto 30px;color:var(--line);text-align:center}
+.intro h1{color:var(--line);font-size:clamp(46px,11vw,76px);line-height:.95;letter-spacing:-.04em}
+.intro p{margin:16px auto 0;max-width:34ch}
+.deck{width:min(440px,88vw);margin:0 auto;perspective:1400px}
+.sleeve{position:relative;aspect-ratio:1;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,1.2,.5,1)}
+.sleeve.flip{transform:rotateY(180deg)}
+.side{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;padding:22px 24px;display:flex;flex-direction:column}
+.side.b{transform:rotateY(180deg)}
+.side.a{background:var(--paper)}
+.side.b{background:var(--kraft)}
+.disc{position:absolute;right:max(-18%,-30px);top:12%;width:62%;aspect-ratio:1;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle,var(--clay) 0 17%,var(--line) 17.5% 18.5%,#22281F 19% 100%);box-shadow:0 10px 24px -10px rgba(0,0,0,.6)}
+.sleeve-wrap{position:relative;isolation:isolate}
+.side .k{color:var(--ink)}
+.side h2{font:italic 400 clamp(34px,8vw,46px)/1 var(--serif);letter-spacing:-.02em;margin:0 0 4px}
+.track{display:flex;align-items:baseline;gap:12px;border-bottom:1px dashed rgba(70,85,58,.5)}
+.track b{font:700 13px var(--type);width:26px;flex:none}
+.track input{flex:1;min-width:0;font:18px var(--type);color:var(--ink);background:transparent;border:0;padding:12px 2px}
+.track input::placeholder{color:rgba(70,85,58,.45)}
+.side.b .track input{text-decoration:line-through;text-decoration-color:var(--clay);text-decoration-thickness:2px}
+.side.b .track input::placeholder{text-decoration:none}
+.side .spacer{flex:1}
+.turnover{align-self:flex-start;margin-top:14px}
+.notes{width:min(440px,88vw);margin:34px auto 0;padding:22px 22px 24px;transform:rotate(-.8deg);text-align:left}
+.notes label{display:block;font:italic 400 24px/1.1 var(--serif);margin-bottom:8px}
+.notes input{width:100%;font:17px var(--type);color:var(--ink);background:transparent;border:0;border-bottom:1.5px solid var(--ink);padding:10px 2px}
+.send{text-align:center;margin:30px 0 0}
+</style>
+</head>
+<body>
+<div class="draft">draft for kai and ruby · version c · not on the site</div>
+<header class="top"><a class="brand" href="/c/01">five days</a><span>experiment no. 02</span></header>
+<div class="intro">
+<h1>liner notes</h1>
+<p>Side A is what you'd play. Turn it over for what you'd skip. We read both sides.</p>
+</div>
+
+<div class="deck">
+<div class="sleeve-wrap">
+<div class="disc" aria-hidden="true"></div>
+<div class="sleeve" id="sl">
+<div class="side a paper" id="sideA">
+<p class="k">side a</p>
+<h2>you'd play</h2>
+<label class="track"><b>a1</b><input id="a1" autocomplete="off" placeholder="Khruangbin" aria-label="side a, track one"></label>
+<label class="track"><b>a2</b><input id="a2" autocomplete="off" aria-label="side a, track two"></label>
+<label class="track"><b>a3</b><input id="a3" autocomplete="off" aria-label="side a, track three"></label>
+<div class="spacer"></div>
+<button type="button" class="btn-ghost turnover" data-turn>turn the record over</button>
+</div>
+<div class="side b" id="sideB" aria-hidden="true">
+<p class="k">side b</p>
+<h2>you'd skip</h2>
+<label class="track"><b>b1</b><input id="b1" autocomplete="off" placeholder="be honest" aria-label="side b, track one" tabindex="-1"></label>
+<label class="track"><b>b2</b><input id="b2" autocomplete="off" aria-label="side b, track two" tabindex="-1"></label>
+<label class="track"><b>b3</b><input id="b3" autocomplete="off" aria-label="side b, track three" tabindex="-1"></label>
+<div class="spacer"></div>
+<button type="button" class="btn-ghost turnover" data-turn tabindex="-1">back to side a</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="paper notes">
+<label for="ln">one line for the sleeve</label>
+<input id="ln" autocomplete="off" placeholder="for a long walk with nowhere to be">
+<p class="k" style="margin-top:12px">your date reads this before they meet you</p>
+</div>
+<p class="send"><button class="btn" type="button" id="go">send rsvp</button></p>
+<p class="foot">version c: one card, two sides. the questions follow, as on /c/01.</p>
+
+<script>
+(function(){
+  var sl=document.getElementById("sl"),A=document.getElementById("sideA"),B=document.getElementById("sideB");
+  function set(flip){
+    sl.classList.toggle("flip",flip);
+    A.setAttribute("aria-hidden",String(flip));B.setAttribute("aria-hidden",String(!flip));
+    A.querySelectorAll("input,button").forEach(function(e){e.tabIndex=flip?-1:0});
+    B.querySelectorAll("input,button").forEach(function(e){e.tabIndex=flip?0:-1});
+    setTimeout(function(){(flip?B:A).querySelector("input").focus({preventScroll:true})},450);
+  }
+  document.querySelectorAll("[data-turn]").forEach(function(b){b.addEventListener("click",function(){set(!sl.classList.contains("flip"))})});
+  document.getElementById("go").addEventListener("click",function(e){e.target.textContent="sent. we'll text you";e.target.disabled=true});
+})();
+</script>
+</body>
+</html>
