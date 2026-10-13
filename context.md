@@ -668,10 +668,12 @@ What is private, and what keeps it that way (checked 2026-09-28, sheet re-checke
   Script project, never the repo (§8). The deploy writes it to disk beside clasp too, one more
   reason for the pin. Nothing limits guesses at it and the code that checks it is public, so
   keep it long and random.
-- **Old deployments**, which did serve `context.md`, sit behind Vercel Authentication (Standard
-  Protection); only the custom domains are public. With the repo public that hides nothing
-  GitHub doesn't show. While it's on, preview links ask for a Vercel login only Kai has, so a
-  session working for Ruby sends local screenshots instead (`CLAUDE.md`).
+- **Deployments are open, previews included** (Vercel Authentication turned off 2026-10-13, so
+  Ruby can open her previews without Kai's login). Old deployments, some of which served
+  `context.md`, are reachable again by their URLs: with the repo public they show nothing GitHub
+  doesn't. A preview link is a public page of unreleased work, so share it freely but treat it
+  as public. If protection ever goes back on, a session that can't open a preview sends local
+  screenshots instead (`CLAUDE.md`).
 
 The guards:
 
@@ -1041,6 +1043,6 @@ not in `rsvps`.
   else's open branch; if two changes collide, the later one merges `main` in and resolves.
 - **The rules are the same for both**: this file, `CLAUDE.md`, and the auto-ship checks run on
   every PR whoever opened it. Tools other than Claude Code read `AGENTS.md`, which points here.
-- **Ruby isn't on the Vercel team** (Hobby has one seat). Her pushes still build previews, but
-  while preview protection is on she can't open them without Kai's login: send screenshots
-  taken locally, and say the preview link is behind a login.
+- **Ruby isn't on the Vercel team** (Hobby has one seat), and doesn't need to be: her pushes
+  build previews, and since preview protection is off (2026-10-13) anyone with the link can open
+  them. Vercel posts the link on the PR.
