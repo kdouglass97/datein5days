@@ -4,7 +4,10 @@
 > cold can make a change that **fits** rather than a change that merely works. Most of what
 > follows cannot be inferred from reading `index.html`. That is the point of the file.
 
-Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-09-30
+Cohort 01: **New York, private beta** (the fixed Sep 21 date was retired 2026-09-23) · Last updated 2026-10-13
+> 🌐 **The repo is public (since 2026-10-13).** Anything committed is public for good, history
+> included. Keys and passwords never go in a commit; names, contacts and sign-up answers never go
+> in a commit, a PR title or a commit message (§7, "What a stranger can see").
 > ⚠️ **Status: the form is LIVE and collecting real sign-ups.** The `leads` tab holds real
 > people with real answers, not test data. Nothing in that sheet may be bulk-deleted.
 
@@ -269,6 +272,24 @@ hand?** Elements that are neither will feel imported from another website.
   measure, and **Aesop's product copy** for the specific trick of being informative in a
   register that sounds unhurried.
 
+### Haven
+
+**Haven is our pigeon, the mascot**: the one who carries notes between a reader and the two of us.
+
+- **They/them, never he or she.** Haven is gender-neutral, in copy, alt text and code comments alike.
+- **One drawing, never redrawn.** The pen sketch lives in `note.js` (`pigeon(mood)`: `draw`
+  inks itself in, `walk` carries the letter, `happy` at the end). Every Haven on the site and in
+  social posts reuses those lines.
+- **Where Haven is live:** the "leave us a note" sheet (`note.js`); `/faq`, standing on the
+  envelope in the hero (head follows the pointer, a tap gets a line) and pacing at the foot;
+  `/why`, on the stamp and pacing at the foot.
+- **Where Haven is going:** through the posts and the @datein5days feed. A 12-slide Haven
+  carousel (`share/carousel/haven/`, rendered by `share/carousel/render.js`) sits on the
+  unmerged branch `claude/serene-darwin-nx12jt`; Haven's yard from the old `/story` is an open
+  item (§10).
+- **Voice:** first person, short, dry, proud of the job. "No algorithm here. Just me, and I only
+  deliver." Haven carries notes and never picks anyone: the two of us do (§1).
+
 ### Tokens
 
 ```css
@@ -420,7 +441,7 @@ only as accent bands on card edges, and nothing is pure black or pure white anyw
   reveal, with the name typed small beneath, since neither signature is legible. The shared sign-off
   pairs the two signatures (tilted a few degrees, so they read dashed off, not notarized) with a
   **postage stamp** on the left: perforated edge, a clay 5, "NEW YORK", and inside it a pen-and-wash
-  dusk scene, Haven on a bench with a letter in his beak, water towers, a flickering street lamp,
+  dusk scene, Haven on a bench with a letter in their beak, water towers, a flickering street lamp,
   the moon; a clay "NYC 01" postmark cancels its corner. Tap it and Haven hops. It exists because
   two signatures alone read as a presidential sign-off, not the site's playful register. With it the page runs past the 400-word budget, by the founders' choice. On this page we set up, seat and
   introduce; "match" only ever describes what the apps do. "what we crossed out" is the values
@@ -620,20 +641,37 @@ the site holds no secrets, by design. The two things in it that look like keys a
 - **The Apps Script `/exec` URL** has to be in the page for the form to post to it. Anyone can
   post anything to it, which is why `Code.js` treats every field as hostile (landmines, below).
 
-What is private, and what keeps it that way (checked 2026-09-28):
+**The repo itself is public, since 2026-10-13.** Ruby needed to push, and on Vercel's Hobby plan
+a private repo only deploys the team owner's commits; a public one deploys any collaborator's.
+So everything committed is public for good, every branch and all of history included: this
+file, `Code.js`, commit messages, PR titles. That changes what may go in a commit:
 
-- **The sheet** is shared with two named accounts, no link sharing. Its ID was public from
-  2026-09-18 to 09-26, while `apps-script/Code.js` was a URL, so that sharing setting is the
-  whole defense. Never turn on "anyone with the link".
+- 🚫 keys, tokens, passwords: GitHub's secret store or the Apps Script project only
+  (`leak-check.sh keys` stops key-shaped text before every merge, but it only knows shapes)
+- 🚫 anything from the sheet or about a real sign-up: names, numbers, handles, answers, photos,
+  in files, commit messages or PR titles. Test data is made up, always.
+- ✅ `.vercelignore` still keeps the working notes off datein5days.com. That's tidiness now,
+  not secrecy: anyone can read them on GitHub.
+
+What is private, and what keeps it that way (checked 2026-09-28, sheet re-checked 2026-10-13):
+
+- **The sheet** is shared with two named accounts, Kai and Ruby, no link sharing. Its ID sits
+  in the repo's history (it was in `apps-script/Code.js` from 2026-09-18 to 09-26) and the history
+  is public, so that sharing setting is the whole defense, permanently. Never turn on "anyone
+  with the link".
 - **The photo folder** is owner-only, and a promise (§8).
 - **`CLASPRC_JSON`**, the repo secret that deploys the script, is a Google login that can
   rewrite the backend and so read everything. `apps-script.yml` pins clasp to an exact version
-  with install scripts off, so only a known clasp runs next to it.
+  with install scripts off, so only a known clasp runs next to it. Anyone with write access to
+  the repo can edit a workflow and so reach it: write access is for the two founders only.
 - **`ADMIN_PASSWORD`**, the `/admin` password, lives in GitHub's secret store and the Apps
   Script project, never the repo (§8). The deploy writes it to disk beside clasp too, one more
-  reason for the pin. Nothing limits guesses at it, so keep it long and random.
-- **The repo** is private. Old deployments, which did serve `context.md`, sit behind Vercel
-  Authentication (Standard Protection); only the custom domains are public.
+  reason for the pin. Nothing limits guesses at it and the code that checks it is public, so
+  keep it long and random.
+- **Old deployments**, which did serve `context.md`, sit behind Vercel Authentication (Standard
+  Protection); only the custom domains are public. With the repo public that hides nothing
+  GitHub doesn't show. While it's on, preview links ask for a Vercel login only Kai has, so a
+  session working for Ruby sends local screenshots instead (`CLAUDE.md`).
 
 The guards:
 
@@ -762,8 +800,9 @@ via
   "shipped this week" (added 2026-09-30), the last card, lists what merged to `main` since
   Monday (the viewer's Monday), with a count against the week before and tags for what each
   merge touched (landing, faq, admin, sheet, guards …, read off its files). It is not in the
-  page source: the repo is private, so the titles sit behind the password like everything
-  else. After every deploy, `apps-script.yml`'s `shipped` job runs `.github/scripts/shipped.js`,
+  page source. It was built while the repo was private, to keep the titles behind the password;
+  since 2026-10-13 they're public on GitHub too, so the card is a view for the two of us, not a
+  secret, and a PR title must never carry anything private (§7). After every deploy, `apps-script.yml`'s `shipped` job runs `.github/scripts/shipped.js`,
   which posts the last two weeks of `main` (`{ kind: "shipped" }`, signed with an HMAC of the
   password under its own label, so a device's token can read it but never write it); the
   Apps Script keeps it in one Script Property and `stats_()` returns it. Titles are the PR
@@ -991,4 +1030,17 @@ not in `rsvps`.
   the redirect working while the page 404s is exactly the failure already seen. Then assert
   `/context.md` returns **404**, which proves the allowlist is working.
 - Before committing copy, check it against §4. Before committing a visual, ask whether it
-  is the printed form or the hand.
+  is the printed form or the hand. `CLAUDE.md` makes this a step before every PR.
+
+### Who works here
+
+- **Two people push: Kai and Ruby**, each from their own Claude sessions on their own GitHub
+  account. Ruby has been a collaborator since 2026-10-13 (the repo went public so her commits
+  would deploy, §7). "I" and "me" in `CLAUDE.md` mean whoever you're working with.
+- **Each person works on their own branches.** Never push to, merge into or rebase someone
+  else's open branch; if two changes collide, the later one merges `main` in and resolves.
+- **The rules are the same for both**: this file, `CLAUDE.md`, and the auto-ship checks run on
+  every PR whoever opened it. Tools other than Claude Code read `AGENTS.md`, which points here.
+- **Ruby isn't on the Vercel team** (Hobby has one seat). Her pushes still build previews, but
+  while preview protection is on she can't open them without Kai's login: send screenshots
+  taken locally, and say the preview link is behind a login.
