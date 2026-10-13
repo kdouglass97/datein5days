@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- "we asked a new york pigeon about dating": a street interview with Haven. Instagram Reel, 9:16, about 23s.
+     Render: node share/posts/render.js interview (draws every frame through REEL.at(t), then encodes reel.mp4).
+     Open in a browser to watch it play. Silent: add the sound in the app. Haven is note.js's pigeon, via ../haven.js. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>haven interview</title>
+<link rel="stylesheet" href="../base.css">
+<style>
+.slide.reel{height:1920px;background:var(--line)}
+/* the hook, on a clay band like the site's accent */
+.hook{position:absolute;left:-20px;right:-20px;top:250px;padding:44px 100px 52px;background:var(--clay);color:var(--line);transform:rotate(-1.6deg);font:400 76px/1.04 var(--serif);letter-spacing:-.03em;--opsz:20;z-index:4}
+.hook small{display:block;font:400 30px/1 var(--type);letter-spacing:.14em;margin:0 0 20px;opacity:.85}
+.street{position:absolute;left:0;top:560px;width:1080px;height:640px;overflow:visible}
+.qa{position:absolute;left:96px;right:150px;top:1230px}
+.q{font-size:46px;line-height:1.3;min-height:60px}
+.q b{color:var(--clay);font-weight:400;margin-right:.4em}
+.who{font-size:28px;letter-spacing:.16em;opacity:.7;margin:46px 0 14px;visibility:hidden}
+.a{font:italic 400 92px/1.04 var(--serif);letter-spacing:-.03em;--opsz:24;min-height:200px;text-wrap:balance}
+.rec{position:absolute;right:96px;top:198px;display:flex;align-items:center;gap:14px;font-size:28px;letter-spacing:.14em;color:var(--clay);z-index:5}
+.rec i{width:18px;height:18px;border-radius:50%;background:var(--clay)}
+/* the end card */
+.endc{position:absolute;inset:0;background:var(--grass);color:var(--line);opacity:0;z-index:20}
+.endc .sc{position:absolute;left:0;top:640px;width:1080px;height:420px;overflow:visible}
+.endc h2{position:absolute;left:0;right:0;top:330px;margin:0;text-align:center;font:400 150px/1 var(--serif);letter-spacing:-.04em;--opsz:24}
+.endc p{position:absolute;left:120px;right:120px;text-align:center}
+.endc .l1{top:1140px;font:400 70px/1.1 var(--serif);letter-spacing:-.02em;--opsz:14}
+.endc .l2{top:1380px;font-size:44px}
+</style>
+<script src="../haven.js"></script>
+</head>
+<body>
+<section class="slide reel">
+<div class="rec"><i></i>REC</div>
+<div class="hook"><small>STREET INTERVIEW · NEW YORK</small>we asked a new york pigeon about dating.</div>
+
+<svg class="sc street" viewBox="0 0 360 213">
+<g id="cam">
+<g class="wash" filter="url(#wash)"><ellipse cx="180" cy="198" rx="170" ry="10" style="fill:var(--peach);opacity:.35"/><circle cx="292" cy="40" r="16" style="fill:var(--sage);opacity:.45"/></g>
+<g filter="url(#pen)">
+<!-- a brownstone stoop, a lamppost, a hydrant, the curb -->
+<path class="thin" d="M0 10C30 9 60 10 84 9V150"/>
+<path class="thin" d="M18 30H50V70H18ZM34 30V70M18 50H50"/>
+<path class="thin" d="M18 90H50V130H18ZM34 90V130"/>
+<path class="thin" d="M84 150H120V162H132V174H144V186H156V196"/>
+<path class="thin" d="M300 196V62M292 62H308L304 50H296Z"/>
+<path class="thin" d="M300 70C312 70 318 66 322 60"/>
+<path class="thin" d="M232 196V178C232 170 246 170 246 178V196M228 184H250M239 170V164"/>
+<path d="M0 196C120 194 240 198 360 195"/>
+<path class="thin" d="M0 207C120 205 240 209 360 206"/>
+</g>
+<g id="hv" class="hv fill" data-o="" transform="translate(-140 117) scale(1.1)"></g>
+<g id="mic" transform="translate(200 0)">
+<g transform="translate(219 129) scale(1.4) translate(-219 -129)">
+<g filter="url(#pen)">
+<path d="M226 136L380 200"/>
+<circle class="b" cx="219" cy="129" r="9"/>
+<path class="thin" d="M213 124L225 134M212 130L222 138M216 120L227 128"/>
+</g>
+<rect x="223" y="133" width="15" height="11" transform="rotate(22 230 138)" style="fill:var(--clay);stroke:none"/>
+<text x="231" y="142" text-anchor="middle" transform="rotate(22 230 138)" style="font:italic 400 9px/1 var(--serif);fill:var(--line)">5</text>
+</g>
+</g>
+</g>
+</svg>
+
+<div class="qa">
+<p class="q" id="q"></p>
+<p class="who" id="who">HAVEN, CARRIER</p>
+<p class="a" id="a"></p>
+</div>
+
+<div class="endc" id="end">
+<h2>five days</h2>
+<svg class="sc" viewBox="0 0 300 117">
+<g filter="url(#pen)"><path class="thin" d="M0 108C100 106 200 109 300 107"/></g>
+<g id="hv2" class="hv" data-o="walk letter" transform="translate(-140 28) scale(1.1)"></g>
+</svg>
+<p class="l1">No algorithm here. Just me, and I only deliver.</p>
+<p class="l2">Seven questions, about seven minutes. Link in bio.</p>
+</div>
+</section>
+
+<script>
+const QA = [
+  [2.6, "what’s your type?", "I don’t have one. I deliver."],
+  [6.9, "what’s the algorithm?", "Kai and Ruby."],
+  [10.8, "do you read the notes?", "I carry them. They read them. Usually twice."],
+  [15.4, "any advice for New York?", "Answer the questions properly. Then let me do my job."],
+];
+const END = 20.4, SECONDS = 24;
+const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const $ = id => document.getElementById(id);
+const setPose = (g, o) => { if (g.dataset.cur === o) return; g.dataset.cur = o; g.innerHTML = pose(o); inkPen(g); };
+let qShown = "", aShown = "";
+window.REEL = {
+  seconds: SECONDS,
+  cover: 9.2,
+  at(t) {
+    // a handheld camera: a slow drift, never a shake
+    $("cam").setAttribute("transform", `translate(${(Math.sin(t * 1.1) * 1.4).toFixed(2)} ${(Math.cos(t * 1.6) * .9).toFixed(2)})`);
+    // Haven walks in, stops at the mark
+    const walk = ease(clamp(t / 1.8, 0, 1));
+    const x = -140 + walk * 222;
+    const moving = t < 1.8;
+    const cur = QA.filter(r => t >= r[0]).pop();
+    const answering = cur && t >= cur[0] + 1.1;
+    let o = moving ? (Math.floor(t / .16) % 2 ? "walk" : "") : "";
+    if (moving && Math.floor(t / .32) % 2) o += " tilt-up";
+    if (answering) {
+      const k = t - cur[0] - 1.1;
+      if (k < cur[2].length / 24 + .3) o = Math.floor(k / .28) % 2 ? "tilt" : "";
+      else o = "tilt-up";
+    }
+    $("hv").setAttribute("transform", `translate(${x.toFixed(1)} 117) scale(1.1)`);
+    setPose($("hv"), o.trim());
+    // the microphone comes in from the right
+    const m = ease(clamp((t - 2.0) / .5, 0, 1));
+    $("mic").setAttribute("transform", `translate(${((1 - m) * 200).toFixed(1)} ${(Math.sin(t * 2.3) * 1.2).toFixed(2)})`);
+    // questions type in, then Haven answers
+    let q = "", a = "";
+    if (cur) {
+      const qn = Math.floor((t - cur[0]) * 32);
+      q = `<b>Q.</b>${cur[1].slice(0, qn)}`;
+      if (answering) a = cur[2].slice(0, Math.floor((t - cur[0] - 1.1) * 24));
+    }
+    if (q !== qShown) { $("q").innerHTML = q; qShown = q; }
+    if (a !== aShown) { $("a").textContent = a; aShown = a; }
+    $("who").style.visibility = answering ? "visible" : "hidden";
+    // the end card
+    const e = ease(clamp((t - END) / .45, 0, 1));
+    $("end").style.opacity = e;
+    const w = clamp((t - END) / 3.4, 0, 1);
+    $("hv2").setAttribute("transform", `translate(${(-140 + w * 470).toFixed(1)} 28) scale(1.1)`);
+    setPose($("hv2"), Math.floor(t / .16) % 2 ? "walk letter" : "letter");
+  },
+};
+// in a browser, just play it
+if (!navigator.webdriver) {
+  addEventListener("load", () => { const t0 = performance.now(); const f = () => { REEL.at(((performance.now() - t0) / 1000) % SECONDS); requestAnimationFrame(f); }; f(); });
+} else addEventListener("load", () => REEL.at(0));
+</script>
+</body>
+</html>
