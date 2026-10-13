@@ -1,0 +1,65 @@
+/* Shared stock for the Haven posts in share/posts/. Same tokens, type and pen as the site
+   and the Haven carousel: printed card stock, typed labels, and the hand's marks over them. */
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap");
+:root{
+--grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;--peach:#F2C38F;--sage:#A9B89A;
+--serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+--type:"Courier Prime","Courier New",Courier,monospace;
+--opsz:10;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#2b2b28}
+body{font:44px/1.42 var(--type);-webkit-font-smoothing:antialiased}
+*{font-variation-settings:"opsz" var(--opsz)!important}
+p{margin:0}
+
+/* a 4:5 slide; a Reel frame overrides the height */
+.slide{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--clay);color:var(--ink)}
+.slide::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:var(--noise);background-size:330px;opacity:.2;mix-blend-mode:multiply;z-index:50}
+.top{position:absolute;left:84px;right:84px;top:48px;display:flex;justify-content:space-between;align-items:baseline;color:var(--line);font-size:30px;letter-spacing:.06em;z-index:5}
+.brand{font-family:var(--serif);font-size:54px;letter-spacing:-.02em;--opsz:14}
+
+.card{position:absolute;left:70px;top:146px;width:940px;height:1136px;padding:86px 76px 80px;display:flex;flex-direction:column;background:var(--paper);box-shadow:0 44px 70px -38px rgba(0,0,0,.65);transform:rotate(var(--r,-1.2deg))}
+.card::before{content:"";position:absolute;top:-24px;left:50%;width:220px;height:54px;transform:translateX(-50%) rotate(var(--t,-3deg));background:rgba(223,214,190,.88)}
+.scene{display:block;flex:1;min-height:0;width:100%;margin:0 0 40px;overflow:visible}
+.say{font:400 74px/1.08 var(--serif);letter-spacing:-.024em;margin:0 0 30px;--opsz:14;text-wrap:balance}
+.so{font-size:44px;line-height:1.4;text-wrap:pretty}
+.lbl{font-size:34px;letter-spacing:.08em;opacity:.75;margin:0 0 22px}
+
+/* the hand */
+.mk{position:relative;display:inline-block;white-space:nowrap}
+.mk svg{position:absolute;overflow:visible;pointer-events:none}
+.mk.u svg{left:-2%;bottom:-10px;width:104%;height:16px}
+.mk.o svg{left:-9%;top:-16%;width:118%;height:134%}
+.mk.x svg{left:-4%;top:42%;width:108%;height:22px}
+.mk path{fill:none;stroke:var(--clay);stroke-width:5px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.hl{padding:0 .1em;margin:0 -.04em;-webkit-box-decoration-break:clone;box-decoration-break:clone;background:linear-gradient(100deg,transparent 1%,rgba(242,195,143,.85) 3%,rgba(242,195,143,.7) 96%,transparent 99%) no-repeat 0 64%/100% 70%}
+
+/* drawings: one line weight everywhere */
+.sc{--d:#34422C;--sw:6.4px;--st:4.6px}
+.sc path,.sc circle,.sc ellipse,.sc rect,.sc line{fill:none;stroke:var(--d);stroke-width:var(--sw);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.sc .thin{stroke-width:var(--st)}
+.sc .eye{fill:var(--d);stroke:none}
+.sc .fill path.b,.sc path.b{fill:var(--paper)}
+.sc .clay{stroke:var(--clay)}
+.sc .dash{stroke-dasharray:4px 18px}
+.sc .wash *{stroke:none}
+.sc text{font-family:var(--type);fill:var(--ink);stroke:none}
+.sc .heart{fill:var(--peach);stroke:none}
+.sc .dot{fill:var(--clay);stroke:none}
+.sc .solid{fill:var(--d);stroke:none}
+
+.slide.g{background:var(--grass);color:var(--line)}
+.slide.g .sc{--d:var(--line);--sw:8px;--st:5.8px}
+.slide.g .sc path.b{fill:var(--grass)}
+.slide.g .mk path{stroke:var(--peach)}
+
+.swipe{position:absolute;right:84px;bottom:58px;display:flex;align-items:center;gap:18px;font-size:32px;letter-spacing:.08em;color:var(--line);z-index:5}
+.swipe svg{width:110px;height:34px;overflow:visible}
+.swipe path{fill:none;stroke:var(--line);stroke-width:4px;stroke-linecap:round;stroke-linejoin:round}
+.foot{position:absolute;left:0;right:0;bottom:66px;display:flex;justify-content:center;align-items:center;gap:20px;font-size:36px;letter-spacing:.04em}
+
+/* ?sheet: every slide on one page */
+.sheet{display:grid;grid-template-columns:repeat(4,324px);gap:20px;padding:24px;width:max-content}
+.sheet .slide{zoom:.3}
