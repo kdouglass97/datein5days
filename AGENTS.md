@@ -10,3 +10,4 @@ The short version, if you read nothing else:
 - Never push to `main`. Work on your own `claude/` branch and open a PR; an Action merges it.
 - Copy follows §4 of `context.md`. Visuals answer one question: the printed form, or the hand?
 - Haven, the pigeon, is they/them, and is never redrawn: reuse the lines in `note.js`.
+- Making a Haven post (carousel or Reel)? Follow `.claude/skills/haven-post/SKILL.md`.

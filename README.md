@@ -25,7 +25,8 @@ This repo is the website: a landing page with the RSVP form and seven-question q
 | `vercel.json` | Redirects, rewrites and security headers |
 | `.vercelignore` | Deploy allowlist: only files listed here reach the site |
 | `apps-script/` | The form backend (Google Apps Script), deployed by a workflow |
-| `share/` | Source for the share card and icon images |
+| `share/` | Source for the share card and icon images; `share/posts/` holds the Haven posts |
+| `.claude/skills/haven-post/` | How a Haven post gets made, for whichever tool is making it |
 | `.github/workflows/` | Auto-ship, Apps Script deploy, and leak check |
 
 ## URLs
