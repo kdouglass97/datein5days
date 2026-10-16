@@ -54,6 +54,8 @@ if (lines.length !== 7 || drift.length) {
     await p.setViewportSize({ width: 1080, height: 1350 });
     await open();
     const slides = await p.locator(".slide").all();
+    // a cut slide shouldn't leave its old NN.jpg behind to be sent with the new set
+    for (const f of fs.readdirSync(dir)) if (/^\d\d\.jpg$/.test(f)) fs.rmSync(path.join(dir, f));
     for (const [i, s] of slides.entries()) {
       await s.screenshot({ path: path.join(dir, String(i + 1).padStart(2, "0") + ".jpg"), type: "jpeg", quality: 92 });
     }
