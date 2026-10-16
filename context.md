@@ -574,6 +574,10 @@ and `admin.html`, the team dashboard),
 `note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
 `.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
 `CLAUDE.md`), `apps-script/` and `share/` live here too but never reach the site.
+`share/carousel/<name>/` holds social posts: `slides.html` is the source (one `.slide` per
+frame, 1080x1350), `node share/carousel/render.js <name>` writes the numbered JPEGs and a
+`sheet.jpg` contact sheet, and `caption.txt` sits beside them. Haven is drawn from `note.js`'s
+lines, never redrawn.
 
 ### URL structure, and why
 
