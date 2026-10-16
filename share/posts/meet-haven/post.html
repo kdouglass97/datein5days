@@ -1,76 +1,24 @@
 <!doctype html>
-<!-- Source for the Haven carousel (Instagram, 4:5). Render with: node share/carousel/render.js haven
-     Open with ?sheet to see every slide on one page. Haven's lines are note.js's pigeon, kept identical. -->
+<!-- "meet haven.": what Haven is like on a date. Instagram carousel, 4:5. Render: node share/posts/render.js meet-haven
+     Open with ?sheet to see every slide on one page. Haven is note.js's pigeon, via ../haven.js. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
-<title>haven carousel</title>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<title>meet haven</title>
+<link rel="stylesheet" href="../base.css">
 <style>
-:root{
---grass:#4F6B45;--line:#EDEAE1;--clay:#8A4129;--kraft:#CDC4AF;--paper:#FBFAF5;--ink:#46553A;--tag:#1F4D1B;--peach:#F2C38F;--sage:#A9B89A;
---serif:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
---type:"Courier Prime","Courier New",Courier,monospace;
---opsz:10;
---noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-*{box-sizing:border-box}
-html,body{margin:0;background:#2b2b28}
-body{font:44px/1.42 var(--type);-webkit-font-smoothing:antialiased}
-/* pinned bodoni optical size, low like the OG card: a 1080px slide is seen at about a third of that on a phone */
-*{font-variation-settings:"opsz" var(--opsz)!important}
-p{margin:0}
-
-/* a slide is seen at about 0.36x on a phone, so everything here is roughly the site's size times 2.8 */
-.slide{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--clay);color:var(--ink)}
-.slide::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:var(--noise);background-size:330px;opacity:.2;mix-blend-mode:multiply;z-index:50}
-.top{position:absolute;left:84px;right:84px;top:48px;display:flex;justify-content:space-between;align-items:baseline;color:var(--line);font-size:30px;letter-spacing:.06em;z-index:5}
-.brand{font-family:var(--serif);font-size:54px;letter-spacing:-.02em;--opsz:14}
-
-/* the card: printed stock, never square to the grid, taped down */
-.card{position:absolute;left:70px;top:146px;width:940px;height:1136px;padding:86px 76px 80px;display:flex;flex-direction:column;background:var(--paper);box-shadow:0 44px 70px -38px rgba(0,0,0,.65);transform:rotate(var(--r,-1.2deg))}
-.card::before{content:"";position:absolute;top:-24px;left:50%;width:220px;height:54px;transform:translateX(-50%) rotate(var(--t,-3deg));background:rgba(223,214,190,.88)}
-.scene{display:block;flex:1;min-height:0;width:100%;margin:0 0 40px;overflow:visible}
-.say{font:400 74px/1.08 var(--serif);letter-spacing:-.024em;margin:0 0 30px;--opsz:14;text-wrap:balance}
 .say.s{font-size:64px}
-.so{font-size:44px;line-height:1.4;text-wrap:pretty}
-.lbl{font-size:40px;letter-spacing:.02em;opacity:.8}
-
-/* the hand: pen marks in clay on paper, peach on grass */
-.mk{position:relative;display:inline-block;white-space:nowrap}
-.mk svg{position:absolute;overflow:visible;pointer-events:none}
-.mk.u svg{left:-2%;bottom:-10px;width:104%;height:16px}
-.mk.o svg{left:-9%;top:-16%;width:118%;height:134%}
-.mk path{fill:none;stroke:var(--clay);stroke-width:5px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-.hl{padding:0 .1em;margin:0 -.04em;-webkit-box-decoration-break:clone;box-decoration-break:clone;background:linear-gradient(100deg,transparent 1%,rgba(242,195,143,.85) 3%,rgba(242,195,143,.7) 96%,transparent 99%) no-repeat 0 64%/100% 70%}
-
-/* drawings: one line weight everywhere, whatever the scale */
-.sc{--d:#34422C;--sw:6.4px;--st:4.6px}
-.sc path,.sc circle,.sc ellipse,.sc rect,.sc line{fill:none;stroke:var(--d);stroke-width:var(--sw);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-.sc .thin{stroke-width:var(--st)}
-.sc .eye{fill:var(--d);stroke:none}
-.sc .fill path.b{fill:var(--paper)}
-.sc .clay{stroke:var(--clay)}
-.sc .dash{stroke-dasharray:4px 18px}
+.lbl{font-size:40px;letter-spacing:.02em;opacity:.8;margin:0}
 .sc .print{stroke-width:3px;stroke:var(--ink)}
-.sc .wash *{stroke:none}
-.sc text{font-family:var(--type);fill:var(--ink)}
-.sc .heart{fill:var(--peach);stroke:none}
-
-/* grass slides: the hero's ground and its diagonal, cream ink */
-.slide.g{background:var(--grass);color:var(--line)}
-.slide.g .sc{--d:var(--line);--sw:8px;--st:5.8px}
-.slide.g .mk path{stroke:var(--peach)}
+/* this one leaves Haven unfilled, so the washes behind their head glow through */
+.sc path.b,.slide.g .sc path.b{fill:none}
 
 /* 01: the cover */
 .cover{background:linear-gradient(177deg,var(--grass) 0 83.4%,var(--line) 83.4% 84.2%,var(--clay) 84.2%)!important}
 .cover .hero{position:absolute;left:140px;top:150px;width:800px;height:590px}
 .cover h1{position:absolute;left:0;right:0;top:730px;margin:0;text-align:center;font:400 172px/1 var(--serif);letter-spacing:-.045em;--opsz:24}
 .cover .sub{position:absolute;left:0;right:0;top:936px;text-align:center;font-size:50px}
-.cover .swipe{position:absolute;right:84px;bottom:58px;display:flex;align-items:center;gap:18px;font-size:32px;letter-spacing:.08em;color:var(--line)}
-.cover .swipe svg{width:110px;height:34px;overflow:visible}
-.cover .swipe path{fill:none;stroke:var(--line);stroke-width:4px;stroke-linecap:round;stroke-linejoin:round}
 
 /* 04: what haven can say, on a scrap */
 .card.talk{justify-content:center}
@@ -85,22 +33,13 @@ p{margin:0}
 .end .say{position:absolute;left:90px;right:90px;top:600px;margin:0;font-size:70px;text-align:center}
 .end .be{position:absolute;left:0;right:0;top:930px;text-align:center;font:italic 400 124px/1 var(--serif);letter-spacing:-.035em;--opsz:24}
 .end .be .mk.u svg{bottom:-20px;height:22px}
-.end .foot{position:absolute;left:0;right:0;bottom:66px;display:flex;justify-content:center;align-items:center;gap:20px;font-size:36px;letter-spacing:.04em}
 .end .foot svg{width:42px;height:42px;fill:none;stroke:var(--line);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-
-/* ?sheet: every slide on one page */
-.sheet{display:grid;grid-template-columns:repeat(4,324px);gap:20px;padding:24px;width:max-content}
-.sheet .slide{zoom:.3}
 </style>
+<script src="../haven.js"></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
 <defs>
-<filter id="wash" x="-30%" y="-30%" width="160%" height="160%">
-<feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="3" seed="9"/>
-<feDisplacementMap in="SourceGraphic" scale="18"/>
-<feGaussianBlur stdDeviation="3"/>
-</filter>
 <filter id="lift" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity=".22"/></filter>
 <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.2" cy="6.8" r="1.05" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-tt" viewBox="0 0 24 24"><path d="M11.5 2.6H15.2A5.6 5.6 0 0 0 20.8 8.2V11.8A9.5 9.5 0 0 1 15.2 10.1V15.6A6 6 0 1 1 8 9.72V13.64A2.3 2.3 0 1 0 11.5 15.6Z"/></symbol>
@@ -336,52 +275,5 @@ p{margin:0}
 </section>
 
 </main>
-
-<script>
-// Haven, drawn from note.js's pigeon: the same lines, a few more poses.
-const BODY = "M99 30C105 37 105 49 97 57C89 65 71 67 59 63C49 60 41 58 31 59L14 61L17 55L29 52C35 48 43 45 53 42C67 38 80 35 86 29";
-const WING = "M54 45C66 41 80 43 87 51C79 57 65 57 51 53M62 48L70 53M69 46L77 52";
-const WAVE = "M76 39C72 26 62 14 46 6C49 11 47 15 42 17C47 20 48 24 44 28C50 29 52 33 49 37C54 38 57 41 56 45M62 27L51 23M67 35L55 32";
-const WAVE_MOTION = "M36 6C32 10 31 16 33 21M28 1C22 8 21 18 25 25";
-const LEGS = "M65 64L64 72M61 72H68M75 63L76 72M73 72H80";
-const LEGS_WALK = "M65 64L60 72M57 72H64M75 63L80 71M77 71H84";
-const HEAD = "M86 29C83 21 88 15 94 15C99 15 102 19 101 25C101 27 100 29 99 30";
-const NECK = "M88 32C92 35 97 35 100 32";
-const BEAK = "M101 22L107 25L101 27";
-const LETTER = "M106 25L117 21L120 30L109 34ZM106 25L114 28L117 21";
-const heart = (x, y, s) => `<path class="heart" transform="translate(${x} ${y}) scale(${s})" d="M0 0c0-3 4-3 4 0c0-3 4-3 4 0c0 3-4 5-4 7c0-2-4-4-4-7z"/>`;
-const pose = o => {
-  const has = k => o.split(" ").includes(k);
-  const tilt = has("tilt") ? -16 : has("tilt-up") ? -12 : has("bow") ? 24 : 0;
-  const lean = has("bow") ? 8 : 0;
-  return `${has("hearts") ? heart(98, -6, 1.6) + heart(116, -18, 1.3) + heart(80, -16, 1.1) : ""}
-<g filter="url(#pen)" transform="rotate(${lean} 70 72)">
-<path class="b" d="${BODY}"/>
-<path class="thin" d="${has("wave") ? WAVE : WING}"/>
-${has("wave") ? `<path class="thin" d="${WAVE_MOTION}" style="stroke:var(--peach)"/>` : ""}
-<path class="thin" d="${has("walk") ? LEGS_WALK : LEGS}"/>
-<g transform="rotate(${tilt - lean} 92 31)">
-<path class="b" d="${HEAD}"/><path class="thin" d="${NECK}"/><path class="thin" d="${BEAK}"/>
-<circle class="eye" cx="95" cy="21" r="1.8"/>
-${has("letter") ? `<path class="thin" d="${LETTER}" style="fill:var(--paper)"/>` : ""}
-</g></g>`;
-};
-document.querySelectorAll(".hv").forEach(g => { g.innerHTML = pose(g.dataset.o || ""); });
-
-// The pen's wobble, sized in screen pixels rather than in each drawing's own units, so a
-// pigeon drawn at 2x and one at 5x shake the same and thin lines never tear. Same filter as the site's #pen.
-const pens = {}, defs = document.querySelector("defs");
-document.querySelectorAll('[filter="url(#pen)"]').forEach(el => {
-  const m = el.getScreenCTM();
-  const k = Math.sqrt(Math.abs(m.a * m.d - m.b * m.c)) || 1;
-  const id = "pen" + Math.round(k * 100);
-  if (!pens[id]) {
-    pens[id] = 1;
-    defs.insertAdjacentHTML("beforeend", `<filter id="${id}" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="${(k / 110).toFixed(4)}" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="${(6.5 / k).toFixed(3)}"/></filter>`);
-  }
-  el.setAttribute("filter", `url(#${id})`);
-});
-if (location.search.includes("sheet")) document.querySelector(".deck").classList.add("sheet");
-</script>
 </body>
 </html>
