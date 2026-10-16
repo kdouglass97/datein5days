@@ -283,10 +283,12 @@ hand?** Elements that are neither will feel imported from another website.
 - **Where Haven is live:** the "leave us a note" sheet (`note.js`); `/faq`, standing on the
   envelope in the hero (head follows the pointer, a tap gets a line) and pacing at the foot;
   `/why`, on the stamp and pacing at the foot.
-- **Where Haven is going:** through the posts and the @datein5days feed. A 12-slide Haven
-  carousel (`share/carousel/haven/`, rendered by `share/carousel/render.js`) sits on the
-  unmerged branch `claude/serene-darwin-nx12jt`; Haven's yard from the old `/story` is an open
-  item (§10).
+- **Where Haven is going:** through the posts and the @datein5days feed. Every post, carousel or
+  Reel, lives in `share/posts/` and is made the same way from either founder's session: the
+  `haven-post` skill (`.claude/skills/haven-post/SKILL.md`) holds the look, the voice and the
+  steps, `share/posts/haven.js` draws Haven from `note.js`'s lines, and `share/posts/render.js`
+  refuses to render if those lines drift (2026-10-16). Haven's yard from the old `/story` is an
+  open item (§10).
 - **Voice:** first person, short, dry, proud of the job. "No algorithm here. Just me, and I only
   deliver." Haven carries notes and never picks anyone: the two of us do (§1).
 
@@ -574,6 +576,13 @@ and `admin.html`, the team dashboard),
 `note.js`, `attr.js`, the images, the icons, `robots.txt`, `sitemap.xml`, `vercel.json`, and
 `.vercelignore`, which decides which of those actually deploy. Notes (`context.md`,
 `CLAUDE.md`), `apps-script/` and `share/` live here too but never reach the site.
+`share/posts/<name>/` holds the social posts: `post.html` is the source (one `.slide` per
+carousel frame at 1080x1350, or a 1080x1920 Reel driven by `window.REEL.at(t)`), and
+`node share/posts/render.js <name>` writes the numbered JPEGs and a `sheet.jpg` contact sheet, or
+`reel.mp4` and `cover.jpg`. `caption.txt` sits beside them. The JPEGs and the MP4 are git-ignored
+(the repo is public, and they re-render exactly from source); the sheet or cover stays as the
+record. Haven is drawn from `note.js`'s lines, never redrawn. How to make one:
+`.claude/skills/haven-post/SKILL.md`.
 
 ### URL structure, and why
 

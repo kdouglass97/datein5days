@@ -1,0 +1,217 @@
+<!doctype html>
+<!-- "pov: you're the only pigeon in new york with a job": a day in the life of Haven. Instagram Reel, 9:16, about 22s.
+     Each hour is a card slapped onto the stack; the hand circles the time. Render: node share/posts/render.js day
+     Open in a browser to watch it play. Silent: add the sound in the app. Haven is note.js's pigeon, via ../haven.js. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>haven's day</title>
+<link rel="stylesheet" href="../base.css">
+<style>
+.slide.reel{height:1920px;background:var(--clay)}
+.hook{position:absolute;left:96px;right:120px;top:250px;color:var(--line);font:400 74px/1.05 var(--serif);letter-spacing:-.03em;--opsz:20;z-index:30}
+.hook small{display:block;font:400 30px/1 var(--type);letter-spacing:.14em;margin:0 0 20px;opacity:.85}
+.card{left:70px;top:580px;width:940px;height:1020px;padding:70px 70px 70px;transform:translateY(1500px)}
+.time{position:relative;align-self:flex-start;font-size:64px;letter-spacing:.06em;padding:4px 18px;margin:0 0 10px}
+.time svg{position:absolute;left:-30px;top:-26px;width:calc(100% + 60px);height:calc(100% + 52px);overflow:visible}
+.time path{fill:none;stroke:var(--clay);stroke-width:4.5;stroke-linecap:round}
+.card .scene{margin:10px 0 30px;overflow:hidden}
+.card .say{font-size:84px;margin:0}
+.endc .sc path.b{fill:var(--grass)}
+.draw{vector-effect:none!important}
+.endc{position:absolute;inset:0;background:var(--grass);color:var(--line);opacity:0;z-index:40}
+.endc .sc{--d:var(--line);--sw:8px;--st:5.8px;position:absolute;left:200px;top:560px;width:680px;height:450px;overflow:visible}
+.endc h2{position:absolute;left:0;right:0;top:330px;margin:0;text-align:center;font:400 150px/1 var(--serif);letter-spacing:-.04em;--opsz:24}
+.endc p{position:absolute;left:120px;right:120px;text-align:center}
+.endc .l1{top:1040px;font:400 74px/1.1 var(--serif);letter-spacing:-.02em;--opsz:14}
+.endc .l2{top:1380px;font-size:44px}
+</style>
+<script src="../haven.js"></script>
+</head>
+<body>
+<section class="slide reel">
+<div class="hook"><small>A DAY IN THE LIFE</small>pov: you’re the only pigeon in new york with a job.</div>
+
+<!-- 7:00 -->
+<div class="card c" style="--r:-1.6deg">
+<p class="time">7:00 AM<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="draw" pathLength="1" d="M14 5C40 -2 92 0 97 18C101 34 70 40 46 39C18 38 2 32 3 20C4 9 26 3 66 4"/></svg></p>
+<svg class="sc scene" viewBox="0 0 400 300">
+<g class="wash" filter="url(#wash)"><ellipse cx="200" cy="288" rx="180" ry="12" style="fill:var(--peach);opacity:.38"/><circle cx="330" cy="50" r="22" style="fill:var(--peach);opacity:.5"/></g>
+<g filter="url(#pen)">
+<path class="thin" d="M6 280C130 277 270 282 394 278"/>
+<path class="thin" d="M300 280V250H330V220H360V190H394"/>
+<path class="thin" d="M360 190V80H394"/>
+</g>
+<g class="letter1"><g filter="url(#pen)"><path class="thin b" d="M246 280L250 262L276 266L272 282Z"/><path class="thin" d="M250 262L262 273L276 266"/></g></g>
+<g class="hv fill h1" data-o="" transform="translate(-160 186) scale(1.3)"></g>
+</svg>
+<p class="say">Pick up a note.</p>
+</div>
+
+<!-- 9:00 -->
+<div class="card c" style="--r:1.3deg;--t:3deg">
+<p class="time">9:00 AM<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="draw" pathLength="1" d="M14 5C40 -2 92 0 97 18C101 34 70 40 46 39C18 38 2 32 3 20C4 9 26 3 66 4"/></svg></p>
+<svg class="sc scene" viewBox="0 0 400 300">
+<g class="wash" filter="url(#wash)"><ellipse cx="290" cy="200" rx="110" ry="10" style="fill:var(--peach);opacity:.4"/></g>
+<g filter="url(#pen)">
+<path class="thin" d="M6 280C130 277 270 282 394 278"/>
+<path d="M180 196C250 194 330 197 396 195M196 196V280M384 196V280"/>
+<path class="thin" d="M206 194V170H262V194"/>
+<path class="thin" d="M300 194V162H322V194M322 170C330 170 332 184 322 186"/>
+<path class="thin" d="M346 194V162H368V194M368 170C376 170 378 184 368 186"/>
+<path class="thin" d="M308 152C304 146 312 142 308 134M356 152C352 146 360 142 356 134"/>
+</g>
+<g class="letter2" style="opacity:0"><g filter="url(#pen)"><path class="thin b" d="M216 192L220 176L246 180L242 194Z"/></g></g>
+<g class="hv fill h2" data-o="walk letter" transform="translate(-160 186) scale(1.3)"></g>
+</svg>
+<p class="say">Hand it to Kai and Ruby.</p>
+</div>
+
+<!-- 11:00 -->
+<div class="card c" style="--r:-1deg">
+<p class="time">11:00 AM<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="draw" pathLength="1" d="M14 5C40 -2 92 0 97 18C101 34 70 40 46 39C18 38 2 32 3 20C4 9 26 3 66 4"/></svg></p>
+<svg class="sc scene" viewBox="0 0 400 300">
+<g transform="rotate(-3 230 140)">
+<g filter="url(#pen)">
+<path class="b" d="M150 10C210 8 270 9 320 11C322 90 320 180 322 270C270 272 210 271 148 270C150 180 148 90 150 10Z"/>
+<path class="thin" d="M172 46H296M172 70H300M172 94H284M172 118H298M172 142H262M172 178H296M172 202H290M172 226H240"/>
+</g>
+<path class="draw tick1" pathLength="1" d="M330 60L344 78L372 40" style="fill:none;stroke:var(--clay);stroke-width:6;stroke-linecap:round;stroke-linejoin:round"/>
+<path class="draw tick2" pathLength="1" d="M330 120L344 138L372 100" style="fill:none;stroke:var(--clay);stroke-width:6;stroke-linecap:round;stroke-linejoin:round"/>
+</g>
+<g filter="url(#pen)"><path class="thin" d="M6 280C60 278 100 281 140 279"/></g>
+<g class="hv fill h3" data-o="tilt" transform="translate(-8 228) scale(.72)"></g>
+</svg>
+<p class="say">They read it. Twice.</p>
+</div>
+
+<!-- 4:00 -->
+<div class="card c" style="--r:1.5deg;--t:-2deg">
+<p class="time">4:00 PM<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="draw" pathLength="1" d="M14 5C40 -2 92 0 97 18C101 34 70 40 46 39C18 38 2 32 3 20C4 9 26 3 66 4"/></svg></p>
+<svg class="sc scene" viewBox="0 0 400 300">
+<g filter="url(#pen)">
+<circle cx="230" cy="140" r="70"/>
+<circle class="thin" cx="230" cy="44" r="14"/><circle class="thin" cx="313" cy="92" r="14"/><circle class="thin" cx="313" cy="188" r="14"/>
+<circle class="thin" cx="230" cy="236" r="14"/><circle class="thin" cx="147" cy="188" r="14"/><circle class="thin" cx="147" cy="92" r="14"/>
+</g>
+<text x="230" y="146" text-anchor="middle" style="font-size:16px;letter-spacing:.16em;opacity:.7">TABLE 4</text>
+<circle class="seatA" cx="230" cy="44" r="9" style="fill:var(--clay)"/>
+<circle class="seatB" cx="313" cy="188" r="9" style="fill:var(--grass)"/>
+<path class="draw swap" pathLength="1" d="M252 40C300 30 336 56 330 80M290 196C260 236 220 250 196 236" style="fill:none;stroke:var(--clay);stroke-width:4;stroke-linecap:round"/>
+<g filter="url(#pen)"><path class="thin" d="M6 280C60 278 100 281 140 279"/></g>
+<g class="hv fill h4" data-o="tilt-up" transform="translate(-8 228) scale(.72)"></g>
+</svg>
+<p class="say">They argue about the seating.</p>
+</div>
+
+<!-- 8:00 -->
+<div class="card c" style="--r:-1.3deg">
+<p class="time">8:00 PM<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="draw" pathLength="1" d="M14 5C40 -2 92 0 97 18C101 34 70 40 46 39C18 38 2 32 3 20C4 9 26 3 66 4"/></svg></p>
+<svg class="sc scene" viewBox="0 0 400 300">
+<g class="wash" filter="url(#wash)"><circle class="glow" cx="200" cy="124" r="40" style="fill:var(--peach);opacity:.55"/><ellipse cx="200" cy="288" rx="170" ry="12" style="fill:var(--peach);opacity:.38"/></g>
+<g filter="url(#pen)">
+<path class="thin" d="M6 280C130 277 270 282 394 278"/>
+<ellipse cx="200" cy="190" rx="70" ry="10"/>
+<path d="M200 200V276M172 280C184 272 216 272 228 280"/>
+<path class="thin" d="M200 180V150M195 150H205V180"/>
+<path class="thin" d="M200 150C196 144 202 140 200 134"/>
+<path class="thin" d="M160 180C158 168 158 160 161 156H171C174 160 174 168 172 180M166 180V188"/>
+<path class="thin" d="M228 180C226 168 226 160 229 156H239C242 160 242 168 240 180M234 180V188"/>
+<path d="M90 210C86 180 84 156 90 140C96 132 106 134 108 146C110 166 106 190 104 210M82 210C100 207 128 207 146 210M88 218L80 278M140 218L148 278"/>
+<path d="M310 210C314 180 316 156 310 140C304 132 294 134 292 146C290 166 294 190 296 210M318 210C300 207 272 207 254 210M312 218L320 278M260 218L252 278"/>
+</g>
+<g class="hv fill h5" data-o="" transform="translate(410 228) scale(-.72 .72)"></g>
+</svg>
+<p class="say">Two people, one table.</p>
+</div>
+
+<!-- 8:01 -->
+<div class="card c" style="--r:1.1deg;--t:2deg">
+<p class="time">8:01 PM<svg viewBox="0 0 100 40" preserveAspectRatio="none"><path class="draw" pathLength="1" d="M14 5C40 -2 92 0 97 18C101 34 70 40 46 39C18 38 2 32 3 20C4 9 26 3 66 4"/></svg></p>
+<svg class="sc scene" viewBox="0 0 400 300">
+<g class="wash" filter="url(#wash)"><circle cx="300" cy="70" r="26" style="fill:var(--sage);opacity:.55"/><ellipse cx="200" cy="288" rx="180" ry="12" style="fill:var(--peach);opacity:.3"/></g>
+<g filter="url(#pen)"><path class="thin" d="M6 280C130 277 270 282 394 278"/><path class="thin" d="M292 52C280 60 280 80 292 88C276 88 266 76 268 66C270 56 280 50 292 52Z"/></g>
+<g class="hv fill h6" data-o="walk" transform="translate(60 186) scale(1.3)"></g>
+</svg>
+<p class="say">I go home. I only deliver.</p>
+</div>
+
+<div class="endc" id="end">
+<h2>five days</h2>
+<svg class="sc" viewBox="0 0 200 132">
+<g class="wash" filter="url(#wash)"><ellipse cx="100" cy="124" rx="80" ry="8" style="fill:var(--peach);opacity:.3"/></g>
+<g filter="url(#pen)"><path class="thin" d="M6 124C70 122 130 125 194 123"/></g>
+<g class="hv" data-o="wave" transform="translate(16 30) scale(1.3)"></g>
+</svg>
+<p class="l1">We plan the date. Haven brings the note.</p>
+<p class="l2">Seven questions, about seven minutes. New York first. Link in bio.</p>
+</div>
+</section>
+
+<script>
+const START = [0.4, 3.6, 6.8, 10.0, 13.2, 16.4], END = 19.6, SECONDS = 23;
+const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const q = s => document.querySelector(s);
+const setPose = (g, o) => { if (g.dataset.cur === o) return; g.dataset.cur = o; g.innerHTML = pose(o); inkPen(g); };
+const draw = (el, p) => { el.style.strokeDasharray = "1"; el.style.strokeDashoffset = String(1 - p); };
+const step = t => Math.floor(t / .16) % 2;
+const cards = [...document.querySelectorAll(".card.c")];
+window.REEL = {
+  seconds: SECONDS,
+  cover: 12.2,
+  at(t) {
+    cards.forEach((c, i) => {
+      const k = t - START[i];
+      const p = ease(clamp(k / .42, 0, 1));
+      c.style.zIndex = 10 + i;
+      c.style.transform = `translate(${((1 - p) * 260).toFixed(1)}px, ${((1 - p) * 1500).toFixed(1)}px) rotate(calc(var(--r) + ${((1 - p) * 9).toFixed(2)}deg))`;
+      draw(c.querySelector(".time path"), ease(clamp((k - .45) / .5, 0, 1)));
+    });
+    // 7:00: walk to the note, pick it up
+    let k = t - START[0];
+    let w = ease(clamp((k - .3) / 1.4, 0, 1));
+    q(".h1").setAttribute("transform", `translate(${(-160 + w * 280).toFixed(1)} 186) scale(1.3)`);
+    const got = k > 1.9;
+    setPose(q(".h1"), got ? "letter tilt-up" : k > .3 && k < 1.7 ? (step(t) ? "walk" : "") : k >= 1.7 ? "bow" : "");
+    q(".letter1").style.opacity = got ? 0 : 1;
+    // 9:00: carry it to the desk, leave it in the tray
+    k = t - START[1];
+    w = ease(clamp((k - .3) / 1.3, 0, 1));
+    q(".h2").setAttribute("transform", `translate(${(-160 + w * 230).toFixed(1)} 186) scale(1.3)`);
+    const left = k > 1.9;
+    setPose(q(".h2"), left ? "tilt-up" : k < 1.6 ? (step(t) ? "walk letter" : "letter") : "letter");
+    q(".letter2").style.opacity = left ? 1 : 0;
+    // 11:00: two ticks, Haven waits
+    k = t - START[2];
+    draw(q(".tick1"), ease(clamp((k - .9) / .35, 0, 1)));
+    draw(q(".tick2"), ease(clamp((k - 1.8) / .35, 0, 1)));
+    setPose(q(".h3"), Math.floor(k / .5) % 2 ? "tilt" : "tilt-up");
+    // 4:00: the two seats swap
+    k = t - START[3];
+    const s = ease(clamp((k - .9) / 1.2, 0, 1));
+    const ang = s * Math.PI;
+    const cx = 271.5, cy = 116, rx = 41.5 * Math.cos(ang), ry = 72 * Math.cos(ang), px = 26 * Math.sin(ang), py = -15 * Math.sin(ang);
+    q(".seatA").setAttribute("cx", (cx - rx + px).toFixed(1)); q(".seatA").setAttribute("cy", (cy - ry + py).toFixed(1));
+    q(".seatB").setAttribute("cx", (cx + rx - px).toFixed(1)); q(".seatB").setAttribute("cy", (cy + ry - py).toFixed(1));
+    draw(q(".swap"), ease(clamp((k - .6) / .5, 0, 1)));
+    setPose(q(".h4"), k > 2.2 ? "tilt" : "tilt-up");
+    // 8:00: the candle breathes, Haven looks on
+    k = t - START[4];
+    q(".glow").setAttribute("r", (38 + Math.sin(t * 5) * 4).toFixed(1));
+    setPose(q(".h5"), k > 1.3 ? "hearts" : "");
+    // 8:01: home
+    k = t - START[5];
+    w = clamp((k - .5) / 2.6, 0, 1);
+    q(".h6").setAttribute("transform", `translate(${(60 + w * 360).toFixed(1)} 186) scale(1.3)`);
+    setPose(q(".h6"), k > .5 ? (step(t) ? "walk" : "") : "");
+    q("#end").style.opacity = ease(clamp((t - END) / .45, 0, 1));
+  },
+};
+if (!navigator.webdriver) {
+  addEventListener("load", () => { const t0 = performance.now(); const f = () => { REEL.at(((performance.now() - t0) / 1000) % SECONDS); requestAnimationFrame(f); }; f(); });
+} else addEventListener("load", () => REEL.at(0));
+</script>
+</body>
+</html>
