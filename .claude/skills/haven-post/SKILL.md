@@ -124,6 +124,7 @@ Reel, 1080×1920 (`.slide.reel`):
 | `meet-haven` | carousel, 12 | the full card system; a speech scrap (04); a form filled in (06). It leaves Haven unfilled so washes glow through; the default fills them |
 | `flags` | carousel, 6 | the cleanest card carousel to start from; Haven with props |
 | `cuffing` | carousel, 5 | type-led slides; a proof correction (`.mk.x` plus a caret) |
+| `nerves` | carousel, 5 | the first post made from this file alone; a correction inside a headline (`.fix`: strike plus an inserted word) |
 | `bag` | carousel, 7 | an inventory, one labelled item per slide; the last is the empty slot where an algorithm would go |
 | `day` | Reel, 23s | cards slapped onto a stack; Haven walking and carrying |
 | `interview` | Reel, 24s | typed Q and A; camera drift; Haven answering |
