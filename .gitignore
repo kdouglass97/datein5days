@@ -1,2 +1,8 @@
 # Written by the Apps Script deploy from the ADMIN_PASSWORD secret. Never commit it.
 apps-script/secret.js
+
+# Haven posts: the slides and Reels are rendered on demand (node share/posts/render.js <post>) and
+# handed over in the session, so they stay out of the public history. Each post keeps its source,
+# its caption, and sheet.jpg or cover.jpg as the record of how it looked.
+share/posts/*/[0-9][0-9].jpg
+share/posts/*/reel.mp4
